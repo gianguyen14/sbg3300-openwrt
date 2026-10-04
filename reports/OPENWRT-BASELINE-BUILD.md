@@ -11,10 +11,12 @@
 
 ## Status
 
-The build is still running. The host-tool phase is compiling dependencies;
-there is no completed target image or PASS result yet. Compiler warnings from
-upstream host dependencies have appeared, but no fatal failure has been
-observed. This remains an unmodified upstream baseline; SBG3300 DTS or image
+The build is running again after its first attempt spent over an hour on slow
+GNU mirror transfers. That attempt was interrupted during GCC/GDB downloads;
+both archives were fetched from an alternate GNU mirror and matched the exact
+SHA256 values required by OpenWrt before resuming. The resumed build is still
+in the host-tool/toolchain phase; there is no completed target image or PASS
+result yet. This remains an unmodified upstream baseline; SBG3300 DTS or image
 changes have not been applied to this checkout.
 
 This baseline is offline-only and is not a boot or flash validation.
