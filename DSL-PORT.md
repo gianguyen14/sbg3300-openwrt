@@ -76,6 +76,13 @@ the DSL source search open.
 
 ## Forward-port strategy
 
+The stock ADSL/config module imports were also enumerated directly from the
+extracted ELF files: `adsldd.ko` has 82 unique undefined symbols and
+`bcmxtmcfg.ko` has 31. Key dependencies and the still-open compile gate are
+listed in `reports/DSL-UNRESOLVED-SYMBOLS.md`. An OpenWrt 6.18 compile attempt
+has not yet been made because the pinned upstream baseline toolchain is still
+building.
+
 1. Inventory every stock `.ko`: architecture, vermagic, imports/exports, strings,
    dependencies, and userspace ioctl/config clients.
 2. Search for official Zyxel GPL sources and Broadcom BCM63168 release sources.

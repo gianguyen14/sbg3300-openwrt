@@ -18,7 +18,7 @@ Status vocabulary: `PASS` means direct evidence for that layer only;
 | BCM53125 | LIKELY, not proven | External SPI switch path is confirmed by board table; exact live switch ID is not yet read |
 | USB | PASS (controller observation) | PCI 14e4:6300 OHCI and EHCI both enumerate |
 | Wi-Fi | INVESTIGATING | PCI 14e4:435f, stock `wl` driver reports BCM435f; calibration/driver path unresolved |
-| DSL/XTM | INVESTIGATING | Stock modules are ELF32 MSB MIPS32, vermagic Linux 2.6.30 SMP/preempt; 4.12L.06B source has `bcmxtmrt`; `adsldd`/`bcmxtmcfg` implementation absent from mirror; modern port not built |
+| DSL/XTM | INVESTIGATING | Stock ADSL/config modules have 2.6.30 vermagic and 82/31 undefined imports; 4.12L.06B source has `bcmxtmrt`; `adsldd`/`bcmxtmcfg` implementation absent from mirror; 6.18 compile not yet attempted |
 | Hardware acceleration | INVESTIGATING | FAP/BPM modules are active in stock; no upstream equivalent established |
 | Firmware container | UNKNOWN | stock updater image and physical NAND target are not fully mapped for OpenWrt payloads |
 | Recovery / no UART | UNKNOWN | no exact static proof of recovery path yet |
