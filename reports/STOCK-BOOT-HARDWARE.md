@@ -18,6 +18,10 @@ unique values were omitted.
   `ppp2.1 -> eth4.1 -> eth4`.
 - Ethernet: stock `bcm_enet`; logs identify eth3 and eth4 with switch-port
   indices. No complete physical port mapping recovered yet.
+- A further read-only scan of `dmesg` and `/proc/bus/pci/devices` found no
+  `bcm53125`/`b53` identification. It again showed link events for switch
+  indices 1, 11 and 12. PCI functions were WLAN 14e4:435f, USB 14e4:6300
+  OHCI/EHCI and bridge 14e4:6326; this PCI scan cannot identify an SPI switch.
 - Acceleration: `bcmfap`, `bcm_bpm`, `bcm_ingqos` active; FAP 0 and 1 initialize.
 - PCI functions also include Broadcom bridge function 14e4:6326.
 
