@@ -13,3 +13,11 @@
 | FAP/BPM acceleration | vendor modules only identified | active in stock | vendor-only / unknown portability |
 | Web-updater factory image | family-specific CFE formats exist | exact Zyxel writer/layout incomplete | prohibited / unsupported |
 | sysupgrade | generic image formats exist | partition/bad-block map incomplete | disabled/not implemented |
+
+## OpenWrt generation
+
+The pinned current upstream `main` checkout is on the 25.12 generation. Its
+package manager is APK; OpenWrt 24.10 and older use opkg. The SBG3300 work must
+follow this checkout's apk/feeds/image conventions rather than historical
+opkg assumptions. This is based on the pinned tree's `package/system/apk` and
+the current OpenWrt package-management documentation.

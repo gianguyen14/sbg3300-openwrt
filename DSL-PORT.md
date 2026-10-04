@@ -47,6 +47,15 @@ also reports that no maintained GPL DSL/ATM driver is available upstream. This
 is evidence of a missing source dependency today, not proof that no matching
 source exists elsewhere.
 
+A second public Broadcom driver repository, `jclehner/bcmdrivers-gpl-bcm963xx`
+(pinned locally at `1555117dd9e5b393cf5b92e10e603e1c5f8ba2bb`), was also checked.
+It has a larger, later XTM implementation (`impl5`) with DMA/BPM/runner split
+files, but no `char/adsl` or `char/xtmcfg` source directory and no saved driver
+objects or PHY blob. Its tree contains later chip families (for example 963138
+and 96858) and is not established as BCM63168 source. It therefore expands the
+XTM comparison material but does not supply the missing SBG3300 PHY/config
+driver or a valid forward-port source baseline.
+
 ## Forward-port strategy
 
 1. Inventory every stock `.ko`: architecture, vermagic, imports/exports, strings,
