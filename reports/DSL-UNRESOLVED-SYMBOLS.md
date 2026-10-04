@@ -1,8 +1,10 @@
 # DSL/XTM binary imports and source-port dependencies
 
-Status: `BUILD-NOT-ATTEMPTED`. The OpenWrt target toolchain/kernel headers are
-not ready yet. This report records binary ABI evidence and source dependencies;
-it does not claim that a modern-kernel forward port is impossible.
+Status: `SOURCE-INCOMPLETE / FORWARD-PORT-PROBE-FAILED`. The available XTM
+source was compiled against the staged OpenWrt 6.18.54 kernel headers in an
+isolated temporary external-module harness. This is an initial compatibility
+probe, not a complete driver port, and it does not prove that porting is
+impossible.
 
 ## Stock module ABI
 
@@ -40,12 +42,32 @@ The exact mirror lacks the Makefile-referenced
 `adsldd.ko`, `bcmxtmcfg.ko`, and two PHY blobs, but those artifacts are not a
 source or ABI-compatible input for a 6.18 kernel.
 
+## Linux 6.18 compile probe
+
+The first attempt had a test-harness include-path error because the vendor
+checkout path contains spaces; it failed at `linux/blog.h` and is discarded as
+non-evidence. The retry used a space-free source symlink and an isolated
+external-module directory. A compatibility include shim was needed because the
+vendor header expects removed `linux/autoconf.h`; after that, compilation
+reached the vendor code and failed on concrete ABI mismatches:
+
+- Broadcom NBuff expects `RecycleFuncP` and `sk_buff.recycle_flags`; the
+  current kernel headers do not provide that old recycle ABI.
+- Vendor packet-DMA headers expect `DmaChannelCfg`, `DmaDesc`, and `DmaRegs`
+  declarations through the vendor include/configuration graph, which the
+  current OpenWrt module build does not establish.
+- Vendor `bcm_OS_Deps.h` includes removed `asm/system.h`.
+
+The build logs are local at `/tmp/sbg3300-xtm-module-build-2.log` and
+`/tmp/sbg3300-xtm-module-build-3.log`. No vendor source was modified, no module
+was installed, and nothing was loaded on the router. See
+`reports/DSL-6.18-COMPILE-PROBE.md` for exact harness scope and result.
+
 ## Port gate still open
 
-1. Complete current upstream bmips baseline and stage 6.18 headers/toolchain.
-2. Configure the isolated SBG3300 kernel profile; compile the available XTM
-   implementation only, recording every missing Broadcom API and kernel API.
-3. Recover and fingerprint a closer source package for the ADSL PHY driver and
+1. Resolve NBuff/recycle and DMA API dependencies without importing the stock
+   2.6.30 ABI wholesale; compile XTM incrementally and review every adaptation.
+2. Recover and fingerprint a closer source package for the ADSL PHY driver and
    XTM configuration module before claiming the DSL control path can be built.
 4. If source is recovered, port subsystem-by-subsystem and re-run unresolved
    import checks. Hardware DSL sync/PPPoE remains a separate runtime gate.

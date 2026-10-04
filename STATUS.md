@@ -19,7 +19,7 @@ Status vocabulary: `PASS` means direct evidence for that layer only;
 | BCM53125 | LIKELY, not proven | External SPI switch path is confirmed by board table; exact live switch ID is not yet read |
 | USB | PASS (controller observation) | PCI 14e4:6300 OHCI and EHCI both enumerate |
 | Wi-Fi | UNSUPPORTED for initial bring-up | Exact live ID is 14e4:435f/BCM435F pseudo-device; no matching upstream PCI driver; close BCM63168-family reference also reports no usable driver; no open `wl` source found in 4.12L.06B tree |
-| DSL/XTM | INVESTIGATING | Stock ADSL/config modules have 2.6.30 vermagic and 82/31 undefined imports; 4.12L.06B source has `bcmxtmrt`; `adsldd`/`bcmxtmcfg` implementation absent from mirror; 6.18 compile not yet attempted |
+| DSL/XTM | SOURCE-INCOMPLETE / PORT PROBE FAILED | Stock ADSL/config modules have 2.6.30 vermagic and 82/31 undefined imports; available XTM C source hits NBuff recycle, DMA type/config, and removed `asm/system.h` mismatches against 6.18; `adsldd`/`bcmxtmcfg` implementations absent from inspected mirror |
 | Hardware acceleration | INVESTIGATING | FAP/BPM modules are active in stock; no upstream equivalent established |
 | Firmware container | UNKNOWN | stock updater image and physical NAND target are not fully mapped for OpenWrt payloads |
 | Recovery / no UART | UNKNOWN | no exact static proof of recovery path yet |

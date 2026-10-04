@@ -38,6 +38,11 @@ to the linked archive. A second 3.4 source lead (`100AAJX8_4.16L.02A`) is linked
 from Google Drive and is explicitly described there as including closed code;
 it remains a separate un-retrieved lead.
 
+Zyxel's current GPL-source instructions route source requests through its
+request form and state that source is kept for up to three years after a
+firmware release. No request was submitted during this work. See the official
+[Zyxel open-source code request instructions](https://support.zyxel.eu/hc/en-us/articles/360017067100-Zyxel-Open-Source-Code-MyZyxelPortal-How-to-Access-Zyxel-Open-Source-Code-for-Programmers-GPL).
+
 In the source tree, `bcmdrivers/opensource/net/xtmrt/impl4` has C sources, but
 `bcmdrivers/broadcom/char/adsl/impl1` and `char/xtmcfg/impl2` contain Makefiles
 without their implementation sources. The stock rootfs contains `adsldd.ko`,
@@ -89,10 +94,13 @@ the DSL source search open.
 
 The stock ADSL/config module imports were also enumerated directly from the
 extracted ELF files: `adsldd.ko` has 82 unique undefined symbols and
-`bcmxtmcfg.ko` has 31. Key dependencies and the still-open compile gate are
-listed in `reports/DSL-UNRESOLVED-SYMBOLS.md`. An OpenWrt 6.18 compile attempt
-has not yet been made because the pinned upstream baseline toolchain is still
-building.
+`bcmxtmcfg.ko` has 31. The staged OpenWrt 6.18 toolchain was used for an
+isolated compile probe of the available `bcmxtmrt` source. It reaches the
+vendor headers and fails on NBuff recycle fields, vendor DMA type/config
+dependencies, and removed `asm/system.h`; see
+`reports/DSL-6.18-COMPILE-PROBE.md`. This is not yet a complete forward port
+and is not proof of impossibility. The PHY and XTM config implementation
+sources are still missing from the inspected public mirror.
 
 1. Inventory every stock `.ko`: architecture, vermagic, imports/exports, strings,
    dependencies, and userspace ioctl/config clients.
