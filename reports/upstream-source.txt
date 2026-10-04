@@ -19,3 +19,12 @@ Build path workaround: `/home/nguyen/openwrt-sbg3300` symlinks to the checkout;
 OpenWrt's prerequisite checks reject physical paths containing spaces.
 
 This records source state only, not device support/runtime validation.
+
+Isolated board-port worktree
+===========================
+Branch: `zyxel-sbg3300-port`
+Base: `5edcc1c43cb97048b506168fbbe00538956796d6`
+Board skeleton commit: `311ecbb3bc3cf9a54f155adcdbde7d0f380d057e`
+Scope: SBG3300 research DTS plus an initramfs-only device profile. No factory
+or sysupgrade image recipe exists for this profile. The profile has not yet
+been through the OpenWrt kernel build.

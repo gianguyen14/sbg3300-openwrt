@@ -1,0 +1,89 @@
+From 311ecbb3bc3cf9a54f155adcdbde7d0f380d057e Mon Sep 17 00:00:00 2001
+From: gianguyen14 <gianguyen14@users.noreply.github.com>
+Date: Sun, 4 Oct 2026 13:09:50 +0700
+Subject: [PATCH] bmips: add offline SBG3300-N000 skeleton
+
+---
+ .../bmips/dts/bcm63168-zyxel-sbg3300-n000.dts | 45 +++++++++++++++++++
+ target/linux/bmips/image/bcm63268.mk          | 14 ++++++
+ 2 files changed, 59 insertions(+)
+ create mode 100644 target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
+
+diff --git a/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts b/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
+new file mode 100644
+index 0000000..4a02f28
+--- /dev/null
++++ b/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
+@@ -0,0 +1,45 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include "bcm63268.dtsi"
++
++/ {
++	model = "Zyxel SBG3300-N000 (research-only skeleton)";
++	compatible = "zyxel,sbg3300-n000", "brcm,bcm63168", "brcm,bcm63268";
++};
++
++/* These controllers are directly observed on the stock device. */
++&ehci {
++	status = "okay";
++};
++
++&ohci {
++	status = "okay";
++};
++
++&pcie {
++	status = "okay";
++};
++
++/* bcm63268.dtsi uses memory@0 reg=<0 0>, allowing BMIPS RAM discovery; keep
++ * that behavior instead of hard-coding a base/size from MemTotal. */
++/* NAND controller and geometry are direct stock observations. No partition
++ * map is published until the vendor slot/WFI translation is proven exact. */
++&nflash {
++	status = "okay";
++
++	nandcs@0 {
++		compatible = "brcm,nandcs";
++		reg = <0>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		nand-ecc-step-size = <512>;
++		nand-ecc-strength = <15>;
++		nand-on-flash-bbt;
++		brcm,nand-oob-sector-size = <64>;
++	};
++};
++
++/*
++ * Physical partition offsets remain partially unresolved. Ethernet, DSA, LEDs
++ * and buttons are omitted until exact SBG3300 mapping is recovered.
++ */
+diff --git a/target/linux/bmips/image/bcm63268.mk b/target/linux/bmips/image/bcm63268.mk
+index 49fc862..667eb38 100644
+--- a/target/linux/bmips/image/bcm63268.mk
++++ b/target/linux/bmips/image/bcm63268.mk
+@@ -1,5 +1,19 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ 
++# This profile intentionally emits only a kernel/initramfs boot artifact.
++# No CFE/WFI factory or sysupgrade image is defined for the unproven SBG3300
++# NAND layout. The artifact is for offline review and is not a flash image.
++define Device/zyxel_sbg3300-n000
++  DEVICE_VENDOR := Zyxel
++  DEVICE_MODEL := SBG3300-N000
++  CHIP_ID := 63268
++  SOC := bcm63168
++  KERNEL_INITRAMFS := kernel-bin | append-dtb | lzma | loader-lzma elf
++  KERNEL_INITRAMFS_SUFFIX := .elf
++  IMAGES :=
++endef
++TARGET_DEVICES += zyxel_sbg3300-n000
++
+ define Device/actiontec_t1200h
+   $(Device/bcm63xx-nand)
+   DEVICE_VENDOR := Actiontec
+-- 
+2.55.0
+
