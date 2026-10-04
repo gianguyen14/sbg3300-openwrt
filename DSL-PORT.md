@@ -28,7 +28,10 @@ BCM63168D0 Linux 2.6.30 source family. A public Git mirror was located at
 `963168MXH_17A` board-parameter entry and `bcmxtmrt` source, making it a strong
 lineage match rather than a generic SoC sample. It is a 2015 mirror, while the
 running kernel is a 2018 build; module/source equivalence is not yet proven.
-The OpenWrt reference also links the exact release archive on OSDN. Direct
+The OpenWrt reference page identifies this release family and links the exact
+archive at
+`https://osdn.net/projects/zyxel-vmg3312/downloads/68893/100AAPP7D0_4.12L.06B_consumer_release.tar.gz/`.
+Direct
 retrieval was retried on 2026-10-04 but the workstation could not resolve
 `osdn.net`; the inspected Git mirror is therefore not claimed to be identical
 to the linked archive. A second 3.4 source lead (`100AAJX8_4.16L.02A`) is linked
@@ -48,10 +51,12 @@ The source Makefiles refer to excluded `adsldd$(PROFILE).o_save`,
 objects/blobs are absent from this mirror. It exposes public ADSL/XTM headers
 and the XTM network driver implementation, but the PHY driver and config module
 are not rebuildable from the checked-in tree. The OpenWrt BCM63xx technical
-reference independently documents the 4.12L.06B BCM63168D0 source family and
-also reports that no maintained GPL DSL/ATM driver is available upstream. This
-is evidence of a missing source dependency today, not proof that no matching
-source exists elsewhere.
+reference independently identifies the 4.12L.06B BCM63168D0 source family and
+describes the DSL support gap. That community status page is corroborating
+context, not proof that no matching source exists elsewhere. The specific
+missing source objects in the inspected mirror remain the stronger evidence.
+
+Reference: https://openwrt.org/docs/techref/hardware/soc/soc.broadcom.bcm63xx
 
 A second public Broadcom driver repository, `jclehner/bcmdrivers-gpl-bcm963xx`
 (pinned locally at `1555117dd9e5b393cf5b92e10e603e1c5f8ba2bb`), was also checked.

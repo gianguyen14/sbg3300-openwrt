@@ -14,10 +14,23 @@
 | Web-updater factory image | family-specific CFE formats exist | exact Zyxel writer/layout incomplete | prohibited / unsupported |
 | sysupgrade | generic image formats exist | partition/bad-block map incomplete | disabled/not implemented |
 
-## OpenWrt generation
+## OpenWrt generation and release support
 
-The pinned current upstream `main` checkout is on the 25.12 generation. Its
-package manager is APK; OpenWrt 24.10 and older use opkg. The SBG3300 work must
-follow this checkout's apk/feeds/image conventions rather than historical
-opkg assumptions. This is based on the pinned tree's `package/system/apk` and
-the current OpenWrt package-management documentation.
+The audited upstream checkout is `main` at commit
+`5edcc1c43cb97048b506168fbbe00538956796d6` (2026-10-04), in the 25.12
+generation, with kernel 6.18 and APK package tooling. Official download indexes
+were checked directly on 2026-10-04: both `releases/24.10.5/targets/bmips/bcm63268/`
+and `releases/25.12.5/targets/bmips/bcm63268/` contain device images for
+existing BCM63268 boards. Thus bmips/bcm63268 is still a released target in
+those series. This does not mean the SBG3300 profile is upstream or supported.
+
+The project follows the pinned tree's APK, feeds, and image conventions;
+24.10 uses opkg. Images for sibling boards are reference data only and are not
+candidates for this router.
+
+Sources checked:
+
+- https://downloads.openwrt.org/releases/24.10.5/targets/bmips/bcm63268/
+- https://downloads.openwrt.org/releases/25.12.5/targets/bmips/bcm63268/
+- https://openwrt.org/releases/25.12/start
+- https://github.com/openwrt/openwrt/tree/5edcc1c43cb97048b506168fbbe00538956796d6/target/linux/bmips
