@@ -17,8 +17,10 @@ board-fixed base/size. The live device reports 128 MiB physical RAM and Linux
 reports 123392 KiB; no vendor-reserved range has been established. The draft
 enables the SoC NAND controller with the directly observed 512-byte ECC
 step, strength 15, 64-byte OOB sector, and on-flash BBT, but defines no
-partitions. This is suitable for offline DTB compilation review only; it does
-not make a firmware image or writable flash layout safe.
+partitions. It also clears inherited `earlycon`/`stdout-path`, so the board DTS
+does not select or depend on a UART console. This is suitable for offline
+DTB/initramfs build review only; it does not make a firmware image, bootloader
+handoff, or writable flash layout safe.
 
 The exact `963168MXH_17A` table was found in the public BCM963xx 4.12L.06B
 source candidate at
@@ -35,8 +37,8 @@ The table supplies LED assignments and active levels (including LEDs on
 serial GPIO expanders), plus reset and SES external-interrupt indices. Those
 values remain documentation-only: the reset event polarity/debounce and board
 electrical behavior are not fully reconstructed, so no reset-key handler is
-enabled in the DTS. The initial skeleton does not enable Ethernet and
-must not be treated as a bootable device definition.
+enabled in the DTS. The initial skeleton does not enable Ethernet and must not
+be treated as a bootable device definition.
 
 ## Remaining proof
 

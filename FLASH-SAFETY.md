@@ -3,6 +3,12 @@
 Every image produced before gate completion must be named and labeled
 `OFFLINE-ONLY` / `NOT-FLASHABLE`.
 
+The current SBG3300 artifact is an OpenWrt initramfs loader ELF. It is not a
+Zyxel/Broadcom stock firmware container and is not proven loadable by this
+device's CFE or stock updater. A successful build is not a boot or recovery
+test. The DTB has no selected UART console, and this project does not use
+UART/JTAG.
+
 No upload or flash may occur in this R&D task. A future `READY-FOR-CONTROLLED-
 FLASH` decision requires, at minimum:
 

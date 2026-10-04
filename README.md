@@ -7,7 +7,8 @@ No generated image is approved for installation unless all gates in
 
 ## Current state
 
-- Project status: `RESEARCHING`.
+- Project status: `PARTIAL-PORT` (the research-only bmips profile compiles; no
+  hardware runtime validation).
 - Upstream source: official `openwrt/openwrt`, branch `main`; checkout and commit
   are recorded in `STATUS.md` and `reports/upstream-source.txt`.
 - Baseline device family: `bmips/bcm63268`; upstream already has BCM63168 board
@@ -16,7 +17,8 @@ No generated image is approved for installation unless all gates in
   switch wiring, physical NAND map, and boot container are not established yet.
 - DSL: stock image uses proprietary BCM63168D0 ADSL/XTM modules and PHY firmware;
   current-kernel source compatibility has not been demonstrated.
-- All output images, if built, are offline artifacts and not flashable.
+- Current SBG3300 output is an `OFFLINE-ONLY` initramfs loader ELF, not a
+  stock-updater image and not proven loadable by CFE.
 
 ## Source layout
 
@@ -34,10 +36,14 @@ private keys, or user tokens to source control.
 
 1. Review `STATUS.md`, `HARDWARE.md`, and `NAND-MAP.md`.
 2. Build an unmodified upstream bmips baseline before applying SBG3300 patches.
-3. Keep DTS properties evidence-backed; unknown values stay TODO.
-4. Build initramfs/static artifacts first. Do not create a stock-updater wrapper
+3. Apply the four patches in `patches/openwrt/series` to the pinned source and
+   configure `configs/sbg3300_port_defconfig`.
+4. Reproduce the profile build with `tools/build-sbg3300-profile.sh` after
+   checking out the exact local port commit documented by the script.
+5. Keep DTS properties evidence-backed; unknown values stay TODO.
+6. Build initramfs/static artifacts first. Do not create a stock-updater wrapper
    until the complete image layout and writer behavior are proven.
-5. Never flash automatically. See `FLASH-SAFETY.md`.
+7. Never flash automatically. See `FLASH-SAFETY.md`.
 
 This repository intentionally separates OpenWrt port research from the current
 stock-custom/security-v1 installation.

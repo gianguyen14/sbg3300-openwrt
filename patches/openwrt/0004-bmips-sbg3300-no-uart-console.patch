@@ -1,0 +1,29 @@
+From 18c17336871e73ddfbab3198104d8c42df844146 Mon Sep 17 00:00:00 2001
+From: gianguyen14 <gianguyen14@users.noreply.github.com>
+Date: Sun, 4 Oct 2026 14:28:25 +0700
+Subject: [PATCH] bmips: keep SBG3300 offline DTS independent of UART console
+
+---
+ target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts b/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
+index 1311327..e0bec1f 100644
+--- a/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
++++ b/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
+@@ -5,6 +5,12 @@
+ / {
+ 	model = "Zyxel SBG3300-N000 (research-only skeleton)";
+ 	compatible = "zyxel,sbg3300-n000", "brcm,bcm63168", "brcm,bcm63268";
++
++	/* Do not require or select a serial console for this board. */
++	chosen {
++		bootargs = "";
++		stdout-path = "";
++	};
+ };
+ 
+ /* These controllers are directly observed on the stock device. */
+-- 
+2.55.0
+

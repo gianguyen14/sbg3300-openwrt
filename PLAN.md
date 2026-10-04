@@ -29,5 +29,6 @@
 - Exact BCM53125 presence and MDIO/RGMII/CPU-port wiring are not established.
 - Broadcom vendor DSL source availability and match to stock modules are
   unresolved.
-- No SBG3300 DTS/image wrapper has passed review or build yet.
+- The research-only SBG3300 initramfs profile now builds offline, but no
+  stock-compatible image wrapper or CFE handoff has been proven.
 - Recovery reachability is not currently proven/tested for this exact board.

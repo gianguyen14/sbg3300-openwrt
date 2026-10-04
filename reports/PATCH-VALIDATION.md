@@ -12,10 +12,16 @@ Port branch: `zyxel-sbg3300-port`
   `reports/DTS-BUILD.md`.
 - The selected device/profile symbol resolves through upstream `make defconfig`;
   see `reports/PROFILE-CONFIG.md`.
+- The four-patch series, including the no-UART-console DTS change, applies via
+  `git am` to a fresh detached worktree at the pinned base. Aggregate diff
+  check is clean and `scripts/checkpatch.pl --no-tree --strict` reports zero
+  warnings and zero errors (75 lines checked).
+- The custom SBG3300 initramfs profile subsequently completed a full offline
+  build; see `reports/SBG3300-OFFLINE-INITRAMFS.md`.
 
-This validates patch application, style, DTS syntax, and profile selection.
-The OpenWrt kernel/image compile is still pending. Per-commit mail-format
+This validates patch application, style, DTS syntax, profile selection, and
+offline compilation. Per-commit mail-format
 checks report missing `Signed-off-by` metadata because these are local research
 commits, not submitted upstream contributions; no sign-off is fabricated.
-Nothing here demonstrates board boot, switch port mapping, NAND write safety,
-DSL, or Wi-Fi operation.
+Nothing here demonstrates board boot, CFE image compatibility, switch port
+mapping, NAND write safety, DSL, Wi-Fi, or runtime operation.
