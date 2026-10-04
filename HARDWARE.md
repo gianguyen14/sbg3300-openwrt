@@ -31,6 +31,11 @@ SoC-level nodes may be inherited from upstream `bcm63268.dtsi`. Board-level GPIO
 LED, reset, switch CPU port, PHY addresses, and MAC offsets remain undefined until
 confirmed from exact SBG3300 board parameters or equivalent direct evidence.
 Reference-board values must not be copied as if they belonged to SBG3300.
+The pinned bmips kernel patch has a `brcm,bcm63268` RAM-size detection path
+(`bcm63268_memsize()`), and the inherited DTS intentionally declares
+`memory@0` with an empty range. Thus the 128 MiB stock observation is consistent
+with upstream's runtime detection; the draft does not hard-code a RAM base or
+size.
 
 ## Related upstream devices
 
