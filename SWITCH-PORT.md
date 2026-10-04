@@ -14,7 +14,16 @@ those PHY settings. A fresh read-only search of live `dmesg` for switch-ID
 messages returned no matching line. Live sysfs does expose
 `/sys/devices/platform/bcmhs_spi.1/spi1.0`, bound to the generic
 `bcm_HSSpiDev0` driver with `MODALIAS=bcm_HSSpiDev0`; it does not identify a
-BCM53125 device or expose the switch register ID.
+BCM53125 device or expose the switch register ID. Upstream
+`bcm63268.dtsi` aliases `spi1` to the BCM6328 HSSPI controller, which makes the
+live `spi1.0` node and board-table SSB0 setting consistent with that controller
+path. This strengthens the HSSPI hypothesis but does not identify the SPI
+client or establish its mode, chip-select pinmux, reset, or port wiring.
+
+The upstream SoC DTS leaves HSSPI disabled until a board enables it and supplies
+the correct pinctrl; the SBG3300 skeleton intentionally leaves it disabled
+until those board-specific details are corroborated. `b53` has an SPI front
+end, but that alone is not enough evidence to bind it to this live device.
 
 The upstream tree also contains a BCM53125 DSA configuration for Sagemcom
 F@ST 3864 OP. This establishes driver availability, not identical port wiring.
