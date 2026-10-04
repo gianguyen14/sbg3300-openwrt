@@ -1,0 +1,35 @@
+From a82bc117530580bea9967528be7ad22f4eb26a33 Mon Sep 17 00:00:00 2001
+From: gianguyen14 <gianguyen14@users.noreply.github.com>
+Date: Sun, 4 Oct 2026 13:43:20 +0700
+Subject: [PATCH] bmips: format SBG3300 DTS comments
+
+---
+ .../linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts  | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts b/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
+index 4a02f28..1311327 100644
+--- a/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
++++ b/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
+@@ -20,10 +20,14 @@
+ 	status = "okay";
+ };
+ 
+-/* bcm63268.dtsi uses memory@0 reg=<0 0>, allowing BMIPS RAM discovery; keep
+- * that behavior instead of hard-coding a base/size from MemTotal. */
+-/* NAND controller and geometry are direct stock observations. No partition
+- * map is published until the vendor slot/WFI translation is proven exact. */
++/*
++ * bcm63268.dtsi uses memory@0 reg=<0 0>, allowing BMIPS RAM discovery; keep
++ * that behavior instead of hard-coding a base/size from MemTotal.
++ */
++/*
++ * NAND controller and geometry are direct stock observations. No partition
++ * map is published until the vendor slot/WFI translation is proven exact.
++ */
+ &nflash {
+ 	status = "okay";
+ 
+-- 
+2.55.0
+

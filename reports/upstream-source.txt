@@ -26,7 +26,10 @@ Branch: `zyxel-sbg3300-port`
 Base: `5edcc1c43cb97048b506168fbbe00538956796d6`
 Board skeleton commit: `311ecbb3bc3cf9a54f155adcdbde7d0f380d057e`
 Follow-up naming commit: `39daa4cd479b74d0691e681c07a1713dcb1c36a3`
+Style cleanup commit: `a82bc117530580bea9967528be7ad22f4eb26a33`
 Scope: SBG3300 research DTS plus an initramfs-only device profile. The profile
 sets no normal KERNEL image and has no factory/sysupgrade image recipe; its
 initramfs artifact suffix is explicitly `-OFFLINE-ONLY.elf`. The profile has
-not yet been through the OpenWrt kernel build.
+passed `make defconfig` profile selection but has not yet been through the
+OpenWrt kernel build. The final aggregate source diff passed `checkpatch.pl`
+with zero warnings/errors and `git apply --check` against the pinned clean base.
