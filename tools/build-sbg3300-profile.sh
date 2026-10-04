@@ -7,9 +7,9 @@ if (( $# != 0 )); then
 fi
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-OPENWRT_DIR="${OPENWRT_DIR:-/home/nguyen/openwrt-sbg3300}"
+OPENWRT_DIR="${OPENWRT_DIR:-${XDG_CACHE_HOME:-${HOME:?Set HOME or OPENWRT_DIR}}/sbg3300-openwrt/port}"
 EXPECTED_BASE="5edcc1c43cb97048b506168fbbe00538956796d6"
-EXPECTED_PORT="18c17336871e73ddfbab3198104d8c42df844146"
+EXPECTED_PORT_TREE="e5cec4ff0af6952e3dc43d156148cab62f69f804"
 JOBS="${JOBS:-3}"
 
 if [[ ! -d "$OPENWRT_DIR/.git" ]]; then
@@ -18,8 +18,9 @@ if [[ ! -d "$OPENWRT_DIR/.git" ]]; then
 fi
 
 actual="$(git -C "$OPENWRT_DIR" rev-parse HEAD)"
-if [[ "$actual" != "$EXPECTED_PORT" ]]; then
-	echo "Expected tested local port commit $EXPECTED_PORT; got $actual" >&2
+tree="$(git -C "$OPENWRT_DIR" rev-parse 'HEAD^{tree}')"
+if [[ "$tree" != "$EXPECTED_PORT_TREE" ]]; then
+	echo "Expected tested port tree $EXPECTED_PORT_TREE; got $tree at $actual" >&2
 	exit 1
 fi
 if [[ "$(git -C "$OPENWRT_DIR" merge-base HEAD "$EXPECTED_BASE")" != "$EXPECTED_BASE" ]]; then
@@ -30,6 +31,8 @@ if [[ -n "$(git -C "$OPENWRT_DIR" status --porcelain)" ]]; then
 	echo "OpenWrt tracked worktree is dirty; refusing a non-reproducible build" >&2
 	exit 1
 fi
+
+(cd "$OPENWRT_DIR" && ./scripts/feeds update -a && ./scripts/feeds install -a)
 
 cp "$PROJECT_DIR/configs/sbg3300_port_defconfig" "$OPENWRT_DIR/.config"
 make -C "$OPENWRT_DIR" defconfig

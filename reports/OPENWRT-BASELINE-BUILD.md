@@ -4,8 +4,8 @@
 - Branch/commit: `main`, `5edcc1c43cb97048b506168fbbe00538956796d6`
 - Target selection: `bmips/bcm63268`, generic `Default` profile
 - Configuration: `configs/sbg3300_defconfig`, then upstream `make defconfig`
-- Checkout: `/home/nguyen/openwrt-sbg3300` (space-free symlink to the physical
-  checkout)
+- Checkout: the original host used a space-free alias; reproduce with the
+  portable instructions in `REPRODUCE.md` and `tools/prepare-openwrt.sh`.
 - Build command: `make -j3 V=s`
 - Log: `/tmp/sbg-openwrt-bmips-baseline-build.log`
 

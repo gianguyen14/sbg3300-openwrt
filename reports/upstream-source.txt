@@ -15,8 +15,9 @@ Current source includes BCM63168 DTS definitions for:
 - Sercomm SHG2500
 - SmartRG SR505n
 
-Build path workaround: `/home/nguyen/openwrt-sbg3300` symlinks to the checkout;
-OpenWrt's prerequisite checks reject physical paths containing spaces.
+Build path note: OpenWrt prerequisite checks reject source paths containing
+spaces. Use a space-free checkout directory (for example the default under
+`$HOME/.cache/sbg3300-openwrt/`) or set `OPENWRT_DIR` explicitly.
 
 This records source state only, not device support/runtime validation.
 

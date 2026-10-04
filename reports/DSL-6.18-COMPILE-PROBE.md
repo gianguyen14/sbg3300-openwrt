@@ -14,8 +14,8 @@ The source is not self-contained: it depends on vendor `blog`/NBuff, packet
 DMA, FAP/BPM/IQoS, XTM config, board, and Broadcom glue interfaces. The first
 probe omitted the vendor include due to the project path containing spaces and
 stopped at `linux/blog.h`; this was a harness setup error and is not counted as
-a driver result. The retry used `/home/nguyen/vendor-sbg3300` as a space-free
-symlink and proceeded further.
+a driver result. The retry used a space-free temporary symlink and proceeded
+further.
 
 ## Compatibility probe findings
 

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-OPENWRT_DIR="${OPENWRT_DIR:-/home/nguyen/openwrt-sbg3300}"
+OPENWRT_DIR="${OPENWRT_DIR:-${XDG_CACHE_HOME:-${HOME:?Set HOME or OPENWRT_DIR}}/sbg3300-openwrt/baseline}"
 EXPECTED_COMMIT="5edcc1c43cb97048b506168fbbe00538956796d6"
 JOBS="${JOBS:-3}"
 MODE="${1:-baseline}"
@@ -25,6 +25,13 @@ if [[ "$actual" != "$EXPECTED_COMMIT" ]]; then
   echo "Unexpected OpenWrt commit: $actual" >&2
   exit 1
 fi
+
+if [[ -n "$(git -C "$OPENWRT_DIR" status --porcelain)" ]]; then
+  echo "OpenWrt tracked worktree is dirty; refusing a non-reproducible build" >&2
+  exit 1
+fi
+
+(cd "$OPENWRT_DIR" && ./scripts/feeds update -a && ./scripts/feeds install -a)
 
 cp "$PROJECT_DIR/configs/sbg3300_defconfig" "$OPENWRT_DIR/.config"
 make -C "$OPENWRT_DIR" defconfig

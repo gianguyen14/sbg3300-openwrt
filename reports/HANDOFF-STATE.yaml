@@ -1,0 +1,102 @@
+project: sbg3300-openwrt
+overall_status: PARTIAL-PORT
+flashable: false
+runtime_boot_tested: false
+device_available_to_remote_agent: false
+
+openwrt:
+  repository: https://github.com/openwrt/openwrt.git
+  branch_at_capture: main
+  commit: 5edcc1c43cb97048b506168fbbe00538956796d6
+  target: bmips/bcm63268
+  kernel: 6.18.54
+  baseline_build: PASS
+  sbg3300_profile_build: PASS
+  sbg3300_dts_compile: PASS
+  sbg3300_initramfs: OFFLINE-ONLY
+  initramfs_sha256: 3961a39d5d554ce467b9575bbc6f6293d385ddda9fc4dc9b3dbf0c3cf8027b51
+  factory_image: NOT_CREATED
+  sysupgrade: NOT_CREATED
+
+hardware:
+  model: Zyxel SBG3300-N000
+  board: 963168MXH_17A
+  soc: BCM63168D0
+  chip_id: "0x631680D0"
+  ram_mib: 128
+  stock_kernel: 2.6.30
+  cpu: BMIPS4350-class, MIPS32 big-endian, o32
+
+nand:
+  capacity_mib: 128
+  page_bytes: 2048
+  oob_bytes: 64
+  eraseblock_bytes: 131072
+  ecc_step_bytes: 512
+  ecc_strength: 15
+  geometry_evidence: LIVE-DEVICE
+  physical_layout: PARTIAL
+  dual_slot_model: STRONGLY-INFERRED
+  writer_semantics: UNKNOWN
+  fixed_partitions_approved: false
+  ubi_approved: false
+
+ethernet:
+  stock_devices: [bcm_enet, eth3, eth4]
+  stock_wan_path: ppp2.1 -> eth4.1 -> eth4
+  b53_spi_bcm53125_upstream: true
+  switch_silicon_on_device: UNKNOWN
+  dsa_cpu_port: UNKNOWN
+  physical_jack_mapping: UNKNOWN
+  topology: PARTIAL
+  runtime: NOT_TESTED
+
+dsl:
+  stock_kernel_abi: 2.6.30 SMP preempt MIPS32_R1 32BIT
+  xtm_source: PARTIAL
+  compile_probe_linux_6_18: ATTEMPTED_WITH_REAL_INCOMPATIBILITIES
+  modern_port: IN_PROGRESS
+  adsldd_source: UNRESOLVED
+  bcmxtmcfg_source: UNRESOLVED
+  phy_firmware_source: UNRESOLVED
+  sync: NOT_TESTED
+  pppoe_over_openwrt: NOT_TESTED
+
+wifi:
+  pci_id: "14e4:435f"
+  subsystem: "14e4:0513"
+  stock_driver: wl
+  upstream_binding: UNPROVEN
+  calibration_location: UNKNOWN
+  runtime: NOT_TESTED
+
+usb:
+  stock_pci_id: "14e4:6300"
+  stock_ehci_ohci: OBSERVED
+  openwrt_runtime: NOT_TESTED
+
+acceleration:
+  stock_fap_bpm: OBSERVED
+  openwrt_port: DEFERRED
+
+flash:
+  allowed: false
+  reason: No approved image, NAND writer/layout, CFE handoff, or recovery proof
+
+needs_device:
+  - OpenWrt boot and memory validation
+  - Ethernet link, switch ID, DSA CPU port, and jack mapping
+  - USB runtime
+  - Wi-Fi discovery, calibration, association, and regulatory behavior
+  - DSL/XTM initialization and sync
+  - PPP session and routed connectivity
+  - NAND ECC/read behavior and approved writer semantics
+  - CFE/stock recovery validation
+  - performance and reboot soak
+
+next_offline:
+  - Continue incremental bcmxtmrt compatibility probes against Linux 6.18
+  - Reconstruct exact 963168MXH_17A Ethernet topology
+  - Find and compare exact image-writer source lineage
+  - Search for adsldd and bcmxtmcfg implementation sources
+  - Investigate Wi-Fi host-bus discovery

@@ -1,49 +1,69 @@
-# SBG3300-N000 OpenWrt full port (R&D)
+# Zyxel SBG3300-N000 OpenWrt Port
 
-This is an isolated research project for a native OpenWrt port to the Zyxel
-SBG3300-N000. It does not replace the currently working stock-custom router.
-No generated image is approved for installation unless all gates in
-`FLASH-SAFETY.md` pass and the user explicitly authorizes installation.
+> ⚠️ **RESEARCH / PARTIAL PORT**
+>
+> ⚠️ **OFFLINE ONLY — NOT FLASHABLE**
+>
+> ⚠️ **NO OPENWRT RUNTIME VALIDATION ON THE ROUTER**
+
+There is currently **no approved flashable SBG3300 image**. The profile builds
+an initramfs ELF for offline analysis. Build success does not imply that CFE
+can load it, that the board boots, or that any peripheral works.
+
+This project aims for a full OpenWrt port while preserving the existing
+stock-custom router as an independent reference and recovery system. The target
+is a Zyxel SBG3300-N000, board `963168MXH_17A`, Broadcom BCM63168D0, on the
+upstream `bmips/bcm63268` target.
 
 ## Current state
 
-- Project status: `PARTIAL-PORT` (the research-only bmips profile compiles; no
-  hardware runtime validation).
-- Upstream source: official `openwrt/openwrt`, branch `main`; checkout and commit
-  are recorded in `STATUS.md` and `reports/upstream-source.txt`.
-- Baseline device family: `bmips/bcm63268`; upstream already has BCM63168 board
-  definitions for Actiontec T1200H and Sagemcom F@ST 3864 OP.
-- SBG3300-specific DTS/image definition: research skeleton only. Board GPIO,
-  switch wiring, physical NAND map, and boot container are not established yet.
-- DSL: stock image uses proprietary BCM63168D0 ADSL/XTM modules and PHY firmware;
-  current-kernel source compatibility has not been demonstrated.
-- Current SBG3300 output is an `OFFLINE-ONLY` initramfs loader ELF, not a
-  stock-updater image and not proven loadable by CFE.
+- Overall: **PARTIAL-PORT**.
+- Pinned OpenWrt source: `5edcc1c43cb97048b506168fbbe00538956796d6`.
+- Linux kernel in the recorded build: `6.18.54`.
+- Unmodified bmips baseline and the SBG3300 offline initramfs profile both
+  built successfully on the original build host.
+- The SBG3300 DTS compiles and round-trips. It deliberately omits speculative
+  partitions, switch topology, GPIOs, and console requirements.
+- Exact Ethernet/DSA wiring and NAND writer semantics remain unresolved.
+- The Broadcom XTM source has been compile-probed against 6.18 and has real
+  compatibility failures. The ADSL and XTM-configuration implementations are
+  absent from the inspected public source mirror. DSL sync is untested.
+- Wi-Fi PCI identity is known, but OpenWrt discovery/binding and calibration
+  access are unproven.
 
-## Source layout
+See [STATUS.md](STATUS.md) for the evidence matrix and
+[HANDOFF-HERMES.md](HANDOFF-HERMES.md) for the remote continuation brief.
 
-The OpenWrt checkout is exposed at `source/openwrt` as a symlink. Upstream's
-build system refuses paths containing spaces, so its physical checkout is at
-`/home/nguyen/sbg3300-openwrt-source`; build via the alias
-`/home/nguyen/openwrt-sbg3300`.
+## Hardware and subsystem notes
 
-Stock firmware, extracted rootfs and the STABLE-V1 snapshot are local-only and
-excluded from Git. They contain device/firmware material and must remain
-permission-restricted. Do not add PPP credentials, NVRAM dumps, MAC addresses,
-private keys, or user tokens to source control.
+- [HARDWARE.md](HARDWARE.md): observed device facts and evidence provenance.
+- [NAND-MAP.md](NAND-MAP.md): physical extents, dual-slot corroboration, and
+  unresolved writer/bad-block behavior.
+- [SWITCH-PORT.md](SWITCH-PORT.md): boardparms/HSSPI evidence and unknown
+  physical port mapping.
+- [DSL-PORT.md](DSL-PORT.md): stock modules, vendor XTM source, compile probe,
+  and missing components.
+- [WIFI-PORT.md](WIFI-PORT.md): PCI identity and limits of the b43 evidence.
+- [FLASH-SAFETY.md](FLASH-SAFETY.md): hard stop conditions.
 
-## First safe workflow
+## Reproduce
 
-1. Review `STATUS.md`, `HARDWARE.md`, and `NAND-MAP.md`.
-2. Build an unmodified upstream bmips baseline before applying SBG3300 patches.
-3. Apply the four patches in `patches/openwrt/series` to the pinned source and
-   configure `configs/sbg3300_port_defconfig`.
-4. Reproduce the profile build with `tools/build-sbg3300-profile.sh` after
-   checking out the exact local port commit documented by the script.
-5. Keep DTS properties evidence-backed; unknown values stay TODO.
-6. Build initramfs/static artifacts first. Do not create a stock-updater wrapper
-   until the complete image layout and writer behavior are proven.
-7. Never flash automatically. See `FLASH-SAFETY.md`.
+Start with [REPRODUCE.md](REPRODUCE.md). It uses the pinned upstream commit and
+the checked-in patch series; no workstation-specific checkout is required.
+Generated images, downloaded source trees, stock firmware, vendor trees, and
+device-specific data are not in this repository.
 
-This repository intentionally separates OpenWrt port research from the current
-stock-custom/security-v1 installation.
+## Safety
+
+Do not flash any artifact from this project. There is no SBG3300 factory image,
+sysupgrade image, validated boot handoff, proven recovery route, or runtime
+test. Do not use raw NAND operations. The currently working stock-custom router
+is kept separate and must remain untouched during offline port work.
+
+## Contributing
+
+Read [AGENTS.md](AGENTS.md), preserve the evidence labels in
+[docs/EVIDENCE-POLICY.md](docs/EVIDENCE-POLICY.md), and update `STATUS.md` after
+meaningful findings. A compile result is a build result, never a hardware
+runtime result. Vendor blobs and extracted firmware are excluded unless their
+redistribution rights are established.

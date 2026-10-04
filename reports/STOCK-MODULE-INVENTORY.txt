@@ -411,13 +411,7 @@ lib/modules/2.6.30/kernel/net/rfkill/rfkill.ko
   description: RF switch support
   sha256: 665a140aa036ff41f9338da291fb7aa914e1597a23b56662e49db94933ec781d
 
-Proprietary/high relevance modules from live and image evidence:
-/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/adsldd.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped
-/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/bcmxtmcfg.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped
-/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/bcm_enet.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped
-/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/bcmvlan.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped
-/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/bcmfap.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped
-/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/bcm_bpm.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped
-/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/bcm_ingqos.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped
-/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/wl.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped
-/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/bcm_usb.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped
+Proprietary/high-relevance module file metadata (the extracted `.ko` files are
+local-only and are not redistributed): `adsldd.ko`, `bcmxtmcfg.ko`,
+`bcm_enet.ko`, `bcmvlan.ko`, `bcmfap.ko`, `bcm_bpm.ko`, `bcm_ingqos.ko`,
+`wl.ko`, and `bcm_usb.ko` are ELF 32-bit MSB relocatable MIPS32 objects.
