@@ -14,9 +14,17 @@
 The build is running again after its first attempt spent over an hour on slow
 GNU mirror transfers. That attempt was interrupted during GCC/GDB downloads;
 both archives were fetched from an alternate GNU mirror and matched the exact
-SHA256 values required by OpenWrt before resuming. The resumed build is still
-in the host-tool/toolchain phase; there is no completed target image or PASS
-result yet. This remains an unmodified upstream baseline; SBG3300 DTS or image
-changes have not been applied to this checkout.
+SHA256 values required by OpenWrt before resuming:
+
+- GCC 14.4.0: `752b6f567beac83159c77a7680b1316bdd784738bff9a9d070112c09da90f6d9`
+- GDB 16.3: `bcfcd095528a987917acf9fff3f1672181694926cc18d609c99d0042c00224c5`
+
+As of 2026-10-04 13:34 +07, the resumed `make -j3 V=s` is still compiling the
+initial host/target GCC toolchain. The process is active, with compiler jobs
+using CPU; no completed target image or PASS result exists yet. Earlier
+interrupted-attempt errors remain in the combined log, so final success will
+be determined from the resumed process exit status and its final log lines,
+not from a broad grep of historical errors. This is an unmodified upstream
+baseline; SBG3300 DTS or image changes have not been applied to this checkout.
 
 This baseline is offline-only and is not a boot or flash validation.
