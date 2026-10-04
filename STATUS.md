@@ -23,7 +23,7 @@ Status vocabulary: `PASS` means direct evidence for that layer only;
 | Hardware acceleration | INVESTIGATING | FAP/BPM modules are active in stock; no upstream equivalent established |
 | Firmware container | UNKNOWN | stock updater image and physical NAND target are not fully mapped for OpenWrt payloads |
 | Recovery / no UART | UNKNOWN | no exact static proof of recovery path yet |
-| Build | INVESTIGATING | unmodified bmips baseline has completed target toolchain setup and is preparing Linux 6.18.54; no image yet |
+| Build | KERNEL-PASS / BASELINE-IN-PROGRESS | unmodified bmips baseline produced MIPS32 big-endian o32 `vmlinux`; package/image build still running |
 | Flash | PROHIBITED | not authorized in this phase; all artifacts remain offline-only |
 
 Overall: `RESEARCHING`.

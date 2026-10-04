@@ -19,10 +19,13 @@ SHA256 values required by OpenWrt before resuming:
 - GCC 14.4.0: `752b6f567beac83159c77a7680b1316bdd784738bff9a9d070112c09da90f6d9`
 - GDB 16.3: `bcfcd095528a987917acf9fff3f1672181694926cc18d609c99d0042c00224c5`
 
-As of 2026-10-04 13:53 +07, the resumed `make -j3 V=s` has completed target
-toolchain setup and moved on to unpack/prepare the Linux 6.18.54 bmips kernel.
-The process remains active; no completed target image or PASS result exists.
-Earlier
+As of 2026-10-04 14:08 +07, the resumed `make -j3 V=s` has compiled the
+unmodified bcm63268 kernel and is building host/target packages. `vmlinux` is
+ELF32 MIPS big-endian, o32, with MIPS32 flags (entry `0x80896f50`), 58,412,552
+bytes, SHA256
+`04ca95b76fe03c6a6de3fc86e29ee0d7eb522f4ec2cc21b8700f0e3aaa64ab9b`.
+The full baseline build remains active; no image or overall PASS result exists
+yet. Earlier
 interrupted-attempt errors remain in the combined log, so final success will
 be determined from the resumed process exit status and its final log lines,
 not from a broad grep of historical errors. This is an unmodified upstream
