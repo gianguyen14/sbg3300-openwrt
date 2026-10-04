@@ -56,6 +56,14 @@ and 96858) and is not established as BCM63168 source. It therefore expands the
 XTM comparison material but does not supply the missing SBG3300 PHY/config
 driver or a valid forward-port source baseline.
 
+The available `bcmxtmrt.c` source is not a self-contained network driver. It
+includes Broadcom-only `linux/blog.h`, `linux/nbuff.h`, `bcmPktDma.h`, and
+XTM configuration headers, and calls vendor `getMemorySize()` and
+`kerSysGetMacAddress()` interfaces. It also registers legacy `/proc` readers
+with `create_proc_read_entry()`. Those are identifiable porting tasks against
+the current kernel, but solving them would still not supply the missing
+`adsldd` PHY implementation or `bcmxtmcfg` configuration/control plane.
+
 Further release search found two more source leads: Sky's SR102 repository
 points to `SKY-IHR-2-1-s-3761-R-consumer-release.tar.gz`, and Actiontec's
 official T1200 GPL page lists `bcm963xx_gpl_t07_consumer_release` for 31.128L.07
