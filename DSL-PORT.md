@@ -28,6 +28,12 @@ BCM63168D0 Linux 2.6.30 source family. A public Git mirror was located at
 `963168MXH_17A` board-parameter entry and `bcmxtmrt` source, making it a strong
 lineage match rather than a generic SoC sample. It is a 2015 mirror, while the
 running kernel is a 2018 build; module/source equivalence is not yet proven.
+The OpenWrt reference also links the exact release archive on OSDN. Direct
+retrieval was retried on 2026-10-04 but the workstation could not resolve
+`osdn.net`; the inspected Git mirror is therefore not claimed to be identical
+to the linked archive. A second 3.4 source lead (`100AAJX8_4.16L.02A`) is linked
+from Google Drive and is explicitly described there as including closed code;
+it remains a separate un-retrieved lead.
 
 In the source tree, `bcmdrivers/opensource/net/xtmrt/impl4` has C sources, but
 `bcmdrivers/broadcom/char/adsl/impl1` and `char/xtmcfg/impl2` contain Makefiles

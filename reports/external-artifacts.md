@@ -21,6 +21,14 @@ Other consulted upstream references (web research, 2026-10-04):
 
 - OpenWrt BCM63xx reference, including the 4.12L.06B and 4.16L.02A source
   families: <https://openwrt.org/docs/techref/hardware/soc/soc.broadcom.bcm63xx>
+- Exact BCM63168D0 4.12L.06B archive linked by the OpenWrt reference:
+  <https://osdn.net/projects/zyxel-vmg3312/downloads/68893/100AAPP7D0_4.12L.06B_consumer_release.tar.gz/>
+  (direct workstation transfer was not possible on 2026-10-04 because
+  `osdn.net` DNS resolution failed; the local Git mirror remains the inspected
+  source and is not asserted byte-identical to this archive).
+- BCM63168 Linux 3.4 `100AAJX8_4.16L.02A` archive link in the same reference:
+  <https://drive.google.com/folderview?id=0B-U-Krbg5qbTfkEwYkFpUkhVNFhlU3hPeWlZSUlmNlppTkpsODlSbm5FOElyV1p3MENCZlk&usp=sharing>
+  (archive not downloaded; the reference labels it as GPL plus closed code).
 - OpenWrt package management: current 25.12+ uses apk; 24.10 and older use
   opkg: <https://openwrt.org/docs/guide-user/additional-software/managing_packages>
 - OpenWrt current apk package recipe:
