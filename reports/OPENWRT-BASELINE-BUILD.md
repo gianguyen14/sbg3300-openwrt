@@ -35,7 +35,11 @@ The baseline `vmlinux` has been copied to
 `builds/upstream-bmips-bcm63268-baseline/vmlinux` before any port build can
 overwrite the OpenWrt work directory. A reference
 `bcm63268-comtrend-vr-3032u.dtb` from the same unmodified build is archived in
-the adjacent `dts/` directory. These artifacts are ignored local build output,
-not firmware images.
+the adjacent `dts/` directory. The kernel `.config` is archived as
+`builds/upstream-bmips-bcm63268-baseline/kernel.config` (SHA256
+`2e25ed22442c4c71dab98accc62f82f9ff35a0c4d231527c8726c50d67cf70a4`); it has
+`CONFIG_CPU_BMIPS4350=y`, `CONFIG_SMP=y`, two CPU slots, and o32 enabled. These
+are compile-time target settings, not runtime core/board confirmation. These
+artifacts are ignored local build output, not firmware images.
 
 This baseline is offline-only and is not a boot or flash validation.
