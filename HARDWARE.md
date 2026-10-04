@@ -18,6 +18,7 @@ No configuration or flash writes were made.
 | DSL | BCM63168D0 ADSL/XTM stack; ATM/PTM non-bonding; `adsldd`, `bcmxtmcfg`, `bcm_enet`, FAP/BPM modules | Direct boot log/module list |
 | WAN path | `ppp2.1 -> eth4.1 -> eth4`; `eth4.1 -> eth4` is explicitly logged | Direct vendor boot log |
 | Ethernet board wiring | Exact board-ID table in a BCM63168D0 4.12L.06B source mirror defines two PHY groups, one external switch on HS-SPI SSB0, and a separate memory-mapped group | Matching source entry; source-to-2018-build equivalence remains |
+| External switch bus | `/sys/devices/platform/bcmhs_spi.1/spi1.0` exists and binds to generic `bcm_HSSpiDev0`; no chip-specific modalias or ID | Direct live sysfs; does not identify the attached switch silicon |
 | External switch chip | BCM53125 likely, not directly read from live switch ID | Exact board table says external SPI switch; chip ID remains unproven |
 | AFE | Source table gives internal 6302 Annex A rev 7.2.30 and external 6306/6302 Annex A rev 7.2.21 options | Matching source entry; active variant needs runtime/config cross-check |
 | Board LEDs/buttons | Source table provides DSL/VDSL and serial LED pins plus reset/SES external interrupts | Board-ID-matched source; no reset handler will be enabled before GPIO/polarity validation |

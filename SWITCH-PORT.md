@@ -11,7 +11,10 @@ port 6 as `RGMII_DIRECT|EXTSW_CONNECTED`. This proves an external SPI switch
 path and an additional SoC-side Ethernet path in the matching board table, but
 not the currently detected silicon ID or how the running 2018 binary applies
 those PHY settings. A fresh read-only search of live `dmesg` for switch-ID
-messages returned no matching line.
+messages returned no matching line. Live sysfs does expose
+`/sys/devices/platform/bcmhs_spi.1/spi1.0`, bound to the generic
+`bcm_HSSpiDev0` driver with `MODALIAS=bcm_HSSpiDev0`; it does not identify a
+BCM53125 device or expose the switch register ID.
 
 The upstream tree also contains a BCM53125 DSA configuration for Sagemcom
 F@ST 3864 OP. This establishes driver availability, not identical port wiring.
