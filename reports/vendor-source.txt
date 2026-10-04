@@ -1,0 +1,16 @@
+Vendor source candidate
+=======================
+URL: https://github.com/nomis/bcm963xx_4.12L.06B_consumer
+Commit: e2f23ddbb20bf75689372b6e6a5a0dc613f6e313
+Commit date: 2015-12-02
+Named upstream family: Broadcom 100AAPP7D0_4.12L.06B_consumer_release,
+                       BCM63168D0, Linux 2.6.30
+Mirror trust: public source mirror; checksum/commit pinned locally. Not an
+              official Zyxel-hosted archive.
+Exact-board evidence: boardparms.c defines g_bcm963168mxh_17a and includes it
+                     in g_BoardParms.
+DSL files: source has bcmxtmrt implementation and board/AFE parameters;
+           ADSL driver and XTM configuration implementation sources are absent
+           from inspected directories (Makefiles only).
+Redistribution: do not redistribute the full tree or proprietary blobs until
+                license/provenance review is complete.

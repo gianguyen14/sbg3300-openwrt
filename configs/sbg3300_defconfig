@@ -1,0 +1,7 @@
+# Unmodified upstream build baseline; this does not add SBG3300 support.
+CONFIG_TARGET_bmips=y
+CONFIG_TARGET_bmips_bcm63268=y
+CONFIG_TARGET_bmips_bcm63268_Default=y
+CONFIG_TARGET_BOARD="bmips"
+CONFIG_TARGET_SUBTARGET="bcm63268"
+CONFIG_TARGET_PROFILE="Default"

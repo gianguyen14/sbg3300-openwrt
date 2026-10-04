@@ -1,0 +1,158 @@
+#!/usr/bin/env python3
+"""Read-only parser for the SBG3300 Broadcom/MSTC firmware container."""
+
+import argparse
+import pathlib
+import struct
+import sys
+import zlib
+
+TAG_SIZE = 0x20000
+TAG_FIELDS = {
+    "tag_version": (0x00, 4),
+    "tag_identity": (0x04, 4),
+    "model_id": (0x0E, 4),
+    "chip_id": (0x26, 6),
+    "board_id": (0x2C, 18),
+    "total_image_len": (0x3E, 10),
+    "cfe_address": (0x48, 10),
+    "cfe_len": (0x54, 12),
+    "rootfs_address": (0x5E, 12),
+    "rootfs_len": (0x6A, 12),
+    "kernel_address": (0x74, 12),
+    "kernel_len": (0x80, 12),
+    "firmware_version": (0x8E, 32),
+}
+
+
+class ImageError(ValueError):
+    pass
+
+
+def raw_crc32(data):
+    return zlib.crc32(data) ^ 0xFFFFFFFF
+
+
+def ascii_field(data, offset, size, name):
+    raw = data[offset:offset + size]
+    if len(raw) != size:
+        raise ImageError("truncated tag field: " + name)
+    return raw.split(b"\0", 1)[0].decode("ascii", errors="replace").strip()
+
+
+def decimal_field(data, name):
+    value = ascii_field(data, *TAG_FIELDS[name], name)
+    if not value or not value.isdecimal():
+        raise ImageError("invalid decimal tag field: " + name)
+    return int(value, 10)
+
+
+def parse_image(data):
+    if len(data) < TAG_SIZE + 0x100:
+        raise ImageError("file too short for Broadcom tag")
+
+    fields = {name: ascii_field(data, off, size, name)
+              for name, (off, size) in TAG_FIELDS.items()}
+    for name in ("tag_version", "total_image_len", "cfe_address", "cfe_len",
+                 "rootfs_address", "rootfs_len", "kernel_address", "kernel_len"):
+        if not fields[name] or not fields[name].isdecimal():
+            raise ImageError("invalid decimal tag field: " + name)
+
+    total_len = int(fields["total_image_len"])
+    cfe_len = int(fields["cfe_len"])
+    rootfs_len = int(fields["rootfs_len"])
+    kernel_len = int(fields["kernel_len"])
+    payload_start = TAG_SIZE
+    payload_end = payload_start + total_len
+    if payload_end > len(data):
+        raise ImageError("declared payload exceeds file size")
+    if total_len != cfe_len + rootfs_len + kernel_len:
+        raise ImageError("payload length does not equal CFE + rootfs + kernel lengths")
+
+    stored_header_crc = struct.unpack_from(">I", data, 0xEC)[0]
+    stored_payload_crc1 = struct.unpack_from(">I", data, 0xD8)[0]
+    stored_payload_crc2 = struct.unpack_from(">I", data, 0xDC)[0]
+    header_crc = raw_crc32(data[:0xEC])
+    payload_crc = raw_crc32(data[payload_start:payload_end])
+
+    trailer_offset = payload_end
+    trailer_flag = data[0xCE]
+    trailer = None
+    if trailer_flag == 1:
+        if trailer_offset + 0x20 > len(data):
+            raise ImageError("trailer flag set but trailer header is truncated")
+        trailer_crc = raw_crc32(data[trailer_offset:trailer_offset + 0x1C])
+        trailer_stored = struct.unpack_from(">I", data, trailer_offset + 0x1C)[0]
+        trailer = {"offset": trailer_offset, "crc": trailer_crc,
+                   "stored_crc": trailer_stored, "crc_ok": trailer_crc == trailer_stored}
+
+    return {
+        "file_size": len(data),
+        "tag": fields,
+        "payload_start": payload_start,
+        "payload_end": payload_end,
+        "payload_crc": payload_crc,
+        "payload_crc1": stored_payload_crc1,
+        "payload_crc2": stored_payload_crc2,
+        "payload_crc1_ok": payload_crc == stored_payload_crc1,
+        "payload_crc2_ok": payload_crc == stored_payload_crc2,
+        "header_crc": header_crc,
+        "header_crc_stored": stored_header_crc,
+        "header_crc_ok": header_crc == stored_header_crc,
+        "trailer_flag": trailer_flag,
+        "trailer": trailer,
+        "structural_ok": fields["tag_version"] == "6" and
+                         fields["tag_identity"] == "MSTC" and
+                         fields["chip_id"] == "63268" and
+                         fields["board_id"].startswith("963168MXH_17A") and
+                         payload_end <= len(data),
+    }
+
+
+def fmt_crc(value):
+    return "0x%08x" % value
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("image", type=pathlib.Path, help="firmware file to inspect; never modified")
+    args = parser.parse_args()
+    try:
+        result = parse_image(args.image.read_bytes())
+    except (OSError, ImageError) as exc:
+        print("ERROR: " + str(exc), file=sys.stderr)
+        return 2
+
+    print("Format: Broadcom/MSTC tag v%s" % result["tag"]["tag_version"])
+    print("File size: %d bytes" % result["file_size"])
+    for name in ("tag_identity", "model_id", "chip_id", "board_id", "firmware_version"):
+        print("%s: %s" % (name, result["tag"][name]))
+    for name in ("cfe_address", "cfe_len", "rootfs_address", "rootfs_len",
+                 "kernel_address", "kernel_len", "total_image_len"):
+        print("%s: %s" % (name, result["tag"][name]))
+    print("Payload file range: [0x%x, 0x%x)" %
+          (result["payload_start"], result["payload_end"]))
+    print("Header CRC: %s stored=%s %s" %
+          (fmt_crc(result["header_crc"]), fmt_crc(result["header_crc_stored"]),
+           "PASS" if result["header_crc_ok"] else "FAIL"))
+    print("Payload CRC: %s stored1=%s stored2=%s %s" %
+          (fmt_crc(result["payload_crc"]), fmt_crc(result["payload_crc1"]),
+           fmt_crc(result["payload_crc2"]),
+           "PASS" if result["payload_crc1_ok"] and result["payload_crc2_ok"] else "FAIL"))
+    print("Trailer flag: 0x%02x" % result["trailer_flag"])
+    if result["trailer"]:
+        t = result["trailer"]
+        print("Trailer offset: 0x%x" % t["offset"])
+        print("Trailer CRC: %s stored=%s %s" %
+              (fmt_crc(t["crc"]), fmt_crc(t["stored_crc"]),
+               "PASS" if t["crc_ok"] else "FAIL"))
+    checks = [result["structural_ok"], result["header_crc_ok"],
+              result["payload_crc1_ok"], result["payload_crc2_ok"],
+              result["trailer"] is None or result["trailer"]["crc_ok"]]
+    print("Offline parser checks: %s" % ("PASS" if all(checks) else "FAIL"))
+    print("This tool does not emulate the router validator or authorize flashing.")
+    return 0 if all(checks) else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

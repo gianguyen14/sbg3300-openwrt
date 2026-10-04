@@ -1,0 +1,423 @@
+Exact extracted stock kernel module inventory
+Kernel ABI reference: Linux 2.6.30, MIPS big-endian; stock vermagic below.
+
+lib/modules/2.6.30/extra/adsldd.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: bcmxtmcfg
+  sha256: fb01f03b3aee40574807603514f24b8e5021f7a3005f8d887244e30542e09f6e
+lib/modules/2.6.30/extra/bcm_bpm.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  sha256: bbf6703d7bf1ef4b4da4911eafe157a5284e968836d27cfb23431c3a0cc8fa29
+lib/modules/2.6.30/extra/bcm_enet.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: bcmfap
+  sha256: 915dbdeb8b69ee096055ace6f8727571af8abcd77b74e55a1a5d86c98ed6c8c7
+lib/modules/2.6.30/extra/bcm_ingqos.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Broadcom Ingress QoS Module
+  sha256: 0cfd5e86172231268fb85e4cd673d95344b7dbd2ea3489bb0878d499205e6c38
+lib/modules/2.6.30/extra/bcm_usb.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  sha256: f38cefd937bdb841d6b151330648823c94ac26fa9caeda42ee758f0b28c481ba
+lib/modules/2.6.30/extra/bcmfap.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Broadcom Forwarding Assist Processor (FAP)
+  sha256: ac7861c617e7d68e294bb53550af81388205fe20b67e10a826ccfdb5f5b80936
+lib/modules/2.6.30/extra/bcmvlan.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  sha256: ef7f04932de44f76d209c5096ee80e7961ca07046804952b9bca42518c3367b1
+lib/modules/2.6.30/extra/bcmxtmcfg.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  sha256: 664a51a036adacb92942f5603ccea1e06b1b6e652c4a3f50476cf8f1c5919252
+lib/modules/2.6.30/extra/chipinfo.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  sha256: 7f47db81ff4ceb8df1c6c2f5550550b7bf772a272ff8bd85b027c2ea3ca0d164
+lib/modules/2.6.30/extra/p8021ag.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  sha256: 02fc6a47cc6ebc7124cf974b2a8b9c16742a8cdd8d8da8cd029a22c2f4c02de3
+lib/modules/2.6.30/extra/pwrmngtd.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: bcm_enet
+  sha256: 410851399f5e589cb8587ab65f8d86d5d679d497544c7022e9bdcbf58e5a5cfc
+lib/modules/2.6.30/extra/wl.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: bcm_enet
+  sha256: 3cba18a04ec30f675d041383d98dc93846c9c7e3256ea649b108950bc41b6bb6
+lib/modules/2.6.30/kernel/crypto/pcbc.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: PCBC block cipher algorithm
+  sha256: 55d68ab53c2a03d26ee2151bbf5462a1452571ee1aa86901d57e76124f918571
+lib/modules/2.6.30/kernel/drivers/net/usb/cdc_ether.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: usbnet
+  description: USB CDC Ethernet devices
+  sha256: cc87da768ffdff6556a929f809bb2750d192f8026768347ba44a5dabbeda917d
+lib/modules/2.6.30/kernel/drivers/net/usb/hso.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: rfkill
+  description: USB High Speed Option driver
+  sha256: e5ec48d3635b16a56a54dd85cf6e015b22596bec43c835eff9dd2bc2476ceecb
+lib/modules/2.6.30/kernel/drivers/net/usb/rndis_host.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: usbnet,cdc_ether
+  description: USB Host side RNDIS driver
+  sha256: 8a442c48074db813d727a3dabcc10771227bcebe56b5c33b09ccba2d7450ecef
+lib/modules/2.6.30/kernel/drivers/net/usb/usbnet.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: USB network driver framework
+  sha256: 4c24c7ab9bca75325d758165d34d42517d13c415fdc22594628dd0a8ebcca8dd
+lib/modules/2.6.30/kernel/drivers/scsi/scsi_wait_scan.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: SCSI wait for scans
+  sha256: 587ade1bc83dd8145a6acb98c8d51dbc99e3269906b0165f749cd4fdf67812df
+lib/modules/2.6.30/kernel/drivers/usb/class/cdc-acm.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: USB Abstract Control Model driver for USB modems and ISDN adapters
+  sha256: 8d0835321c5c781cb5de8a83113156ad35702d5c390163be259ffcff69b001d3
+lib/modules/2.6.30/kernel/drivers/usb/serial/option.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: usbserial
+  description: USB Driver for GSM modems
+  sha256: d5239354d0196be256a377388f72b09916215e1272ccb925dd9e8947c2a1138e
+lib/modules/2.6.30/kernel/drivers/usb/serial/sierra.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: usbserial
+  description: USB Driver for Sierra Wireless USB modems
+  sha256: b7c40ec6c45bd7ef67222421a395ca7000a5912c1b318f8993eaca1e68e3221e
+lib/modules/2.6.30/kernel/drivers/usb/serial/usbserial.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: USB Serial Driver core
+  sha256: 690388ae64e3be389a846a336e308000db2e50bba8a2c68720fe1231400f923d
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/ip_tables.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: IPv4 packet filter
+  sha256: 3e196a37aa926731b9c586c238b7c90aa3df67a6c545c169fd49c9965beca21c
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/ipt_LOG.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: IPv4 packet logging to syslog
+  sha256: 9856dc746e52d4230713ed93d8b2128bc225ec8a4388623e533aadc33f8cddec
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/ipt_MASQUERADE.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack,nf_nat
+  description: Xtables: automatic-address SNAT
+  sha256: 06e93e63cac36144abd7278afedd8aca982ce33e6741e086fd5beabdc487fd27
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/ipt_REDIRECT.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_nat
+  description: Xtables: Connection redirection to localhost
+  sha256: dd773db728c7c9d25c01137b888b797b60870131aeb603f1a4395bbcb3ee3e9d
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/ipt_REJECT.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: packet "rejection" target for IPv4
+  sha256: f625652e5f3c5fed4d17e0530cb4b19f559693563d69fadc534947a89d612983
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/iptable_filter.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: ip_tables
+  description: iptables filter table
+  sha256: 5632fbcd6ee6356a7e343206b9be08109383b1e9e6b7a2454f264f97618b2a99
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/iptable_mangle.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: ip_tables
+  description: iptables mangle table
+  sha256: b3fa2da2672dd30bc2c940ef045014d468fc10ea02d333bb0933b88ce0b84b3e
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/iptable_nat.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: ip_tables,nf_conntrack_ipv4,nf_nat,nf_conntrack
+  sha256: f8ea9b381a932e088d7171cc6c147bbfae07ab9fbceb01f77d76fc4e313a1c94
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/nf_conntrack_ipv4.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack,nf_defrag_ipv4
+  sha256: 0b5eb67e9fde9853f51f9b6e9f2fa15f14982a045853b0c2be4365d8472203ce
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  sha256: 0fa8106425eec25e130a4ade2fd6ceebd4c6c2c1f7070ddc0d0dc0f0c67d2f0d
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/nf_nat.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack,nf_conntrack_ipv4
+  sha256: 845442477f7c77cbc5de91f2da1f2a720d90a00997fdbe9a490dc57e98b19b30
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/nf_nat_ftp.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack,nf_nat,nf_conntrack_ftp
+  description: ftp NAT helper
+  sha256: 9141841aaefdee9fc3b39f26154ed43cf69ed9701d7db30a217725351cebb479
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/nf_nat_h323.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack,nf_conntrack_h323,nf_nat
+  description: H.323 NAT helper
+  sha256: 430d12f59bf28392d20ce8baf9940eaa581689887c8af908df8f9c3dca2e1798
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/nf_nat_irc.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack,nf_nat,nf_conntrack_irc
+  description: IRC (DCC) NAT helper
+  sha256: 15ccafa98148e20d5293295e68ee07e9e5a1d047c1bb85d9097b739aedcf5595
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/nf_nat_pptp.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_nat,nf_conntrack,nf_nat_proto_gre,nf_conntrack_pptp
+  description: Netfilter NAT helper module for PPTP
+  sha256: ad758b6f9792cbec22e6aa6f50e2cab93ca3d68315e1972266f24ce63db01e0b
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/nf_nat_proto_gre.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_nat
+  description: Netfilter NAT protocol helper module for GRE
+  sha256: 97c259c9a727eedc07e80535b108887799f7174c1a4c805adcc2d0125ffdaa75
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/nf_nat_pt.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack,nf_nat
+  description: Netfilter Conntrack helper for PT
+  sha256: 1890d7187aa14094e4212caad780656877bc41ebaea3905502746f7fa8e02a7c
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/nf_nat_rtsp.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack,nf_nat,nf_conntrack_rtsp
+  description: RTSP NAT helper
+  sha256: 40cb93b4ec80c46426fa4c3896859f14db9417d343691613ae5b7074173d4fd7
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/nf_nat_sip.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack,nf_nat,nf_conntrack_sip
+  description: SIP NAT helper
+  sha256: c67100750b43c03ab177fab70143548da97f466352f0292be032c05dc9321942
+lib/modules/2.6.30/kernel/net/ipv4/netfilter/nf_nat_tftp.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack,nf_nat,nf_conntrack_tftp
+  description: TFTP NAT helper
+  sha256: adc5bf2c81ef06b03e7c40c907f235289fe0d02638292a797a7597313bdfee31
+lib/modules/2.6.30/kernel/net/ipv6/netfilter/ip6_queue.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: IPv6 packet queue handler
+  sha256: e4cee200d258d16ddd65198230a9db7b2771903980c256862e0b082e94167189
+lib/modules/2.6.30/kernel/net/ipv6/netfilter/ip6_tables.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: IPv6 packet filter
+  sha256: 9a4545537e87165dc860b9007e747fdeda96431d6232098c8835819bf7d8641d
+lib/modules/2.6.30/kernel/net/ipv6/netfilter/ip6t_LOG.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: ip6_tables
+  description: Xtables: IPv6 packet logging to syslog
+  sha256: 1a0541eb92c418f9755ca31113cafc8c8b3cd4d2203818a57b6c1cabcdab4d5a
+lib/modules/2.6.30/kernel/net/ipv6/netfilter/ip6t_REJECT.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: packet "rejection" target for IPv6
+  sha256: c864b0c7329f5e580c2d56959474acfc17ece91cbc541e897566847ed90796db
+lib/modules/2.6.30/kernel/net/ipv6/netfilter/ip6table_filter.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: ip6_tables
+  description: ip6tables filter table
+  sha256: a0133b08f1cd926040dc532ae3bcebf5f0a66709f4805c0b23d4357d1c459b40
+lib/modules/2.6.30/kernel/net/ipv6/netfilter/ip6table_mangle.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: ip6_tables
+  description: ip6tables mangle table
+  sha256: 26e560e11f942b7194d31486c190b211349495541b505375aeecb3ba8f3cdbd7
+lib/modules/2.6.30/kernel/net/ipv6/netfilter/ip6table_raw.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: ip6_tables
+  sha256: e6bdad32158781f79f2605b1b74ec666848fd2e6da0a55672b86fdcae705f8ea
+lib/modules/2.6.30/kernel/net/ipv6/netfilter/nf_conntrack_ipv6.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack
+  sha256: 596f80b85c886c7e76419d31511fd2061403581318de1aee117a05eec79e5732
+lib/modules/2.6.30/kernel/net/netfilter/nf_conntrack.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  sha256: ba84b5408a9169aed2584a20dc9011c3e6092dae77df86db3f70c1bd303a408d
+lib/modules/2.6.30/kernel/net/netfilter/nf_conntrack_ftp.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack
+  description: ftp connection tracking helper
+  sha256: 18b2211e5983fe4243e67f7fddbad1c0b15faa5bf065431ffd6e950c99dd427c
+lib/modules/2.6.30/kernel/net/netfilter/nf_conntrack_h323.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack
+  description: H.323 connection tracking helper
+  sha256: 05d568f02345a432875a3a5c4ba88c4d77ce2e43c130d3c9a36a2c781f2ea744
+lib/modules/2.6.30/kernel/net/netfilter/nf_conntrack_irc.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack
+  description: IRC (DCC) connection tracking helper
+  sha256: 98b897a818e95e572f648cdb233cac57ad5d39990a5666801662ebfdc255ae03
+lib/modules/2.6.30/kernel/net/netfilter/nf_conntrack_netlink.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack,nfnetlink
+  sha256: e81eacaca77facb07203b10ff913530e09628376361d04ee5fb8a391dc771169
+lib/modules/2.6.30/kernel/net/netfilter/nf_conntrack_pptp.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack,nf_conntrack_proto_gre
+  description: Netfilter connection tracking helper module for PPTP
+  sha256: 291d975b0ada12142f95efa23ee040b4f0c6a14caea0c1bc8e4de91342ef55ab
+lib/modules/2.6.30/kernel/net/netfilter/nf_conntrack_proto_gre.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack
+  sha256: bdb9a1a0f661213f4c105cf99213c7cfeead03ecaa78f44ba4759d5b8a472942
+lib/modules/2.6.30/kernel/net/netfilter/nf_conntrack_rtsp.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack
+  description: RTSP connection tracking helper
+  sha256: 734d8dce652721faaf470eb2a18fc562c0efb137434363be03623899331824a4
+lib/modules/2.6.30/kernel/net/netfilter/nf_conntrack_sip.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack
+  description: SIP connection tracking helper
+  sha256: 7f9d95d099f308ac275251d0381e689b31da07a7d0af10d3b687cbedcbd10586
+lib/modules/2.6.30/kernel/net/netfilter/nf_conntrack_tftp.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack
+  description: TFTP connection tracking helper
+  sha256: f23e0fa05374fa0a5142c0a24389eb216cd0112678bc7e7b599809166419d180
+lib/modules/2.6.30/kernel/net/netfilter/nfnetlink.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  sha256: 334d5fa433c11ce63e6d88db2e105d5ec3369674ec36b6c548698da139660b2c
+lib/modules/2.6.30/kernel/net/netfilter/nfnetlink_queue.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nfnetlink
+  description: netfilter packet queue handler
+  sha256: 954f99249f00347556ddafde59fde6b1959ee3231ec42162b814df8514ea2e0e
+lib/modules/2.6.30/kernel/net/netfilter/xt_AUTOMAP.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  sha256: 68174d103fe94a544d160e4b653f270629c9e6bff7c07f70480fc4cbe82fd891
+lib/modules/2.6.30/kernel/net/netfilter/xt_CONNMARK.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack
+  description: Xtables: connection mark modification
+  sha256: 430a82d283805ee7872120d857fc144809190085ee9024ccc17d4f9a428128fd
+lib/modules/2.6.30/kernel/net/netfilter/xt_DSCP.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: DSCP/TOS field modification
+  sha256: 2daa9f8589e2ec7b812a4b0b32ab250d70c10ac4f52ef0934fffbbe237c76b87
+lib/modules/2.6.30/kernel/net/netfilter/xt_MARK.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: packet mark modification
+  sha256: c55161b31cb488e593471f66103f201094b7cdbae51b4f6c6de4f0a3829fbfc8
+lib/modules/2.6.30/kernel/net/netfilter/xt_SKIPLOG.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: iptables stop logging module
+  sha256: 605580ce1fba4506d5920cdb6bb0ae431095692de6bbe91c09f4298ade1e1211
+lib/modules/2.6.30/kernel/net/netfilter/xt_TCPMSS.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: TCP Maximum Segment Size (MSS) adjustment
+  sha256: 3fdddb70ced30741abdce88428621ee216d5883dbb5d33770bc328c8bf141675
+lib/modules/2.6.30/kernel/net/netfilter/xt_connlimit.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack
+  description: Xtables: Number of connections matching
+  sha256: 9b237c23ef36bbfd44c58e591e92a63a9a965b1546a888f9abb8ad7c1c622bd3
+lib/modules/2.6.30/kernel/net/netfilter/xt_connmark.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack
+  description: Xtables: connection mark match
+  sha256: 5e8d10530999d08a22ffe52006d92ea90f9663679c0f139b065d38e51a23d9c8
+lib/modules/2.6.30/kernel/net/netfilter/xt_dscp.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: DSCP/TOS field match
+  sha256: 0127265922b6896e8f28b8830adb81cbcc2b78774a2a1ef94855e0e699112b68
+lib/modules/2.6.30/kernel/net/netfilter/xt_ether.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: ether match
+  sha256: d312f58b5daba9d2a87af219d841351a71becdfb9daebacf5a577bcaa71e009c
+lib/modules/2.6.30/kernel/net/netfilter/xt_helper.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack
+  description: Xtables: Related connection matching
+  sha256: 2c5b58064e60c4db47d4cba13e4a014984040a86362e6f994046defce41b43c3
+lib/modules/2.6.30/kernel/net/netfilter/xt_iprange.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: arbitrary IPv4 range matching
+  sha256: 63d213a59a0953da5f7412949731e786c476b330e4549bc6f658a97c76ba2c8f
+lib/modules/2.6.30/kernel/net/netfilter/xt_length.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: Packet length (Layer3,4,5) match
+  sha256: 81beec591bf428da0bdcd91260de3c706fa3cb020f6c960eb745ede039354109
+lib/modules/2.6.30/kernel/net/netfilter/xt_limit.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: rate-limit match
+  sha256: 50d971100689b5ae7313919e98fd077f918d82a556587c2257caf0147d3fbacf
+lib/modules/2.6.30/kernel/net/netfilter/xt_mac.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: MAC address match
+  sha256: 27ce5fd3c50780f34513ce407a94bd80b18366cdfc3a464d2fdda60d7a833bd3
+lib/modules/2.6.30/kernel/net/netfilter/xt_mark.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: packet mark match
+  sha256: a14b7eff98d80bd8d6881c9758e0cb49aa4110d04746ae0a4c207654c1012cd5
+lib/modules/2.6.30/kernel/net/netfilter/xt_multiport.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: multiple port matching for TCP, UDP, UDP-Lite, SCTP and DCCP
+  sha256: e7e8f41e361e444ff87018b580d228b3c4cb0e51f0001db75eff1c495815565d
+lib/modules/2.6.30/kernel/net/netfilter/xt_pkttype.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: link layer packet type match
+  sha256: e68f262af3d81fd8593fc0144c7fbf8de9a6c30b279e67b3133e45f110b2b62e
+lib/modules/2.6.30/kernel/net/netfilter/xt_policer.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: iptables rate policer match
+  sha256: ee73653cbb1d0e72392e83d1aa95b050ba725f85ff5ccfafbc6ce985186204c9
+lib/modules/2.6.30/kernel/net/netfilter/xt_recent.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: "recently-seen" host matching for IPv4
+  sha256: d59e8d575c92ef993a203218020bb48bcba84fae8ae14aedd7fbb3051ab17a5d
+lib/modules/2.6.30/kernel/net/netfilter/xt_state.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends: nf_conntrack
+  description: ip[6]_tables connection tracking state match module
+  sha256: cf9f3c7272c80c1eade8d59e9d8662eebd3780b1603813f2cd827c4bcf3d3a3f
+lib/modules/2.6.30/kernel/net/netfilter/xt_statistic.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: statistics-based matching ("Nth", random)
+  sha256: 7c7a1c34a82754522d60a2158d3188bfc095c73933a898bb6f9caa134eaea740
+lib/modules/2.6.30/kernel/net/netfilter/xt_time.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: Xtables: time-based matching
+  sha256: 872d4ba5183722e84049b0a83a11a7a2b54584b887ff31a9913d0c38346dc8e5
+lib/modules/2.6.30/kernel/net/rfkill/rfkill.ko
+  vermagic: 2.6.30 SMP preempt mod_unload MIPS32_R1 32BIT
+  depends:
+  description: RF switch support
+  sha256: 665a140aa036ff41f9338da291fb7aa914e1597a23b56662e49db94933ec781d
+
+Proprietary/high relevance modules from live and image evidence:
+/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/adsldd.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped
+/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/bcmxtmcfg.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped
+/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/bcm_enet.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped
+/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/bcmvlan.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped
+/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/bcmfap.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped
+/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/bcm_bpm.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped
+/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/bcm_ingqos.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped
+/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/wl.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped
+/home/nguyen/Tài liệu/Project/sbg3300-openwrt-full/extracted/stock-rootfs/lib/modules/2.6.30/extra/bcm_usb.ko: ELF 32-bit MSB relocatable, MIPS, MIPS32 version 1 (SYSV), not stripped

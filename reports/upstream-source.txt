@@ -1,0 +1,21 @@
+OpenWrt upstream checkout
+========================
+Repository: https://github.com/openwrt/openwrt.git
+Branch: main
+Commit: 5edcc1c43cb97048b506168fbbe00538956796d6
+Clone: shallow clone, fetched 2026-10-04
+Target: target/linux/bmips
+Subtarget: bcm63268
+Kernel patch version: 6.18
+
+Current source includes BCM63168 DTS definitions for:
+- Actiontec T1200H
+- Comtrend VR-3032u
+- Sagemcom F@ST 3864 OP
+- Sercomm SHG2500
+- SmartRG SR505n
+
+Build path workaround: `/home/nguyen/openwrt-sbg3300` symlinks to the checkout;
+OpenWrt's prerequisite checks reject physical paths containing spaces.
+
+This records source state only, not device support/runtime validation.

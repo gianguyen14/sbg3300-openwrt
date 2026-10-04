@@ -1,0 +1,41 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+#include "bcm63268.dtsi"
+
+/ {
+	model = "Zyxel SBG3300-N000 (research-only skeleton)";
+	compatible = "zyxel,sbg3300-n000", "brcm,bcm63168", "brcm,bcm63268";
+};
+
+/* These controllers are directly observed on the stock device. */
+&ehci {
+	status = "okay";
+};
+
+&ohci {
+	status = "okay";
+};
+
+&pcie {
+	status = "okay";
+};
+
+/* NAND controller and geometry are direct stock observations.  No partition
+ * map is published until the vendor slot/WFI translation is proven exact. */
+&nflash {
+	status = "okay";
+
+	nandcs@0 {
+		compatible = "brcm,nandcs";
+		reg = <0>;
+		nand-ecc-step-size = <512>;
+		nand-ecc-strength = <15>;
+		nand-on-flash-bbt;
+		brcm,nand-oob-sector-size = <64>;
+	};
+};
+
+/*
+ * Physical partition offsets remain partially unresolved. Ethernet, DSA, LEDs
+ * and buttons are omitted until exact SBG3300 mapping is recovered.
+ */

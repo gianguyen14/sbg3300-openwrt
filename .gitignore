@@ -1,0 +1,27 @@
+# Local stock/vendor material and any device-unique data must remain outside Git.
+/stock/**
+/extracted/**
+/backups/**
+/source/vendor/*/
+!/source/vendor/README.md
+/source/zyxel/**
+/source/openwrt
+/builds/**
+/releases/**
+*.bin
+*.img
+*.trx
+*.ubi
+*.tar
+*.tar.gz
+*.tgz
+*.key
+*.pem
+*.nvram
+.config
+__pycache__/
+*.pyc
+feeds/
+dl/
+staging_dir/
+build_dir/
