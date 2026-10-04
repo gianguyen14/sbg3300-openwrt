@@ -15,3 +15,12 @@ The local, Git-ignored source mirror is:
 The tree is large and not committed here. Treat licensing carefully; proprietary
 PHY/driver binaries must not be redistributed. Do not place the router's NVRAM,
 MAC addresses, PPP credentials, calibration dump, keys, or tokens here.
+
+An additional comparison mirror is also local and Git-ignored:
+
+- Repository: `https://github.com/jclehner/bcmdrivers-gpl-bcm963xx.git`
+- Commit: `1555117dd9e5b393cf5b92e10e603e1c5f8ba2bb`
+- Deterministic `git archive` SHA256:
+  `119904b6d458577bd9a45dec262423a527a020314c816b8f06099e4a6724c511`
+- Its later `xtmrt/impl5` sources are comparison material, not an identified
+  BCM63168/SBG3300 build; it contains no ADSL or XTM configuration driver tree.
