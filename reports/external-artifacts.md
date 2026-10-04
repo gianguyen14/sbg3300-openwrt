@@ -25,3 +25,12 @@ Other consulted upstream references (web research, 2026-10-04):
   <https://github.com/openwrt/openwrt/blob/main/package/system/apk/Makefile>
 - Zyxel GPL source access and source-retention policy:
   <https://support.zyxel.eu/hc/en-us/articles/360017067100-Zyxel-Open-Source-Code-MyZyxelPortal-How-to-Access-Zyxel-Open-Source-Code-for-Programmers-GPL>
+- Sky SR102 GPL source archive named by a public BCM63168 project:
+  <http://oss.sky.com/SkyHD/SKY-IHR-2-1-s-3761-R-consumer-release.tar.gz>
+  (connection timed out during read-only HEAD check on 2026-10-04; archive not
+  downloaded). The GitHub project is not treated as a source artifact.
+- Actiontec's official T1200 GPL page lists `bcm963xx_gpl_t07_consumer_release`
+  (297 MB, firmware 31.128L.07/08), a BCM63168-family candidate. The page and
+  presumed direct host both timed out from this workstation on 2026-10-04; no
+  archive was downloaded. Recheck an accessible vendor-hosted copy before
+  dismissing this lineage.

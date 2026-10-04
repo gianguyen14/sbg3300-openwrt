@@ -56,6 +56,16 @@ and 96858) and is not established as BCM63168 source. It therefore expands the
 XTM comparison material but does not supply the missing SBG3300 PHY/config
 driver or a valid forward-port source baseline.
 
+Further release search found two more source leads: Sky's SR102 repository
+points to `SKY-IHR-2-1-s-3761-R-consumer-release.tar.gz`, and Actiontec's
+official T1200 GPL page lists `bcm963xx_gpl_t07_consumer_release` for 31.128L.07
+and 31.128L.08. Their web pages and likely archive hosts timed out from the
+workstation in this pass, so these archives were not recovered or fingerprinted.
+The SR102 GitHub project itself includes CFE/NVRAM/JTAG and firmware artifacts;
+it was treated only as a pointer to the Sky-hosted source URL, not used as a
+driver source or release artifact. These unretrieved vendor-source leads keep
+the DSL source search open.
+
 ## Forward-port strategy
 
 1. Inventory every stock `.ko`: architecture, vermagic, imports/exports, strings,
