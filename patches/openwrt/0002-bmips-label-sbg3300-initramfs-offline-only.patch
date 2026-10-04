@@ -1,0 +1,29 @@
+From 39daa4cd479b74d0691e681c07a1713dcb1c36a3 Mon Sep 17 00:00:00 2001
+From: gianguyen14 <gianguyen14@users.noreply.github.com>
+Date: Sun, 4 Oct 2026 13:22:04 +0700
+Subject: [PATCH] bmips: label SBG3300 initramfs offline-only
+
+---
+ target/linux/bmips/image/bcm63268.mk | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/target/linux/bmips/image/bcm63268.mk b/target/linux/bmips/image/bcm63268.mk
+index 667eb38..4bad602 100644
+--- a/target/linux/bmips/image/bcm63268.mk
++++ b/target/linux/bmips/image/bcm63268.mk
+@@ -6,10 +6,11 @@
+ define Device/zyxel_sbg3300-n000
+   DEVICE_VENDOR := Zyxel
+   DEVICE_MODEL := SBG3300-N000
++  DEVICE_DESCRIPTION := Offline-only research initramfs; not a flash image
+   CHIP_ID := 63268
+   SOC := bcm63168
+   KERNEL_INITRAMFS := kernel-bin | append-dtb | lzma | loader-lzma elf
+-  KERNEL_INITRAMFS_SUFFIX := .elf
++  KERNEL_INITRAMFS_SUFFIX := -OFFLINE-ONLY.elf
+   IMAGES :=
+ endef
+ TARGET_DEVICES += zyxel_sbg3300-n000
+-- 
+2.55.0
+

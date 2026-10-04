@@ -38,4 +38,6 @@ ports, switch topology, GPIOs, LEDs, buttons, or MAC offsets.
 
 The isolated OpenWrt device profile still needs an actual target kernel/image
 build. The unmodified bmips baseline build is compiling toolchain dependencies.
-No factory or sysupgrade image is defined for the SBG3300 profile.
+No normal kernel, factory, or sysupgrade image is defined for the SBG3300
+profile. If the profile builds, its initramfs filename will include
+`-OFFLINE-ONLY.elf`.
