@@ -5,6 +5,12 @@
 / {
 	model = "Zyxel SBG3300-N000 (research-only skeleton)";
 	compatible = "zyxel,sbg3300-n000", "brcm,bcm63168", "brcm,bcm63268";
+
+	/* Do not require or select a serial console for this board. */
+	chosen {
+		bootargs = "";
+		stdout-path = "";
+	};
 };
 
 /* These controllers are directly observed on the stock device. */
