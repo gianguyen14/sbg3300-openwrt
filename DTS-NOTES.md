@@ -11,9 +11,11 @@ Linux 6.18 in the pinned upstream checkout.
 
 The research-only DTS draft is kept in `dts/bcm63168-zyxel-sbg3300-n000.dts`.
 It intentionally avoids unproven board GPIOs, fixed NAND partitions, MAC
-offsets, and switch port labels. Inherited memory autodetection is retained
-until the memory controller report and reference implementation are checked.
-It enables the SoC NAND controller with the directly observed 512-byte ECC
+offsets, and switch port labels. `bcm63268.dtsi` defines `memory@0` with
+`reg = <0 0>`, which leaves RAM discovery to BMIPS rather than claiming a
+board-fixed base/size. The live device reports 128 MiB physical RAM and Linux
+reports 123392 KiB; no vendor-reserved range has been established. The draft
+enables the SoC NAND controller with the directly observed 512-byte ECC
 step, strength 15, 64-byte OOB sector, and on-flash BBT, but defines no
 partitions. This is suitable for offline DTB compilation review only; it does
 not make a firmware image or writable flash layout safe.
@@ -33,7 +35,7 @@ The table supplies LED assignments and active levels (including LEDs on
 serial GPIO expanders), plus reset and SES external-interrupt indices. Those
 values remain documentation-only: the reset event polarity/debounce and board
 electrical behavior are not fully reconstructed, so no reset-key handler is
-enabled in the DTS. The initial skeleton does not enable NAND or Ethernet and
+enabled in the DTS. The initial skeleton does not enable Ethernet and
 must not be treated as a bootable device definition.
 
 ## Remaining proof

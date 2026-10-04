@@ -20,7 +20,9 @@
 	status = "okay";
 };
 
-/* NAND controller and geometry are direct stock observations.  No partition
+/* bcm63268.dtsi uses memory@0 reg=<0 0>, allowing BMIPS RAM discovery; keep
+ * that behavior instead of hard-coding a base/size from MemTotal. */
+/* NAND controller and geometry are direct stock observations. No partition
  * map is published until the vendor slot/WFI translation is proven exact. */
 &nflash {
 	status = "okay";

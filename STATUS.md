@@ -13,7 +13,7 @@ Status vocabulary: `PASS` means direct evidence for that layer only;
 | NAND geometry | PASS (controller observation) | 128 MiB, page 2048, OOB 64, ECC step 512/strength 15, BBT enabled |
 | Physical NAND map | PARTIAL | Live dmesg gives MTD physical extents; 4.12L.06B source model explains 128 KiB boot block, dual rootfs, 4 MiB data and 1 MiB BBT, but exact 2018 active-rootfs and bad-block map remain unresolved |
 | Board parameters | PASS (matching source entry) | Public BCM63168D0 source has exact `963168MXH_17A` table; source-to-running-build equivalence remains |
-| SBG3300 DTS | INVESTIGATING | Research skeleton exists only; source supplies board Ethernet, AFE and LED values, but build equivalence and runtime mapping remain partial; no NAND/Ethernet enabled |
+| SBG3300 DTS | INVESTIGATING | Research skeleton enables observed USB, PCIe and NAND controller/ECC only; no partitions, Ethernet/DSA, GPIOs or MAC offsets until verified |
 | Ethernet MAC / ports | INVESTIGATING | Board table shows two MAC/switch groups and SPI SSB0 external switch; physical LAN labels/CPU port unresolved |
 | BCM53125 | LIKELY, not proven | External SPI switch path is confirmed by board table; exact live switch ID is not yet read |
 | USB | PASS (controller observation) | PCI 14e4:6300 OHCI and EHCI both enumerate |
@@ -22,7 +22,7 @@ Status vocabulary: `PASS` means direct evidence for that layer only;
 | Hardware acceleration | INVESTIGATING | FAP/BPM modules are active in stock; no upstream equivalent established |
 | Firmware container | UNKNOWN | stock updater image and physical NAND target are not fully mapped for OpenWrt payloads |
 | Recovery / no UART | UNKNOWN | no exact static proof of recovery path yet |
-| Build | INVESTIGATING | official bmips baseline selected; unmodified build is compiling host/tool dependencies (slow GNU mirror downloads) |
+| Build | INVESTIGATING | official bmips baseline selected; unmodified build is compiling host/tool dependencies (slow GNU mirror downloads); no target artifact yet |
 | Flash | PROHIBITED | not authorized in this phase; all artifacts remain offline-only |
 
 Overall: `RESEARCHING`.
