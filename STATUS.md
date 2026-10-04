@@ -23,7 +23,7 @@ Status vocabulary: `PASS` means direct evidence for that layer only;
 | Hardware acceleration | INVESTIGATING | FAP/BPM modules are active in stock; no upstream equivalent established |
 | Firmware container | UNKNOWN | stock updater image and physical NAND target are not fully mapped for OpenWrt payloads |
 | Recovery / no UART | UNKNOWN | no exact static proof of recovery path yet |
-| Build | KERNEL-PASS / BASELINE-IN-PROGRESS | unmodified bmips baseline produced MIPS32 big-endian o32 `vmlinux`; package/image build still running |
+| Build | BASELINE-PASS / SBG3300-BUILD-PENDING | unmodified bmips/bcm63268 full build exits 0 and artifacts are archived; SBG3300 profile kernel/image compile not started |
 | Flash | PROHIBITED | not authorized in this phase; all artifacts remain offline-only |
 
 Overall: `RESEARCHING`.

@@ -40,7 +40,7 @@ if (( ${#artifacts[@]} == 0 )); then
   exit 1
 fi
 cp -- "${artifacts[@]}" "$DEST/"
-find "$DEST" -maxdepth 1 -type f -print0 | sort -z | xargs -0 -r sha256sum > "$DEST/SHA256SUMS"
+find "$DEST" -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 -r sha256sum > "$DEST/SHA256SUMS"
 printf 'Built unmodified upstream baseline at commit %s\n' "$actual"
 printf 'Artifacts: %s\n' "$DEST"
 printf 'Status: OFFLINE-ONLY; no SBG3300 image support or flash approval implied.\n'
