@@ -31,21 +31,27 @@ without a vendor port and module rebuild.
 The Linux Wireless brcm80211 documentation lists PCIe BCM4350 as device
 `14e4:43a3`; it does not list the observed `14e4:435f`. In the pinned OpenWrt
 checkout, the upstream brcmfmac PCI device table also has no `0x435f` match.
-Therefore a mainline driver is not established for this exact PCI ID. This
-does not prove the chip cannot share code with another family; a full revision
-and firmware/NVRAM compatibility check would be required before attempting
-quirks or adding an ID.
+The OpenWrt Sky SR102 device page separately identifies `BCM435F` / `14e4:435f`
+as an SoC-integrated pseudo-ID and says there is no usable driver. This is a
+close BCM63168-family comparison, not a proof of SBG3300 board internals; it
+does make an ordinary brcmfmac/brcmsmac PCI device port unlikely.
+
+The matching 4.12L.06B source tree has no Broadcom `wl` host-driver source. It
+does contain legacy WLAN map/configuration blobs, and the exact stock `wl.ko`
+contains a generic loader path for `/etc/wlan/bcm%04x_nvramvars.bin`; no blob
+contents or calibration data are copied into the port. The stock driver binary
+is tied to Linux 2.6.30 and is not a viable 6.18 driver artifact.
 
 ## Strategy and gate
 
-Current decision: `VENDOR-PORT OR UNSUPPORTED`, not `MAINLINE`. Keep Wi-Fi out
-of the first board bring-up. Next evidence needed is the stock `wl` chip/rev
-report, `wl` firmware/NVRAM load path, radio calibration storage location and
-whether any vendor GPL tree contains rebuildable driver sources. No calibration
-or NVRAM data will be copied into the project. A binary `.ko` from the 2.6.30
-stock kernel will not be loaded into OpenWrt.
+Current decision: `UNSUPPORTED` for the initial OpenWrt port, with a vendor
+source search still open. Keep Wi-Fi out of first board bring-up. Reconsider
+only if a rebuildable host driver matching this pseudo-device is recovered.
+No calibration or NVRAM data will be copied into the project. A binary `.ko`
+from the 2.6.30 stock kernel will not be loaded into OpenWrt.
 
 Sources checked:
 
 - Pinned OpenWrt checkout `5edcc1c43cb97048b506168fbbe00538956796d6`;
-- [Linux Wireless brcm80211 driver documentation](https://wireless.docs.kernel.org/en/latest/en/users/drivers/brcm80211.html).
+- [Linux Wireless brcm80211 driver documentation](https://wireless.docs.kernel.org/en/latest/en/users/drivers/brcm80211.html);
+- [OpenWrt Sky SR102 device record](https://openwrt.org/toh/sky/sr102) (same SoC family; comparison evidence only).
