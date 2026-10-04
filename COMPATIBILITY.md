@@ -17,16 +17,21 @@
 ## OpenWrt generation and release support
 
 The audited upstream checkout is `main` at commit
-`5edcc1c43cb97048b506168fbbe00538956796d6` (2026-10-04), in the 25.12
-generation, with kernel 6.18 and APK package tooling. Official download indexes
-were checked directly on 2026-10-04: both `releases/24.10.5/targets/bmips/bcm63268/`
-and `releases/25.12.5/targets/bmips/bcm63268/` contain device images for
-existing BCM63268 boards. Thus bmips/bcm63268 is still a released target in
-those series. This does not mean the SBG3300 profile is upstream or supported.
+`5edcc1c43cb97048b506168fbbe00538956796d6` (2026-10-04), with kernel 6.18.
+The 25.12 stable branch/release is a distinct baseline (kernel 6.12); OpenWrt
+25.12 uses APK, while 24.10 uses opkg. The project currently targets the pinned
+`main` checkout and must not describe that snapshot as the 25.12.5 release.
 
-The project follows the pinned tree's APK, feeds, and image conventions;
-24.10 uses opkg. Images for sibling boards are reference data only and are not
-candidates for this router.
+Official download indexes checked directly on 2026-10-04 show
+`bmips/bcm63268` images in both 24.10.5 and 25.12.5. The OpenWrt BCM63xx
+reference page says the old `bcm63xx` target was dropped; this is distinct
+from the BCM63xx-family devices carried under the `bmips` target. Its stated
+DSL support gap remains relevant: a bmips image for a sibling router does not
+provide a working SBG3300 DSL stack. There is no SBG3300 profile in either
+release, and the SBG3300 board port remains unvalidated.
+
+Images for sibling boards are reference data only and are not candidates for
+this router.
 
 Sources checked:
 
@@ -34,3 +39,6 @@ Sources checked:
 - https://downloads.openwrt.org/releases/25.12.5/targets/bmips/bcm63268/
 - https://openwrt.org/releases/25.12/start
 - https://github.com/openwrt/openwrt/tree/5edcc1c43cb97048b506168fbbe00538956796d6/target/linux/bmips
+- https://github.com/openwrt/openwrt/blob/openwrt-24.10/target/linux/bmips/Makefile
+- https://github.com/openwrt/openwrt/blob/openwrt-25.12/target/linux/bmips/Makefile
+- https://openwrt.org/docs/techref/hardware/soc/soc.broadcom.bcm63xx
