@@ -18,7 +18,7 @@ Status vocabulary: `PASS` means direct evidence for that layer only;
 | Ethernet MAC / ports | INVESTIGATING | Board table shows two MAC/switch groups and SPI SSB0 external switch; physical LAN labels/CPU port unresolved |
 | BCM53125 | LIKELY, not proven | External SPI switch path is confirmed by board table; exact live switch ID is not yet read |
 | USB | PASS (controller observation) | PCI 14e4:6300 OHCI and EHCI both enumerate |
-| Wi-Fi | UNSUPPORTED for initial bring-up | Exact live ID is 14e4:435f/BCM435F pseudo-device; no matching upstream PCI driver; close BCM63168-family reference also reports no usable driver; no open `wl` source found in 4.12L.06B tree |
+| Wi-Fi | INVESTIGATING / NOT IN FIRST IMAGE | Live PCI function is 14e4:435f/subsystem 14e4:0513; b43 recognizes 0x435f only as BCM6362 band-classification ID, while current BCMA/SSB PCI bridge tables and brcmfmac lack a direct match. Calibration source remains unknown |
 | DSL/XTM | SOURCE-INCOMPLETE / PORT PROBE FAILED | Stock ADSL/config modules have 2.6.30 vermagic and 82/31 undefined imports; available XTM C source hits NBuff recycle, DMA type/config, and removed `asm/system.h` mismatches against 6.18; `adsldd`/`bcmxtmcfg` implementations absent from inspected mirror |
 | Hardware acceleration | INVESTIGATING | FAP/BPM modules are active in stock; no upstream equivalent established |
 | Firmware container | UNKNOWN | stock updater image and physical NAND target are not fully mapped for OpenWrt payloads |

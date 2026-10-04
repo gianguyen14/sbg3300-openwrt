@@ -15,7 +15,7 @@ unique values were omitted.
   did not expose a JEDEC part ID. The Spansion S34ML01G1 identifier comes from
   the supplied hardware inventory and is not asserted as live ID evidence.
 - USB: PCI 14e4:6300 exposes EHCI and OHCI host controllers.
-- WLAN: PCI 14e4:435f; stock proprietary `wl` reports BCM435f, driver
+- WLAN: PCI 14e4:435f, subsystem 14e4:0513, class 0x028000; stock proprietary `wl` reports BCM435f, driver
   `6.30.102.7.cpe4.12L06B.1`.
 - DSL/XTM: proprietary `adsldd` and `bcmxtmcfg`; log reports ATM/PTM
   non-bonding and BCM63168D0. Existing WAN stack is

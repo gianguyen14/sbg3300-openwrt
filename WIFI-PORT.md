@@ -1,15 +1,28 @@
 # Wi-Fi port investigation
 
-Live sysfs identifies PCI vendor/device `14e4:435f`; stock `wl` identifies
-BCM435f and reports driver family `6.30.102.7.cpe4.12L06B.1`. The stock image
-contains WLAN map and NVRAM-variable files. This is not sufficient to establish
-upstream driver support or the calibration source/offset.
+Live sysfs identifies PCI vendor/device `14e4:435f`, subsystem `14e4:0513`,
+class `0x028000`; stock `wl` identifies BCM435f and reports driver family
+`6.30.102.7.cpe4.12L06B.1`. Stock sysfs has no `readlink` utility, so the
+read-only probe could not resolve the bound driver symlink. PCI enumeration
+also shows USB `14e4:6300` and bridge `14e4:6326`.
 
-Next steps: map PCIe topology, correlate the chip/revision with upstream
-`b43`/`brcmfmac` support tables, inspect firmware requirements, and identify
-where board-specific calibration is stored without exporting its contents.
-Do not synthesize or overwrite calibration data. Until then Wi-Fi status is
-`INVESTIGATING`, not supported.
+There is a useful upstream nuance: Linux `b43_supported_bands()` maps virtual
+device ID `0x435f` to “BCM6362” for band classification, but this alone does not
+bind a PCI function. In the pinned kernel, `bcma_host_pci` and `b43_pci_bridge`
+tables do not include `14e4:435f`; `brcmfmac` has no matching PCI entry either.
+Thus no direct upstream discovery/bind path has been established for the live
+PCI function. A BCM6362 virtual/SPROM path may still be relevant if the radio
+is exposed through a supported BCMA/SSB host, and needs separate tracing.
+
+The stock image contains WLAN map and NVRAM-variable files. The proprietary
+`wl.ko` generic loader strings reference the corresponding variable/map path,
+but this does not prove where board-specific RF calibration is stored. Do not
+copy calibration, synthesize replacement data, or change NVRAM. Wi-Fi remains
+`INVESTIGATING`; it is excluded from the first bring-up profile until both
+driver discovery and calibration access are understood.
+
+The 2.6.30 stock `wl.ko` is not an OpenWrt 6.18 module candidate. Its hash and
+version are in `reports/STOCK-MODULE-INVENTORY.txt`.
 # Wi-Fi port status
 
 ## Exact device evidence
