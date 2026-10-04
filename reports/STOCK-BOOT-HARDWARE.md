@@ -10,6 +10,10 @@ unique values were omitted.
 - Memory: 128 MiB physical; 123392 KiB reported MemTotal.
 - NAND: controller v4, 128 MiB; writesize 2048, OOB 64, ECC 512-byte step,
   strength 15, BBT enabled.
+- Follow-up read-only `dmesg | grep -Ei 'nand|onfi|spansion|flash'` on
+  2026-10-04 confirmed the BBT/controller messages and MTD registrations but
+  did not expose a JEDEC part ID. The Spansion S34ML01G1 identifier comes from
+  the supplied hardware inventory and is not asserted as live ID evidence.
 - USB: PCI 14e4:6300 exposes EHCI and OHCI host controllers.
 - WLAN: PCI 14e4:435f; stock proprietary `wl` reports BCM435f, driver
   `6.30.102.7.cpe4.12L06B.1`.

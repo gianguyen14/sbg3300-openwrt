@@ -5,8 +5,11 @@
 Live stock boot log identifies the Broadcom NAND controller v4 and 128 MiB
 flash. The reported geometry is 2048-byte writesize, 64-byte OOB, 512-byte ECC
 step, ECC strength 15, and on-flash bad-block table. This matches the broad
-geometry configured by existing bmips BCM63168 reference DTS files, but the
-exact SBG3300 part number and ECC/OOB layout still need board/source cross-check.
+geometry configured by existing bmips BCM63168 reference DTS files. The
+hardware inventory identifies the chip as Spansion S34ML01G1; a fresh read-only
+`dmesg` query on 2026-10-04 did not print a JEDEC part ID, so that part number
+is recorded as inventory evidence rather than independently confirmed by the
+running boot log. Runtime ECC/OOB geometry is confirmed.
 
 ## Linux partition table observed
 
