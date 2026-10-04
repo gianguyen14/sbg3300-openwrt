@@ -31,4 +31,11 @@ be determined from the resumed process exit status and its final log lines,
 not from a broad grep of historical errors. This is an unmodified upstream
 baseline; SBG3300 DTS or image changes have not been applied to this checkout.
 
+The baseline `vmlinux` has been copied to
+`builds/upstream-bmips-bcm63268-baseline/vmlinux` before any port build can
+overwrite the OpenWrt work directory. A reference
+`bcm63268-comtrend-vr-3032u.dtb` from the same unmodified build is archived in
+the adjacent `dts/` directory. These artifacts are ignored local build output,
+not firmware images.
+
 This baseline is offline-only and is not a boot or flash validation.
