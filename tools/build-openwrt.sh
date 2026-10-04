@@ -4,7 +4,7 @@ set -euo pipefail
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 OPENWRT_DIR="${OPENWRT_DIR:-/home/nguyen/openwrt-sbg3300}"
 EXPECTED_COMMIT="5edcc1c43cb97048b506168fbbe00538956796d6"
-JOBS="${JOBS:-2}"
+JOBS="${JOBS:-3}"
 MODE="${1:-baseline}"
 
 case "$MODE" in
