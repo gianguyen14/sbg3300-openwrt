@@ -105,6 +105,14 @@ class ArtifactTests(unittest.TestCase):
         with self.assertRaises(audit.ArtifactError):
             audit.inspect_elf(data, loader=True)
 
+    def test_loader_accepts_o32_and_rejects_conflicting_n32_flag(self):
+        data = bytearray(loader_elf([(0x81000000, 0x81000000, 4, 4, 4)]))
+        struct.pack_into(">I", data, 36, 0x50001001)
+        self.assertEqual(audit.inspect_elf(data, loader=True)["elf"], "ELF32-MIPS-BE-o32")
+        struct.pack_into(">I", data, 36, 0x50001021)
+        with self.assertRaises(audit.ArtifactError):
+            audit.inspect_elf(data, loader=True)
+
     def test_loader_rejects_virtual_and_physical_aliases(self):
         for second in [(0x81000000, 0x82000000, 4, 4, 4),
                        (0x82000000, 0x81000000, 4, 4, 4)]:

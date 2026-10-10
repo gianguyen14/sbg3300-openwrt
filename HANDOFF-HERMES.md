@@ -357,3 +357,12 @@ native/sanitizer/MIPS tests; this does not permit NAND activation. The updated
 topology report records the source netdev-rename conflict, SPI PHY-page versus
 MDIO address distinction and 0x888A receive-buffer normalization. No new cable
 test or live hardware activation occurred.
+
+## Required RX-mask correction
+
+Use the current patch 0010 and final strict module SHA256
+`ac3576cf5969135fc7bc2b998fac7ec64dd1ca29c5052b7a5f3353a4de591918`.
+The earlier `091acf...` build used a TX-underflow bit in its RX error mask;
+RX source-port metadata overlaps it. The 16-vector callback regression rejects
+that earlier source and passes the corrected RX-only mask. Historical build
+success remains valid as compilation evidence but not final source approval.

@@ -63,16 +63,33 @@ Original .config, Module.symvers, vmlinux and UTS hashes verify unchanged.
 | Artifact | Result |
 |---|---|
 | `bcm6368-enetsw.ko` | 113932 bytes; ELF32 MIPS BE/o32 |
-| SHA256 (both builds) | `091acf5f6c90fc6f2bebe202343fc295817a4a95b93795e1562efafa396da7d0` |
+| SHA256 (both builds) | `ac3576cf5969135fc7bc2b998fac7ec64dd1ca29c5052b7a5f3353a4de591918` |
 | Vermagic | `6.18.54 SMP mod_unload BMIPS 32BIT` |
 | Imports | 85; none missing from the real matching Module.symvers |
 | Dependencies | No separate module dependencies in this build configuration |
 | Runtime | `NOT-TESTED`; no device module loading |
 
 Logs, input hashes and artifacts: local cache
-`sbg3300-enetsw-validation/run-cNh674`. Earlier accepted modules remain intact.
+`sbg3300-enetsw-validation/run-kw03b9`. Earlier accepted modules remain intact.
 All ten OpenWrt patches apply via git am to a separate fresh pinned checkout;
-resulting source tree is `4769e1aa08793c94a990092080d6db094d67a30f`.
+resulting source tree is `634453e43a523ce799428fd21ef5e24a78288144`.
 The delivered kernel patch equals the independently applied/tested Linux delta.
 No final firmware image target was invoked. Hardware topology, boot, MAC and
 DSA cascade blockers remain in the topology report.
+
+## RX source-port mask correction and preserved failure
+
+The first hardening artifact (`091acf5f6c90fc6f2bebe202343fc295817a4a95b93795e1562efafa396da7d0`)
+used the generic error mask, including TX-underflow bit 9. Exact-family
+`bcmenet.c:239,5176–5181` uses bits 8–11 as RX source-port metadata; therefore
+that bit must not reject an RX packet. The earlier artifact is superseded and
+is not a valid final runtime candidate. It was never loaded on the router.
+
+The corrected patch defines a separate RX error mask using only the established
+low RX error bits. A regression executes the actual RX callback for all 16
+source-port field values, and preserves TX-underflow accounting separately.
+The first mask fails this test with exit 134; final native/ASan/UBSan/MIPS runs
+pass. Two fresh W=1/-Werror builds have the corrected SHA256 above, matching
+85 actual exports and identical complete bytes. Old binaries/source/logs remain
+private under `rejected-pre-port-fix` and the previous validation build root.
+This corrects the previous interpretation rather than discarding that finding.

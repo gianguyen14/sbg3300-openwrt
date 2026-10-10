@@ -227,6 +227,14 @@ int main(void)
 	assert(bcm6368_enetsw_receive_queue(&f.ndev, 1) == 1);
 	assert(f.ndev.stats.rx_errors == 1 && delivered == 0);
 	teardown(&f);
+	/* Source-port metadata shares TX status positions, not RX errors. */
+	for (unsigned int port = 0; port < 16; port++) {
+		setup(&f, 64);
+		f.rx[0].len_stat |= port << 8;
+		assert(bcm6368_enetsw_receive_queue(&f.ndev, 1) == 1);
+		assert(delivered == 1 && f.ndev.stats.rx_errors == 0);
+		teardown(&f);
+	}
 	/* Valid copybreak and zero-copy lifetimes. */
 	for (unsigned int len = 18; len <= 1500; len += 1482) {
 		setup(&f, len);

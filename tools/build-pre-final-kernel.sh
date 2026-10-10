@@ -10,7 +10,7 @@ approved=18c17336871e73ddfbab3198104d8c42df844146
 source_sha="$(git -C "$openwrt_dir" rev-parse HEAD)"
 source_tree="$(git -C "$openwrt_dir" rev-parse 'HEAD^{tree}')"
 case "$source_sha:$source_tree" in
-  "$pinned:"*|"$approved:"*|*:2ac5b16d7ba20467a099bf096de89c32d69a9324|*:4769e1aa08793c94a990092080d6db094d67a30f) ;;
+  "$pinned:"*|"$approved:"*|*:2ac5b16d7ba20467a099bf096de89c32d69a9324|*:4769e1aa08793c94a990092080d6db094d67a30f|*:634453e43a523ce799428fd21ef5e24a78288144) ;;
   *) exit 1 ;;
 esac
 test "$(git -C "$openwrt_dir" merge-base HEAD "$pinned")" = "$pinned"

@@ -183,9 +183,9 @@ ethernet_switch_topology_research:
 enetsw_rx_napi_milestone:
   report: reports/ETHERNET-RX-NAPI-VALIDATION.md
   openwrt_patch_count: 10
-  reviewed_openwrt_tree: 4769e1aa08793c94a990092080d6db094d67a30f
+  reviewed_openwrt_tree: 634453e43a523ce799428fd21ef5e24a78288144
   strict_compiler_modpost_exits: [0, 0]
-  artifact_sha256: 091acf5f6c90fc6f2bebe202343fc295817a4a95b93795e1562efafa396da7d0
+  artifact_sha256: ac3576cf5969135fc7bc2b998fac7ec64dd1ca29c5052b7a5f3353a4de591918
   artifact_bytes: 113932
   module_vermagic: 6.18.54 SMP mod_unload BMIPS 32BIT
   module_imports: 85
@@ -227,3 +227,13 @@ non_dsl_additional_source_tests:
   hostapd_qemu_version_exit: 1_EXPECTED_BY_PROGRAM
   supplicant_qemu_version_exit: 0
   wifi_association_runtime: NOT_TESTED
+
+enetsw_rx_source_port_correction:
+  first_mask_artifact: SUPERSEDED_REJECTED_BY_NEW_SOURCE_PORT_TEST
+  first_mask_sha256: 091acf5f6c90fc6f2bebe202343fc295817a4a95b93795e1562efafa396da7d0
+  new_regression_pre_fix_exit: 134
+  source_port_vectors: 16
+  strict_reproduced_sha256: ac3576cf5969135fc7bc2b998fac7ec64dd1ca29c5052b7a5f3353a4de591918
+  missing_imports: 0
+  tested_native_sanitizer_mips: PASS_CPU_ONLY
+  firmware_module_loading: NEVER_PERFORMED

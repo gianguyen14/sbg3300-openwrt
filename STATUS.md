@@ -169,3 +169,11 @@ match the independent legacy geometry table natively/with sanitizers/in MIPS.
 No boot or NAND device operation occurred. Further source trace distinguishes
 SPI physical-port PHY pages from boardparms PHY address slots and records the
 netdev-name branch conflict. No new jack or PHY mapping is asserted.
+
+**Correction to the first RX hardening result:** its generic mask included
+TX-underflow bit 9, which is RX source-port metadata on BCM63168. That initial
+artifact is superseded. The final RX-specific mask passes all 16 source-port
+vectors plus the existing callback tests; two strict modules reproduce
+`ac3576cf5969135fc7bc2b998fac7ec64dd1ca29c5052b7a5f3353a4de591918`.
+Old failing source/test/artifacts are retained; no module was loaded. The
+updated topology report provides the exact-family evidence for the overlap.

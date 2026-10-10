@@ -27,7 +27,7 @@ ASM
 "${cross}ld" -e startup -Ttext 0x00410000 "$run_dir/exit.o" \
   -o "$run_dir/explicit-o32.elf" >> "$run_dir/compiler.log" 2>&1
 python3 "$project_dir/tools/audit-kernel-artifacts.py" \
-  "$run_dir/explicit-o32.elf" > "$run_dir/explicit-audit.json"
+  --loader "$run_dir/explicit-o32.elf" > "$run_dir/explicit-audit.json"
 "${QEMU_MIPS:-qemu-mips-static}" "$run_dir/explicit-o32.elf" \
   > "$run_dir/explicit-qemu.log" 2>&1
 # Model the pinned loader's binary -> relocatable-data -> ELF wrapper pipeline.

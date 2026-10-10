@@ -37,10 +37,10 @@ def inspect_elf(data, module=False, loader=False):
     kind, machine, version, entry, phoff, shoff, flags, ehsize, phsize, phnum, shsize, shnum, shstr = header
     if machine != 8 or version != 1 or ehsize != 52:
         raise ArtifactError("requires MIPS ELF version 1 header")
-    if loader:
-        if module or flags != 0:
-            raise ArtifactError("loader inspection requires the explicit ABI-unspecified executable")
-    elif flags & 0xf000 != 0x1000:
+    if loader and module:
+        raise ArtifactError("loader inspection cannot inspect a module")
+    unspecified_abi = loader and flags == 0
+    if not unspecified_abi and (flags & 0xf000 != 0x1000 or flags & 0x20):
         raise ArtifactError("requires explicit MIPS/o32 ELF header")
     if kind != (1 if module else 2):
         raise ArtifactError("unexpected ELF type")
@@ -105,7 +105,7 @@ def inspect_elf(data, module=False, loader=False):
         raise ArtifactError("unexpected or missing module vermagic")
     if module and not has_symbols:
         raise ArtifactError("module symbol table required to audit dependencies")
-    return {"elf": "ELF32-MIPS-BE-ABI-unspecified" if loader else "ELF32-MIPS-BE-o32",
+    return {"elf": "ELF32-MIPS-BE-ABI-unspecified" if unspecified_abi else "ELF32-MIPS-BE-o32",
             "type": "module" if module else "loader" if loader else "executable",
             "entry": entry, "segments": segments, "modinfo": metadata,
             "imports": sorted(imports)}
@@ -135,7 +135,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--symvers", type=Path)
     parser.add_argument("--loader", action="store_true",
-                        help="Inspect an ABI-unspecified offline loader; never a module")
+                        help="Check an offline o32 or ABI-unspecified loader; never a module")
     parser.add_argument("files", type=Path, nargs="+")
     args = parser.parse_args()
     exports = None

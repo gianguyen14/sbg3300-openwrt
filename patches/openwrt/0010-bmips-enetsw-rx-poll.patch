@@ -7,7 +7,7 @@ diff --git a/target/linux/bmips/patches-6.18/999-z-bcm6368-enetsw-rx-poll.patch 
 new file mode 100644
 --- /dev/null
 +++ b/target/linux/bmips/patches-6.18/999-z-bcm6368-enetsw-rx-poll.patch
-@@ -0,0 +1,81 @@
+@@ -0,0 +1,87 @@
 +From: gianguyen14 <231934554+gianguyen14@users.noreply.github.com>
 +Subject: [PATCH] net: bcm6368-enetsw bound RX and honor NAPI completion
 +
@@ -20,33 +20,39 @@ new file mode 100644
 +diff --git a/drivers/net/ethernet/broadcom/bcm6368-enetsw.c b/drivers/net/ethernet/broadcom/bcm6368-enetsw.c
 +--- a/drivers/net/ethernet/broadcom/bcm6368-enetsw.c
 ++++ b/drivers/net/ethernet/broadcom/bcm6368-enetsw.c
-+@@ -303,2 +303,2 @@
++@@ -137,0 +138,5 @@
+++/* On RX, bits 8..11 carry the source port; bit 9 is TX-only underflow. */
+++#define DMADESC_RX_ERR_MASK		(DMADESC_OVSIZE_MASK | \
+++					 DMADESC_RXER_MASK | \
+++					 DMADESC_CRC_MASK | DMADESC_OV_MASK)
+++
++@@ -303,2 +308,2 @@
 +-		wmb();
 +-		desc->len_stat = len_stat;
 ++		dma_wmb();
 ++		WRITE_ONCE(desc->len_stat, len_stat);
-+@@ -359 +359 @@
++@@ -359 +364 @@
 +-	do {
 ++	while (processed < budget) {
-+@@ -370,5 +370 @@
++@@ -370,5 +375 @@
 +-		/* make sure we actually read the descriptor status at
 +-		 * each loop */
 +-		rmb();
 +-
 +-		len_stat = desc->len_stat;
 ++		len_stat = READ_ONCE(desc->len_stat);
-+@@ -378,0 +375,3 @@
++@@ -378,0 +380,3 @@
 ++
 ++		/* Ownership must be observed before descriptor/buffer reads. */
 ++		dma_rmb();
-+@@ -391,0 +391,6 @@
-++		if (len_stat & DMADESC_ERR_MASK) {
++@@ -391,0 +396,6 @@
+++		if (len_stat & DMADESC_RX_ERR_MASK) {
 ++			ndev->stats.rx_errors++;
 ++			ndev->stats.rx_dropped++;
 ++			continue;
 ++		}
 ++
-+@@ -396,2 +401,10 @@
++@@ -396,2 +406,10 @@
 +-		/* don't include FCS */
 +-		len -= 4;
 ++		/* Validate the DMA length before subtracting FCS or using it
@@ -59,32 +65,32 @@ new file mode 100644
 ++			continue;
 ++		}
 ++		len -= ETH_FCS_LEN;
-+@@ -435 +448 @@
++@@ -435 +453 @@
 +-	} while (processed < budget);
 ++	}
-+@@ -467,0 +481 @@
++@@ -467,0 +486 @@
 ++		u32 len_stat;
-+@@ -475 +489,2 @@
++@@ -475 +494,2 @@
 +-		if (!force && (desc->len_stat & DMADESC_OWNER_MASK)) {
 ++		len_stat = READ_ONCE(desc->len_stat);
 ++		if (!force && (len_stat & DMADESC_OWNER_MASK)) {
-+@@ -482 +497 @@
++@@ -482 +502 @@
 +-		rmb();
 ++		dma_rmb();
-+@@ -496 +511,2 @@
++@@ -496 +516,2 @@
 +-		if (desc->len_stat & DMADESC_UNDER_MASK)
 ++		/* The descriptor can be reused by xmit after unlocking. */
 ++		if (len_stat & DMADESC_UNDER_MASK)
-+@@ -529,0 +546,4 @@
++@@ -529,0 +551,4 @@
 ++	/* A zero-budget poll is TX-only and must not complete NAPI. */
 ++	if (!budget)
 ++		return 0;
 ++
-+@@ -541 +561,2 @@
++@@ -541 +566,2 @@
 +-	napi_complete_done(napi, rx_work_done);
 ++	if (!napi_complete_done(napi, rx_work_done))
 ++		return rx_work_done;
-+@@ -640,2 +661,2 @@
++@@ -640,2 +666,2 @@
 +-	wmb();
 +-	desc->len_stat = len_stat;
 ++	dma_wmb();
