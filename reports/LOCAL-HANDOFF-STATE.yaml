@@ -165,6 +165,8 @@ ethernet_switch_topology_research:
   dsa_cpu_port: UNRESOLVED
   rgmii_timing: UNRESOLVED
   wan_lan_and_vlan_mapping: UNRESOLVED
+  product_documentation_ethwan_connector: VERIFIED
+  physical_jack_to_chip_port_mapping: UNRESOLVED
   topology_enabled: false
   new_test: active_bcm53125_dtb_rejected
   runtime_validation: NOT_TESTED

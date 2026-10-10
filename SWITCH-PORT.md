@@ -26,7 +26,9 @@ only. They use different switch attachment choices and port wiring. Their
 BCM53125 port labels, CPU link, mode, delays, and WAN mapping are not evidence
 for the SBG3300.
 
-Stock `ethN` switch indices and `eth4.1`/PPP layering are logical interfaces,
-not physical jack labels. No stock VLAN table or safe jack-to-port mapping is
+Product documentation confirms a separate ETHWAN connector and four
+ETHERNET 1–4 LAN connectors. Stock `ethN` switch indices and `eth4.1`/PPP
+layering remain logical interfaces, not a jack-to-port map. No stock VLAN table
+or safe mapping between the documented jacks and SoC/BCM53125 ports is
 available. Keep switch/MDIO inactive in the SBG3300 DTS; `b53_spi` compile
 coverage does not establish an SBG3300 runtime bind or working network.

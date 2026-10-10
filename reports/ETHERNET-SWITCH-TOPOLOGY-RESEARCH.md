@@ -26,11 +26,14 @@ changes. The source does not explain whether the SSB5 overlay is only pinmux
 capability for an alternate configuration or serves another board function;
 it does not prove that SSB5 actively selects this switch.
 
-No SBG3300 port is labelled WAN in the active boardparms branch. Stock
-`eth4.1`/PPP layering and the stock logical port numbers are not physical-jack
-identifiers. External switch port 4 as WAN and SoC switch port 3 as WAN remain
-unverified alternatives; they must not be represented as configured WAN/LAN
-ports.
+The SBG3300 quick-start guide identifies a separate ETHERNET WAN jack beside
+ETHERNET 1–4; the user guide calls this the fifth Ethernet port and says it can
+be configured as an extra LAN port when DSL is used. Thus a dedicated Ethernet
+WAN connector is a verified product fact. The documents do not map it to a
+SoC PHY or a BCM53125 port. No port in the active boardparms branch is labelled
+WAN, and stock `eth4.1`/PPP layering plus switch indices are not physical-jack
+identifiers. SoC port 3/PHY ID 4 is a candidate, not a confirmed ETHWAN
+mapping.
 
 ## Verified facts and evidence class
 
@@ -42,6 +45,7 @@ ports.
 | Live device has the same board ID and SoC | `LIVE-DEVICE`: previous owner-authorized stock SSH report records `963168MXH_17A` and BCM63168D0. No new router access was needed. Public log and live device agree on the board ID; exact PCB artwork/revision marking was not observed. |
 | Stock software binds a generic HSSPI child at `spi1.0` | `LIVE-DEVICE`: sysfs modalias/driver `bcm_HSSpiDev0`, previously recorded in the live report. It does not report the chip ID or tell which switch registers are behind that child. |
 | Live stock logical interfaces map to switch index values | `LIVE-DEVICE`: boot maps `eth0→4`, `eth2→2`, `eth3→1`, `eth4→11`, `eth5→12`; `eth4.1` appears under PPP. These are stock driver indices, not DSA port numbers or physical jacks. |
+| A separate Ethernet WAN connector exists | `PRODUCT-DOCUMENTATION`: SBG3300-N000 quick-start guide labels ETHERNET WAN separately from ETHERNET 1–4; its user guide describes ETHWAN as the fifth Ethernet port and says it can be reconfigured as an extra LAN port. This establishes a connector/role, not its switch index or wiring. |
 | Exact-family boardparms has two Ethernet groups | `FAMILY-SOURCE`, local mirror revision `e2f23ddbb20bf75689372b6e6a5a0dc613f6e313`, `boardparms.c:2878–2944`: active `#if 1` branch selects MMAP map `0x58` and HSSPI SSB0 map `0x1e`. Mirror was read-only and remains outside the public repository. |
 | The board table combines an SSB0 switch setting with an SSB5 external-CS overlay | `FAMILY-SOURCE`, same entry: selected switch config is `BP_ENET_CONFIG_HS_SPI_SSB_0`; the GPIO overlay includes `BP_OVERLAY_HS_SPI_SSB5_EXT_CS`; adjacent comment describes SSB5 as an alternate after MDIO hardware/resistor changes. Their relationship is not established, and the overlay does not prove active SSB5 selection. |
 | Pinned OpenWrt has the needed driver families | `UPSTREAM`: target config selects `CONFIG_BCM6368_ENETSW`, `CONFIG_B53`, `CONFIG_B53_SPI_DRIVER`, and `CONFIG_NET_DSA`; pinned `b53_spi.c` contains the `brcm,bcm53125` match. Availability is source/build evidence only. |
@@ -151,14 +155,19 @@ contract can create duplicate probes or collisions.
 
 ## WAN, VLAN and physical-port mapping
 
-There is no verified physical WAN/LAN mapping yet.
+The physical ETHWAN connector and four ETHERNET 1–4 LAN connectors are
+documented. Mapping those five connectors to boardparms ports and stock logical
+interfaces is still unresolved.
 
-1. Exact active SBG boardparms says SoC port 3 uses PHY ID 4, not “WAN”. A
-   comment in another Broadcom board entry that labels its own port 3 WAN is
-   not SBG evidence.
-2. The external BCM53125's boardparms PHY bitmap covers ports 1–4, but does not
-   label any port WAN. VG-8050 labels external port 4 WAN; that is explicitly
-   sibling-only inference.
+1. Exact active SBG boardparms says SoC port 3 uses PHY ID 4, but does not
+   label it WAN. It is a candidate ETHWAN attachment because the product has
+   four LAN jacks plus a fifth Ethernet WAN jack. A comment in another
+   Broadcom board entry that labels its own port 3 WAN is only supporting
+   analogy, not SBG proof.
+2. The external BCM53125's boardparms PHY bitmap covers ports 1–4 and does not
+   label any port WAN. Those four ports could plausibly serve the four LAN
+   jacks, but that assignment is not proven. VG-8050's port-4 WAN label is
+   sibling-only and is not an SBG mapping.
 3. Public CFE reports port 4 link up at boot. It does not state which connector
    that means. Live stock `ethN` switch indices likewise do not decode to
    silkscreen jack numbers without the stock switch VLAN/config mapping.
@@ -173,8 +182,9 @@ Candidate hypotheses to test against non-invasive evidence later:
 | Hypothesis | Basis | Status |
 |---|---|---|
 | BCM53125 port 8 is CPU link to BCM63168 integrated port 6 | Exact SBG boardparms proves integrated port 6 to an external switch; both sibling DTS examples use external port 8 | Plausible; far-end port and timing require board-specific confirmation |
-| External switch port 4 is Ethernet WAN | VG-8050 comparison DTS uses this role | Sibling inference only |
-| SoC integrated port 3 is Ethernet WAN | Similar Broadcom tables sometimes use port 3 for WAN; SBG table gives PHY ID 4 | Unsupported for SBG |
+| BCM53125 ports 1–4 serve ETHERNET 1–4 | Four user PHYs in exact boardparms and four LAN jacks in product guide | Plausible count match; jack-to-port mapping unverified |
+| SoC integrated port 3 / PHY ID 4 serves ETHWAN | Exact boardparms provides a PHY-backed integrated port 3 and product guide documents a fifth Ethernet WAN connector | Candidate; no source directly ties the jack to port 3 |
+| BCM53125 port 4 is Ethernet WAN | VG-8050 comparison DTS uses this role | Sibling-only hypothesis; not supported by SBG mapping |
 | `eth4.1` maps to the discrete WAN jack | Stock PPP-over-VLAN observation | Unsupported; no jack/link correlation or full VLAN table |
 
 ## Linux 6.18.54 integration assessment
@@ -232,7 +242,8 @@ not enable HSSPI for the switch. This report does not activate them.
 2. BCM53125 CPU port, port interface mode, clock delay responsibility, and
    reset/strap ownership for `963168MXH_17A`.
 3. Stock VLAN table and safe logical-to-physical jack mapping evidence.
-4. Whether port 3 or any BCM53125 user port is the separate Ethernet WAN.
+4. Which SoC PHY/port carries the documented ETHWAN connector and whether the
+   four BCM53125 PHY ports map one-to-one to ETHERNET 1–4.
 5. Linux runtime DSA probe, PHY/link, VLAN forwarding, WAN/LAN separation and
    teardown validation under OpenWrt. These require a separately approved,
    non-destructive device test; no such test is performed here.
@@ -240,6 +251,7 @@ not enable HSSPI for the switch. This report does not activate them.
 ## Source links
 
 - Public [SBG3300 bootlog](https://jirkabalhar.cz/posts/hack-router/zyxel-sbg3300-bootlog.html).
+- Zyxel's [SBG3300 multi-WAN announcement](https://www.zyxel.com/service-provider/na/en/news/event/zyxel-launches-business-class-vdsl2-gateway-3g-4g-lte-backup-mobile-world-congress) lists VDSL2, Gigabit Ethernet, and USB mobile WAN. The SBG3300-N000 [quick-start guide](https://manualzz.com/doc/70973145/zyxel-communications-sbg3300-n000-quick-start-manual) labels the ETHERNET WAN jack separately from ETHERNET 1–4; the [user guide's fifth-Ethernet-port page](https://www.manualslib.com/manual/597946/Zyxel-Communications-Sbg3300-N000.html?page=195) says ETHWAN can be configured as an extra LAN port.
 - Broadcom family [boardparms entry](https://github.com/nomis/bcm963xx_4.12L.06B_consumer/blob/e2f23ddbb20bf75689372b6e6a5a0dc613f6e313/shared/opensource/boardparms/bcm963xx/boardparms.c#L2878-L2944), [boardparms definitions](https://github.com/nomis/bcm963xx_4.12L.06B_consumer/blob/e2f23ddbb20bf75689372b6e6a5a0dc613f6e313/shared/opensource/include/bcm963xx/boardparms.h#L296-L301), and [HSSPI switch bus/ID path](https://github.com/nomis/bcm963xx_4.12L.06B_consumer/blob/e2f23ddbb20bf75689372b6e6a5a0dc613f6e313/bcmdrivers/opensource/net/enet/shared/bcmswaccess.c#L608-L725).
 - Pinned OpenWrt [`bcm63268.dtsi`](https://github.com/openwrt/openwrt/blob/5edcc1c43cb97048b506168fbbe00538956796d6/target/linux/bmips/dts/bcm63268.dtsi#L25-L25), [Comtrend VG-8050 DTS](https://github.com/openwrt/openwrt/blob/5edcc1c43cb97048b506168fbbe00538956796d6/target/linux/bmips/dts/bcm63169-comtrend-vg-8050.dts#L47-L100), [Sagem F@ST 3864 OP DTS](https://github.com/openwrt/openwrt/blob/5edcc1c43cb97048b506168fbbe00538956796d6/target/linux/bmips/dts/bcm63168-sagem-fast-3864-op.dts#L157-L201), and [`b53_spi.c`](https://github.com/openwrt/openwrt/blob/5edcc1c43cb97048b506168fbbe00538956796d6/target/linux/generic/files/drivers/net/phy/b53/b53_spi.c#L320-L320).
 

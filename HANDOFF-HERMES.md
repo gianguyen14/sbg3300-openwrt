@@ -168,9 +168,11 @@ indices 1, 11, 12. The public SBG3300 bootlog reports external switch ID 53125
 for board ID `963168MXH_17A` and two switch units whose bitmaps align with
 those two groups. HSSPI sysfs path is observed.
 
-Unresolved: active HSSPI chip-select wiring and the purpose of the SSB5
-external-CS overlay, external switch CPU port, RGMII delays, stock VLAN table, meanings of logical eth/port indices,
-physical WAN/LAN jack mapping, and Linux runtime ownership. `b53_spi` is
+Product documentation confirms an ETHWAN connector and four ETHERNET 1–4 LAN
+connectors, but their board-port mapping remains unresolved. Also unresolved:
+active HSSPI chip-select wiring and the purpose of the SSB5 external-CS overlay,
+external switch CPU port, RGMII delays, stock VLAN table, logical eth/port
+indices, and Linux runtime ownership. `b53_spi` is
 available and compile-covered, but is not board/runtime validation. See
 `reports/ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md`; keep DSA topology disabled.
 
