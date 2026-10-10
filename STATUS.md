@@ -2,7 +2,7 @@
 
 Pinned OpenWrt commit: `5edcc1c43cb97048b506168fbbe00538956796d6`; Linux 6.18.54; target `bmips/bcm63268`. Target compilation exited 0 in the durable build root. The build and `vmlinux` hashes are recorded in `reports/LOCAL-HANDOFF-STATE.yaml`. Build outputs are not committed.
 
-The XTM external build is diagnostic, uses probe-only compatibility code, and fails modpost. Object scan found 19 unique symbols absent from the linked objects and pinned kernel exports; see `reports/XTM-UNRESOLVED-CANONICAL-6.18.54.tsv`. No XTM `.ko` exists; no runtime claim is made.
+The XTM external build is diagnostic, uses probe-only compatibility code, and fails modpost. Object scan found 19 unique symbols absent from the linked objects and pinned kernel exports; see `reports/XTM-UNRESOLVED-CANONICAL-6.18.54.tsv` and the source-only dependency analysis in `reports/XTM-DEPENDENCY-REVIEW.md`. The 19 imports are 15 packet-DMA, 3 legacy IRQ, and 1 platform MAC allocator symbol; this is separate from the stock `adsldd.ko` (82) and `bcmxtmcfg.ko` (31) inventories. No XTM `.ko` exists; no runtime claim is made.
 
 **Overall: `PARTIAL-PORT` · `OFFLINE-ONLY` · `NOT-FLASHABLE`.** No OpenWrt
 image has been booted on the SBG3300. No flash/factory/sysupgrade image exists.
