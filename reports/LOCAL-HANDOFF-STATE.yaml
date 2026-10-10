@@ -121,7 +121,8 @@ authorized_stock_readonly_observation:
   router_modified: false
   dsl_status: IDLE
   sar_fap_ownership_transition: UNRESOLVED
-  switch_silicon_topology: UNRESOLVED
+  switch_silicon: BCM53125_VERIFIED_BY_PUBLIC_BOOTLOG_FOR_BOARD_ID_963168MXH_17A
+  switch_topology: PARTIAL_CPU_PORT_TIMING_VLAN_AND_JACK_MAPPING_UNRESOLVED
   nand_ecc_step_strength_attributes: UNAVAILABLE
   private_raw_logs_in_git: false
   xtm_tx_busy_ownership_fix: IMPLEMENTED_AND_COMPILED
@@ -153,3 +154,17 @@ authorized_stock_readonly_observation:
   stale_dts_negative_fixture: REJECTED_BEFORE_BUILD
   full_dtc_schema_diagnostics: 0
   updated_dtb_sha256: 3be99ff1c7e4962384cd292adfd408cace5439625c381026619f60946a99751d
+ethernet_switch_topology_research:
+  date: '2026-10-10'
+  report: reports/ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md
+  public_bootlog_board_id: 963168MXH_17A
+  public_bootlog_external_switch: BCM53125
+  exact_family_mirror_revision: e2f23ddbb20bf75689372b6e6a5a0dc613f6e313
+  boardparms_groups: [MMAP_0x58, HS_SPI_SSB0_0x1e]
+  hsspi_chip_select: UNRESOLVED_SSB0_VS_SSB5_EXTERNAL_CS_OVERLAY
+  dsa_cpu_port: UNRESOLVED
+  rgmii_timing: UNRESOLVED
+  wan_lan_and_vlan_mapping: UNRESOLVED
+  topology_enabled: false
+  new_test: active_bcm53125_dtb_rejected
+  runtime_validation: NOT_TESTED

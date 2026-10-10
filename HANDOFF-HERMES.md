@@ -164,12 +164,15 @@ group (`BP_ENET_CONFIG_HS_SPI_SSB_0`, PHY map `0x1e`) and a separate memory
 mapped group (`0x58`). It describes port 4 as `TMII_DIRECT | 0x14` and port 6
 as `RGMII_DIRECT | EXTSW_CONNECTED`. Live stock evidence has `bcm_enet`,
 `eth3`, `eth4`; WAN is `ppp2.1 -> eth4.1 -> eth4`; boot logs mention switch
-indices 1, 11, 12. HSSPI sysfs path is observed.
+indices 1, 11, 12. The public SBG3300 bootlog reports external switch ID 53125
+for board ID `963168MXH_17A` and two switch units whose bitmaps align with
+those two groups. HSSPI sysfs path is observed.
 
-Unresolved: exact switch silicon ID, CPU port, MAC role, RGMII timing, meanings
-of eth3/eth4 and VLAN, external jack mapping, and how SPI indices map to jacks.
-Do not enable speculative DSA topology. `b53_spi` driver availability is only
-upstream evidence.
+Unresolved: HSSPI CS0 versus the SSB5 external-CS overlay, external switch CPU
+port, RGMII delays, stock VLAN table, meanings of logical eth/port indices,
+physical WAN/LAN jack mapping, and Linux runtime ownership. `b53_spi` is
+available and compile-covered, but is not board/runtime validation. See
+`reports/ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md`; keep DSA topology disabled.
 
 ## 12. DSL/XTM state — deferred
 
@@ -224,10 +227,8 @@ prove source does not exist.
 - Analyze upstream b53, bcm63xx Ethernet, BMIPS NAND, image formats, and
   sibling-device commits.
 - Continue public-source searches and provenance/licensing review.
-- Port `bcmxtmrt` incrementally; classify 2.6-to-6.18 API changes and write
-  narrow compatibility layers/compile probes.
-- Reconstruct vendor ABI from sanitized symbol inventories; search for
-  `adsldd`/`bcmxtmcfg` sources without asserting absence globally.
+- Preserve the existing XTM/PTM source, tests, and artifacts. DSL/XTM source
+  recovery and porting are deferred until the owner requests them.
 - Research Wi-Fi PCI/BCMA/SSB discovery and OpenWrt driver tables.
 - Improve offline image parser, static analysis, tests, patch series, scripts,
   docs, and runtime test plans.
@@ -238,7 +239,7 @@ prove source does not exist.
 ## 16. Tasks that must not be marked PASS without router
 
 OpenWrt boot; usable RAM; LAN link; DSA CPU port and physical jack mapping;
-runtime BCM53125 ID; switch PHY links; Wi-Fi discovery/association/calibration;
+OpenWrt switch PHY links; Wi-Fi discovery/association/calibration;
 DSL initialization/sync/stats; XTM netdev; PPP session and Internet routing;
 USB functionality; hardware acceleration; NAND read/write/ECC behavior; CFE
 handoff; stock recovery; factory image acceptance; sysupgrade; reboot soak;
@@ -267,19 +268,16 @@ P0: maintain public-safe, reproducible repo and scripts.
 
 P1: incremental `bcmxtmrt` Linux 6.18 port compile probes.
 
-P2: exact `963168MXH_17A` Ethernet and switch topology.
+P1: exact `963168MXH_17A` Ethernet and switch topology.
 
-P3: Broadcom image writer, dual-slot and WFI/bad-block behavior.
+P2: Broadcom image writer, dual-slot and WFI/bad-block behavior.
 
-P4: source search and ABI reconstruction for `adsldd`/`bcmxtmcfg`.
+P3: Wi-Fi host discovery and calibration path; then USB and peripherals.
 
-P5: Wi-Fi PCI discovery.
+P4: complete non-DSL kernel/package integration and offline tests.
 
-P6: FAP/HNAT only after software-routing bring-up.
-
-For DSL, compile after each small change and record the first meaningful error
-class. Do not import Linux 2.6 headers wholesale or hide structural failures
-with blanket warning suppression.
+DSL/XTM, `adsldd`/`bcmxtmcfg`, SAR/FAP integration, and DSL PHY work are
+deferred until the owner requests them. Preserve their source and evidence.
 
 ## 20. Evidence policy
 

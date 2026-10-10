@@ -31,7 +31,9 @@ def verify(nodes):
         if any(name in props for name in ("mac-address", "local-mac-address", "calibration-data")):
             raise ValueError("device-specific data in DTB")
         compatibles = props.get("compatible", b"").split(b"\0")
-        if any(c in compatibles for c in (b"brcm,bcm63268-enetsw", b"brcm,bcm63268-switch")):
+        if any(c in compatibles for c in (b"brcm,bcm63268-enetsw",
+                                         b"brcm,bcm63268-switch",
+                                         b"brcm,bcm53125")):
             if props.get("status") != b"disabled\0":
                 raise ValueError("unverified Ethernet topology activated")
     for path in ("/soc/usb@10002500", "/soc/usb@10002600"):

@@ -49,7 +49,8 @@ class DtbTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 audit.verify(nodes)
         for props in [{"compatible": b"fixed-partitions\0"},
-                      {"compatible": b"brcm,bcm63268-enetsw\0", "status": b"okay\0"}]:
+                      {"compatible": b"brcm,bcm63268-enetsw\0", "status": b"okay\0"},
+                      {"compatible": b"brcm,bcm53125\0", "status": b"okay\0"}]:
             nodes = fixture()
             nodes["/extra"] = props
             with self.assertRaises(ValueError):

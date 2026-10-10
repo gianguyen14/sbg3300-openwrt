@@ -1,36 +1,31 @@
 # Ethernet and switch investigation
 
-The upstream `bmips` target has BCM63168 Ethernet and DSA `b53` support. Its
-generic `b53_spi` frontend supports `brcm,bcm53125`, in addition to MDIO/SRAB
-frontends. The exact-board board-parameter table found in the Broadcom 4.12L.06B
-source configures an external switch on `BP_ENET_CONFIG_HS_SPI_SSB_0`, with PHY
-group port map `0x1e` (ports 1 through 4), and a separate memory-mapped group
-with port map `0x58` (ports 3, 4, and 6). In the source's selected board-table
-branch, the memory-mapped group describes port 4 as `TMII_DIRECT|0x14` and
-port 6 as `RGMII_DIRECT|EXTSW_CONNECTED`. This proves an external SPI switch
-path and an additional SoC-side Ethernet path in the matching board table, but
-not the currently detected silicon ID or how the running 2018 binary applies
-those PHY settings. A fresh read-only search of live `dmesg` for switch-ID
-messages returned no matching line. Live sysfs does expose
-`/sys/devices/platform/bcmhs_spi.1/spi1.0`, bound to the generic
-`bcm_HSSpiDev0` driver with `MODALIAS=bcm_HSSpiDev0`; it does not identify a
-BCM53125 device or expose the switch register ID. Upstream
-`bcm63268.dtsi` aliases `spi1` to the BCM6328 HSSPI controller, which makes the
-live `spi1.0` node and board-table SSB0 setting consistent with that controller
-path. This strengthens the HSSPI hypothesis but does not identify the SPI
-client or establish its mode, chip-select pinmux, reset, or port wiring.
+The pinned `bmips` target has BCM63168 Ethernet, DSA `b53`, and the `b53_spi`
+frontend for `brcm,bcm53125`. The exact-board Broadcom 4.12L.06B boardparms
+entry describes an external HSSPI switch group (`SSB_0`, PHY map `0x1e`) and a
+separate memory-mapped group (`0x58`). Its selected branch describes integrated
+port 4 as `TMII_DIRECT|0x14` and port 6 as
+`RGMII_DIRECT|EXTSW_CONNECTED`.
 
-The upstream SoC DTS leaves HSSPI disabled until a board enables it and supplies
-the correct pinctrl; the SBG3300 skeleton intentionally leaves it disabled
-until those board-specific details are corroborated. `b53` has an SPI front
-end, but that alone is not enough evidence to bind it to this live device.
+The public SBG3300 bootlog independently identifies BCM53125 on board ID
+`963168MXH_17A`, matching the board ID observed in live stock SSH. The Linux
+log reports two switch units whose bitmaps align with the two boardparms
+groups. See `reports/ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md` for source
+references and evidence boundaries.
 
-The upstream tree also contains a BCM53125 DSA configuration for Sagemcom
-F@ST 3864 OP. This establishes driver availability, not identical port wiring.
+Live stock sysfs exposes `/sys/devices/platform/bcmhs_spi.1/spi1.0`, bound to
+generic `bcm_HSSpiDev0`; it does not expose the switch ID. The board table
+selects HSSPI SSB0 but also requests an HSSPI SSB5 external-chip-select overlay
+and mentions SSB5 as an alternate after MDIO resistor changes. The controller,
+chip-select pinmux, CPU port, RGMII delays, PHY scan ownership, and reset
+sequence are therefore not fully resolved.
 
-Stock boot evidence shows `bcm_enet`, `eth3` and `eth4`, switch-port indices
-1, 11, and 12 in link logs, and WAN layering through `eth4.1` to `eth4`. The
-physical LAN port labels, MAC connection, detected external switch ID, RGMII
-timing, DSA CPU port, and relationship between SPI-managed external switch and
-internal switch ports remain unresolved. Do not cargo-cult reference DTS
-labels.
+Comtrend VG-8050 and Sagem F@ST 3864 OP DTS files provide comparison examples
+only. They use different switch attachment choices and port wiring. Their
+BCM53125 port labels, CPU link, mode, delays, and WAN mapping are not evidence
+for the SBG3300.
+
+Stock `ethN` switch indices and `eth4.1`/PPP layering are logical interfaces,
+not physical jack labels. No stock VLAN table or safe jack-to-port mapping is
+available. Keep switch/MDIO inactive in the SBG3300 DTS; `b53_spi` compile
+coverage does not establish an SBG3300 runtime bind or working network.

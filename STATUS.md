@@ -44,8 +44,9 @@ not runtime evidence.
 | Fixed partitions / UBI / sysupgrade | NOT-APPROVED | Boot-critical map and writer semantics incomplete | No | Yes, after offline proof |
 | Factory image / stock wrapper | NOT-CREATED | No exact compatible container or validated handoff | No | Yes, review and later device validation |
 | Ethernet MAC driver | PARTIAL | Upstream bmips support exists; stock board evidence shows `bcm_enet`, `eth3`, `eth4` | Stock only | Yes |
-| BCM53125 driver | UPSTREAM-AVAILABLE | Upstream `b53_spi` has `brcm,bcm53125`; similar board use is only a reference | No | No for source research; yes for silicon/topology/runtime |
-| Switch silicon/topology | UNPROVEN | HS-SPI path and boardparms groups are known; exact switch ID, CPU port, timings, and jack mapping are not | No | Yes |
+| BCM53125 driver | UPSTREAM-AVAILABLE | Public SBG3300 bootlog for board ID `963168MXH_17A` reports external switch ID 53125; pinned `b53_spi` has the compatible. Compile coverage exists; no SBG runtime bind | No | Yes for runtime |
+| Switch silicon | PASS | Public bootlog reports BCM53125 and the same board ID as live stock SSH; boot also reports two MDK switch units and maps their port bitmaps to the two exact-family boardparms groups | Stock only | No for identity; yes for Linux runtime |
+| Switch topology / WAN-LAN | PARTIAL / DISABLED | Exact-family table describes SoC port 6 RGMII to external switch and HSSPI SSB0 ports 1–4; SSB5 external-CS overlay conflicts; CPU port, delay, VLAN/jack mapping remain unproven | No OpenWrt runtime | Yes |
 | USB | PARTIAL | Stock PCI functions `14e4:6300`; EHCI/OHCI observed | Stock only | Yes for OpenWrt USB runtime |
 | Wi-Fi identity | PASS | PCI `14e4:435f`, subsystem `14e4:0513`, class `0x028000`; stock proprietary `wl` family | Stock only | No for identity |
 | Wi-Fi upstream binding | INVESTIGATING | b43 has a BCM6362/`0x435f` band-classification case, not proof of PCI discovery/binding; calibration location unresolved | No | Yes for radio validation |
@@ -75,14 +76,14 @@ not runtime evidence.
 
 ## Next offline work
 
-1. Continue the XTM port as small compile-probe patches; do not wholesale
-   transplant old Linux headers or vendor-modified networking internals.
-2. Reconstruct exact `963168MXH_17A` Ethernet topology from source and safely
-   available board evidence; leave unsupported nodes disabled.
-3. Find and compare the exact Zyxel/Broadcom image-writer lineage with the
+1. Resolve the remaining `963168MXH_17A` switch CPU-port, HSSPI CS, RGMII,
+   VLAN, and physical WAN/LAN mappings; leave unsupported nodes disabled.
+2. Find and compare the exact Zyxel/Broadcom image-writer lineage with the
    live physical MTD evidence before defining partitions or images.
-4. Continue public source searches for `adsldd`/`bcmxtmcfg` and Wi-Fi bus glue.
-5. Add offline tests and refine build/reproduction scripts.
+3. Continue Wi-Fi host/calibration, USB, and peripheral integration work with
+   board-specific evidence only.
+4. Add offline tests and refine build/reproduction scripts. Preserve XTM/PTM
+   sources and artifacts while DSL remains deferred.
 
 Tasks requiring the actual device remain explicitly `NEEDS-DEVICE` in
 [HANDOFF-HERMES.md](HANDOFF-HERMES.md). Do not upgrade any status from build
