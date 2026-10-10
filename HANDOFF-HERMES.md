@@ -65,14 +65,19 @@ Evidence labels are defined in `docs/EVIDENCE-POLICY.md`; consult
   dependencies after correcting an initial path-with-spaces harness error.
 - `LIVE-DEVICE`: PCI Wi-Fi function is `14e4:435f`, subsystem `14e4:0513`;
   stock driver is proprietary `wl` family `6.30.102.7.cpe4.12L06B.1`.
-- `UPSTREAM`: b53 SPI supports `brcm,bcm53125`; a similar BCM63168 device uses
-  it. Neither fact proves the SBG3300's switch silicon/topology.
+- `STOCK-BOOT-LOG`: a public log reporting the same board ID
+  `963168MXH_17A` identifies external BCM53125 silicon. `EXACT-BOARD-SOURCE`
+  plus the stock VLAN log and Linux B53's BCM53125 profile strongly support
+  the external port-8/SoC-port-6 cascade; see the detailed confidence labels
+  in `reports/ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md`.
 
 ## 4. What has NOT been proven
 
 - OpenWrt boot, CFE handoff, or usable board RAM under OpenWrt.
-- Ethernet link, exact MAC selection, switch silicon ID, DSA CPU port, RGMII
-  timing, or mapping from LAN jacks to ports.
+- OpenWrt Ethernet link/DSA runtime, exact MAC selection, physical confirmation
+  of the switch cascade, RGMII timing/reset ownership, or mapping from LAN
+  jacks to ports. The same-board-ID bootlog does identify stock BCM53125; that
+  does not prove Linux 6.18 binding or runtime.
 - NAND OpenWrt read/write, ECC/OOB compatibility, complete writer semantics,
   safe partition scheme, bad-block translation, or image acceptance.
 - DSL driver port, DSL initialization, sync, XTM interface, PPPoE, or Internet.
@@ -159,22 +164,30 @@ unapproved. See `NAND-MAP.md`.
 
 ## 11. Ethernet/switch state
 
-Exact boardparms branch `963168MXH_17A` configures an external HSSPI switch
-group (`BP_ENET_CONFIG_HS_SPI_SSB_0`, PHY map `0x1e`) and a separate memory
-mapped group (`0x58`). It describes port 4 as `TMII_DIRECT | 0x14` and port 6
-as `RGMII_DIRECT | EXTSW_CONNECTED`. Live stock evidence has `bcm_enet`,
-`eth3`, `eth4`; WAN is `ppp2.1 -> eth4.1 -> eth4`; boot logs mention switch
-indices 1, 11, 12. The public SBG3300 bootlog reports external switch ID 53125
-for board ID `963168MXH_17A` and two switch units whose bitmaps align with
-those two groups. HSSPI sysfs path is observed.
+Exact boardparms entry `963168MXH_17A` has an active C3 configuration: SoC
+port map `0x58`; port 3/PHY 4; port 4 `TMII_DIRECT|0x14`; and port 6
+`RGMII_DIRECT|EXTSW_CONNECTED`. Its external switch group selects HSSPI SSB0
+with PHY map `0x1e`/ports 1–4. Family driver source maps that selection to bus
+1/CS0, reserves mode 3 at 781 kHz, and uses a Broadcom type-2 header. The
+boardparms also requests SS5 pinmux, but the active switch selection is CS0;
+the adjacent source comment describes SSB5 only as an alternative after
+resistor changes.
 
-Product documentation confirms an ETHWAN connector and four ETHERNET 1–4 LAN
-connectors, but their board-port mapping remains unresolved. Also unresolved:
-active HSSPI chip-select wiring and the purpose of the SSB5 external-CS overlay,
-external switch CPU port, RGMII delays, stock VLAN table, logical eth/port
-indices, and Linux runtime ownership. `b53_spi` is
-available and compile-covered, but is not board/runtime validation. See
-`reports/ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md`; keep DSA topology disabled.
+The public bootlog reports BCM53125 for the same firmware board ID, the C3
+port bitmaps, and startup VLAN 1 with external ports 1–4 untagged and port 8
+tagged. Linux 6.18's BCM53125 profile calls port 8 its IMP. This strongly
+supports a port-6-to-port-8 RGMII cascade. It does not establish physical PCB
+nets, RGMII delay ownership, final VLAN configuration, or runtime Linux DSA.
+The CFE/Linux log does not reveal PCB silkscreen revision.
+
+Stock logical indices are `eth0→4`, `eth2→2`, `eth3→1`, `eth4→11` and
+`eth5→12`; they are virtual driver indices, not physical jack numbers. Product
+documentation confirms separate ETHWAN and ETHERNET 1–4 connectors, but the
+WAN mapping and LAN port order remain unknown. The stock type-2 packet tag may
+not match upstream DSA BRCM tag encoding. Switch/reset sequence and MAC source
+are unresolved. Do not add active DSA links or labels. The offline-only
+candidate and source-backed blockers are in
+`reports/ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md`.
 
 ## 12. DSL/XTM state — deferred
 
@@ -257,7 +270,8 @@ none of those actions.
 
 ## 18. Current blockers
 
-1. Exact BCM63168/BCM53125 switch topology and safe DSA mapping.
+1. Exact RGMII timing/reset, stock-vs-DSA tag compatibility, and WAN/LAN jack
+   mapping needed to finish a safe BCM63168/BCM53125 DSA configuration.
 2. Exact NAND writer/slot/bad-block/ECC semantics and non-UART recovery path.
 3. XTM forward-port's structural Broadcom dependencies; missing ADSL and XTM
    config source/objects.

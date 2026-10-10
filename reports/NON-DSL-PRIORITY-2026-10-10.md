@@ -38,6 +38,16 @@ The dated read-only source report remains
 
 ## Ethernet and switch boundary
 
+**Follow-up source reconciliation:** the initial text below predates the
+cross-check recorded in
+[`ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md`](ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md).
+The public same-board-ID bootlog does report BCM53125; exact-family boardparms
+and driver source select HSSPI bus 1/CS0, mode 3 at 781 kHz; and boot VLAN plus
+the pinned Linux B53 profile strongly support BCM53125 port 8 as the cascade
+peer for SoC port 6. This remains `SUPPORTED`, not OpenWrt runtime validation.
+The port map/jack order, RGMII timing/reset, final VLAN state, tag compatibility
+and WAN mapping remain unresolved. The main DTS stays disabled.
+
 `BUILD-RESULT`: the pinned Linux kernel already compiles `bcm6368-enetsw`,
 `b53_spi`, DSA core and Broadcom DSA tags in the isolated pre-final
 configuration. The strict external `bcm6368-enetsw` artifact is ELF32 MIPS

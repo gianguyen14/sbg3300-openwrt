@@ -1,0 +1,47 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+#include "bcm63168-zyxel-sbg3300-n000.dts"
+
+/*
+ * Evidence fixture only. This is not a deployable board DTS.
+ *
+ * Exact-family boardparms selects HSSPI SSB0 and source configures bus 1,
+ * chip select 0, mode 3, and 781 kHz. The external switch remains disabled.
+ * The DSA CPU endpoint, RGMII delay mode, DSA tag protocol, reset ownership,
+ * and physical port labels remain unresolved and are deliberately omitted.
+ */
+&ethernet {
+	status = "disabled";
+};
+
+&switch0 {
+	status = "disabled";
+};
+
+&mdio {
+	status = "disabled";
+};
+
+&hsspi {
+	status = "disabled";
+
+	switch@0 {
+		compatible = "brcm,bcm53125";
+		reg = <0>;
+		spi-max-frequency = <781000>;
+		spi-cpol;
+		spi-cpha;
+		status = "disabled";
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@1 { reg = <1>; };
+			port@2 { reg = <2>; };
+			port@3 { reg = <3>; };
+			port@4 { reg = <4>; };
+			port@8 { reg = <8>; };
+		};
+	};
+};

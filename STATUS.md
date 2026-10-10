@@ -46,7 +46,7 @@ not runtime evidence.
 | Ethernet MAC driver | PARTIAL | Upstream bmips support exists; stock board evidence shows `bcm_enet`, `eth3`, `eth4` | Stock only | Yes |
 | BCM53125 driver | UPSTREAM-AVAILABLE | Public SBG3300 bootlog for board ID `963168MXH_17A` reports external switch ID 53125; pinned `b53_spi` has the compatible. Compile coverage exists; no SBG runtime bind | No | Yes for runtime |
 | Switch silicon | PASS | Public bootlog reports BCM53125 and the same board ID as live stock SSH; boot also reports two MDK switch units and maps their port bitmaps to the two exact-family boardparms groups | Stock only | No for identity; yes for Linux runtime |
-| Switch topology / WAN-LAN | PARTIAL / DISABLED | Product guide verifies separate ETHWAN and ETHERNET 1–4 connectors; exact-family table describes SoC port 6 RGMII to external switch and HSSPI SSB0 ports 1–4; board port/jack mapping, CPU port, delay and VLAN remain unproven | No OpenWrt runtime | Yes |
+| Switch topology / WAN-LAN | PARTIAL / DISABLED | Same-board-ID bootlog verifies BCM53125 and VLAN-1 port group; exact-family source selects HSSPI bus 1/CS0, mode 3/781 kHz and SoC port 6 RGMII; boot VLAN plus Linux BCM53125 profile strongly supports external port 8 as cascade/IMP. Jack order, WAN mapping, RGMII timing, tag compatibility and runtime remain unproven | No OpenWrt runtime | Yes |
 | USB | PARTIAL | Stock PCI functions `14e4:6300`; EHCI/OHCI observed | Stock only | Yes for OpenWrt USB runtime |
 | Wi-Fi identity | PASS | PCI `14e4:435f`, subsystem `14e4:0513`, class `0x028000`; stock proprietary `wl` family | Stock only | No for identity |
 | Wi-Fi upstream binding | INVESTIGATING | b43 has a BCM6362/`0x435f` band-classification case, not proof of PCI discovery/binding; calibration location unresolved | No | Yes for radio validation |
@@ -121,6 +121,15 @@ callback/API-double cases pass native/sanitizer/MIPS tests and catch the old
 bug. Two fresh strict external builds reproduce SHA256
 `f67b6da34dcc279ee832fbc4210463b8cc89ba2b184186309d324e70e47f80dd`;
 OpenWrt component APK rebuilt. Legacy probe still 19 unresolved imports.
+
+Ethernet topology research now cross-checks the exact boardparms C3 branch,
+same-board-ID stock bootlog, stock logical-port observations, and Linux 6.18.54
+B53/DSA sources. The SBG-specific switch fixture remains disabled; its CS0
+contract passes DTC and full schemas. Twenty-two native tests pass. See
+[reports/ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md](reports/ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md).
+External port 8 is strongly supported as the SoC port-6 cascade endpoint;
+physical jack order, RGMII timing, type-2 tag compatibility and runtime remain
+unresolved. No new Ethernet kernel module was compiled in this milestone.
 
 Wi-Fi source cross-check identifies a synthetic on-chip PCI presentation in
 the exact-family source. BCMA SoC host compiles in isolated coverage; two fresh

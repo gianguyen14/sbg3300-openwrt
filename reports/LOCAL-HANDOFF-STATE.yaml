@@ -161,12 +161,22 @@ ethernet_switch_topology_research:
   public_bootlog_external_switch: BCM53125
   exact_family_mirror_revision: e2f23ddbb20bf75689372b6e6a5a0dc613f6e313
   boardparms_groups: [MMAP_0x58, HS_SPI_SSB0_0x1e]
-  hsspi_chip_select: SSB0_SELECTED_SSB5_OVERLAY_PURPOSE_UNRESOLVED
-  dsa_cpu_port: UNRESOLVED
-  rgmii_timing: UNRESOLVED
-  wan_lan_and_vlan_mapping: UNRESOLVED
+  boardparms_active_branch: C3_SUPPORTED_BY_STOCK_BITMAPS
+  soc_ports: {port3: PHY_ID_4, port4: TMII_DIRECT_ID_0x14, port6: RGMII_DIRECT_EXTSW}
+  hsspi_selected_path: {bus: 1, chip_select: 0, mode: 3, frequency_hz: 781000}
+  hsspi_ss5_overlay: PINMUX_REQUESTED_PURPOSE_UNKNOWN_NOT_SWITCH_SELECTION
+  external_ports: [1, 2, 3, 4]
+  external_cpu_port: 8
+  port6_to_external_port8: SUPPORTED_HIGH_CONFIDENCE_NOT_RUNTIME_VERIFIED
+  boot_vlan1: {ports_1_to_4: UNTAGGED_PVID_1, port8: TAGGED}
+  dsa_tag_compatibility: STOCK_TYPE2_0x888A_VS_UPSTREAM_BRCM_FORMAT_UNRESOLVED
+  rgmii_timing_reset: UNRESOLVED
+  wan_lan_and_vlan_mapping: PARTIAL_LOGICAL_INDICES_KNOWN_JACK_ORDER_UNKNOWN
   product_documentation_ethwan_connector: VERIFIED
   physical_jack_to_chip_port_mapping: UNRESOLVED
   topology_enabled: false
-  new_test: active_bcm53125_dtb_rejected
+  offline_candidate_dtb_sha256: d3e7522c76ace2a0fb567c3f0fc6178b45648b171db655d4f9faa7f74f10ec91
+  new_tests: [disabled_bcm53125_candidate_contract, reject_activation_duplicate_mdio_and_guessed_links]
+  python_unit_tests: 22
+  full_dtc_schema_diagnostics: 0
   runtime_validation: NOT_TESTED
