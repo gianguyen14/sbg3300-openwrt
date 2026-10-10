@@ -152,3 +152,11 @@ module builds reproduce SHA256
 imports and none missing. Ten OpenWrt patches apply to a fresh pinned tree.
 See [reports/ETHERNET-RX-NAPI-VALIDATION.md](reports/ETHERNET-RX-NAPI-VALIDATION.md).
 No board activation or OpenWrt runtime result is claimed.
+
+Boot/container validation now rejects board-ID prefix matches, unknown trailer
+formats, ELF physical overflow/alignment/loader overlaps and BSS-only entry
+points. DT validation rejects unverified enabled radio/GPIO consumers. All 29
+Python tests and full DTS schemas pass. Strict old-loader failure is preserved.
+The new integrated Linux kernel/modules build exits 0; 77 modules have real ABI
+and symbol audits. See
+[reports/BOOT-NAND-PERIPHERAL-VALIDATION.md](reports/BOOT-NAND-PERIPHERAL-VALIDATION.md).

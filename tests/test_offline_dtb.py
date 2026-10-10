@@ -46,6 +46,19 @@ def ethernet_candidate_fixture():
 
 
 class DtbTests(unittest.TestCase):
+    def test_unverified_radio_and_gpio_consumers_remain_disabled(self):
+        for compatible in (b"brcm,bus-axi\0", b"gpio-leds\0",
+                           b"gpio-keys\0", b"gpio-keys-polled\0"):
+            for status in (None, b"okay\0"):
+                nodes = fixture()
+                props = {"compatible": compatible}
+                if status is not None:
+                    props["status"] = status
+                nodes["/unverified"] = props
+                with self.assertRaises(ValueError):
+                    audit.verify(nodes)
+            nodes["/unverified"]["status"] = b"disabled\0"
+            audit.verify(nodes)
     def test_disabled_resource_contract(self):
         self.assertEqual(audit.verify(fixture())["sar"], "DISABLED")
 

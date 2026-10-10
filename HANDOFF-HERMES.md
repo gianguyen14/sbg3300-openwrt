@@ -336,3 +336,13 @@ callback tests and two strict reproducible module builds. New SHA256:
 imports, none missing. Existing topology/PHY/MAC/boot blockers remain. The
 current OpenWrt patch series has ten entries; use the series file rather than
 this handoff's historical four-patch list. All router changes remain gated.
+
+## Boot/storage/peripheral validator follow-up
+
+Container board identity is exact, unknown trailer flags rejected. ELF checks
+now reject physical overflow/alignment errors, loader-memory overlap and BSS-only
+entry. Unverified BCMA/GPIO consumers must remain disabled. New integrated
+kernel/compiler/modpost exits 0; all 77 modules audited, zero missing imports.
+The old loader still fails strict audit. Source-supported Hamming interpretation
+narrows ECC metadata but does not approve NAND. See
+`reports/BOOT-NAND-PERIPHERAL-VALIDATION.md` and the non-DSL artifact TSVs.

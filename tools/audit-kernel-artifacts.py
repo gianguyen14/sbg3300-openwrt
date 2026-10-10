@@ -22,7 +22,7 @@ def span(data, offset, size):
 
 
 def string(data, offset):
-    if offset >= len(data):
+    if offset < 0 or offset >= len(data):
         raise ArtifactError("invalid ELF string offset")
     end = data.find(b"\0", offset)
     if end < 0:
@@ -49,16 +49,26 @@ def inspect_elf(data, module=False, loader=False):
         if phsize != 32:
             raise ArtifactError("invalid program header table")
         for i in range(phnum):
-            ptype, offset, vaddr, paddr, filesz, memsz, pflags, _ = struct.unpack(
+            ptype, offset, vaddr, paddr, filesz, memsz, pflags, align = struct.unpack(
                 ">IIIIIIII", span(data, phoff + i * 32, 32))
             if ptype == 1:  # PT_LOAD
-                if filesz > memsz or vaddr + memsz > 2 ** 32:
+                if (filesz > memsz or vaddr + memsz > 2 ** 32 or
+                        paddr + memsz > 2 ** 32):
                     raise ArtifactError("invalid load segment")
+                if align > 1 and (align & (align - 1) or offset % align != vaddr % align):
+                    raise ArtifactError("invalid load segment alignment")
                 span(data, offset, filesz)
+                if loader and memsz:
+                    for prior in segments:
+                        for key, start in (("virtual_address", vaddr), ("physical_address", paddr)):
+                            if (start < prior[key] + prior["memory_bytes"] and
+                                    prior[key] < start + memsz):
+                                raise ArtifactError("overlapping loader memory ranges")
                 segments.append({"virtual_address": vaddr, "physical_address": paddr,
+                                 "file_offset": offset, "alignment": align,
                                  "file_bytes": filesz, "memory_bytes": memsz, "flags": pflags})
     if loader and not any(s["flags"] & 1 and s["virtual_address"] <= entry <
-                          s["virtual_address"] + s["memory_bytes"] for s in segments):
+                          s["virtual_address"] + s["file_bytes"] for s in segments):
         raise ArtifactError("loader entry outside executable load segments")
     sections = []
     if shnum:

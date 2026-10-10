@@ -38,6 +38,20 @@ def module_elf(vermagic=audit.VERMAGIC, symbol="test_import"):
     return bytes(header) + payload + sections
 
 
+def loader_elf(segments, entry=0x81000000):
+    header = bytearray(elf(flags=0))
+    struct.pack_into(">I", header, 24, entry)
+    struct.pack_into(">I", header, 28, 52)
+    struct.pack_into(">HH", header, 42, 32, len(segments))
+    offset = 52 + 32 * len(segments)
+    payload = b""
+    for vaddr, paddr, filesz, memsz, align in segments:
+        header += struct.pack(">IIIIIIII", 1, offset + len(payload), vaddr, paddr,
+                              filesz, memsz, 5, align)
+        payload += bytes(filesz)
+    return bytes(header) + payload
+
+
 class ArtifactTests(unittest.TestCase):
     def test_executable(self):
         self.assertEqual(audit.inspect_elf(elf())["elf"], "ELF32-MIPS-BE-o32")
@@ -77,6 +91,30 @@ class ArtifactTests(unittest.TestCase):
         struct.pack_into(">I", data, 24, 0)
         with self.assertRaises(audit.ArtifactError):
             audit.inspect_elf(bytes(data), loader=True)
+
+    def test_loader_segment_physical_overflow_and_alignment(self):
+        for segment in [(0x81000000, 0xFFFFFFFC, 4, 8, 4),
+                        (0x81000000, 0x81000000, 4, 4, 3),
+                        (0x81000000, 0x81000000, 4, 4, 8)]:
+            with self.subTest(segment=segment):
+                with self.assertRaises(audit.ArtifactError):
+                    audit.inspect_elf(loader_elf([segment]), loader=True)
+
+    def test_loader_entry_requires_file_backed_code(self):
+        data = loader_elf([(0x81000000, 0x81000000, 4, 8, 4)], entry=0x81000004)
+        with self.assertRaises(audit.ArtifactError):
+            audit.inspect_elf(data, loader=True)
+
+    def test_loader_rejects_virtual_and_physical_aliases(self):
+        for second in [(0x81000000, 0x82000000, 4, 4, 4),
+                       (0x82000000, 0x81000000, 4, 4, 4)]:
+            data = loader_elf([(0x81000000, 0x81000000, 4, 4, 4), second])
+            with self.assertRaises(audit.ArtifactError):
+                audit.inspect_elf(data, loader=True)
+
+    def test_negative_string_offset_is_rejected(self):
+        with self.assertRaises(audit.ArtifactError):
+            audit.string(b"x\0", -1)
 
     def test_hash_and_regular_file(self):
         with tempfile.TemporaryDirectory() as directory:

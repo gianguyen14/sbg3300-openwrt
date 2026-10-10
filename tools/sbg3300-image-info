@@ -77,6 +77,8 @@ def parse_image(data):
 
     trailer_offset = payload_end
     trailer_flag = data[0xCE]
+    if trailer_flag not in (0, 1):
+        raise ImageError("unsupported trailer flag")
     trailer = None
     if trailer_flag == 1:
         if trailer_offset + 0x20 > len(data):
@@ -104,7 +106,7 @@ def parse_image(data):
         "structural_ok": fields["tag_version"] == "6" and
                          fields["tag_identity"] == "MSTC" and
                          fields["chip_id"] == "63268" and
-                         fields["board_id"].startswith("963168MXH_17A") and
+                         fields["board_id"] == "963168MXH_17A" and
                          payload_end <= len(data),
     }
 

@@ -195,3 +195,18 @@ enetsw_rx_napi_milestone:
   pre_fix_test_exit: 134
   final_firmware_build_started: false
   runtime: NOT_TESTED
+non_dsl_boot_peripheral_validation:
+  report: reports/BOOT-NAND-PERIPHERAL-VALIDATION.md
+  python_tests: 29
+  full_dtc_schema_diagnostics: 0
+  legacy_initramfs_strict_loader_exit: 1
+  legacy_initramfs_unchanged: true
+  gpio_radio_unverified_activation_guard: ENABLED
+  nand_legacy_code15: SUPPORTED_HAMMING_NOT_RUNTIME_VERIFIED
+  integrated_kernel_compiler_modpost_exit: 0
+  integrated_kernel_sha256: ddfcb7681c002a505eb5ebcd553c61c5c666b9b4d8b36a02f6a4c64be745b8fc
+  integrated_kernel_module_count: 77
+  integrated_kernel_missing_imports: 0
+  peripheral_compiled_object_count: 8
+  original_build_artifacts_preserved: true
+  final_firmware_build_started: false

@@ -31,6 +31,10 @@ def verify(nodes, require_sar=True):
         if any(name in props for name in ("mac-address", "local-mac-address", "calibration-data")):
             raise ValueError("device-specific data in DTB")
         compatibles = props.get("compatible", b"").split(b"\0")
+        if any(c in compatibles for c in (b"brcm,bus-axi", b"gpio-leds",
+                                          b"gpio-keys", b"gpio-keys-polled")):
+            if props.get("status") != b"disabled\0":
+                raise ValueError("unverified Wi-Fi or board GPIO consumer activated")
         if any(c in compatibles for c in (b"brcm,bcm63268-enetsw",
                                          b"brcm,bcm63268-switch",
                                          b"brcm,bcm53125")):
