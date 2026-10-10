@@ -8,3 +8,4 @@
 0008-bmips-bcm63268-resource-bindings.patch
 0009-bmips-enetsw-managed-lifetime.patch
 0010-bmips-enetsw-rx-poll.patch
+0011-bmips-sbg3300-hardware-bindings.patch
