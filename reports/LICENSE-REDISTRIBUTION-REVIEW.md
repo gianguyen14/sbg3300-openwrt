@@ -1,13 +1,28 @@
-# License and Redistribution Review — Proposed Handoff Branch
+# License and Redistribution Review — Local Handoff
 
-Reviewed only selected clean-main files and newly added handoff materials. This is a preliminary review, not blanket approval for all reachable historical content.
+Review date: 2026-10-10. Scope: the files added or changed by the local
+handoff commit and their relationship to the already-published parent tree.
 
-- New handoff documents, YAML status, and symbol inventory are original project documentation/data and contain no vendor implementation source.
-- OpenWrt patch files retain SPDX/license notices from upstream or project patch headers; preserve original attribution. Their exact target-file upstream licenses remain GPL-compatible and are not relicensed by the repository Apache license.
-- Existing upstream-derived DTS/patches must retain source copyright/license terms.
-- XTM compatibility/DMA files and historical vendor-derived source are not included in this branch due unresolved provenance and safety issues.
-- External Broadcom XTM and DSL source/headers are excluded; no license for every dependency has been established. The Broadcom DUAL/GPL header on selected historical C files alone is insufficient.
-- The public scanner found reachable historical email placeholders and MAC-like vendor source examples. They require human review; scanner result is REVIEW REQUIRED. Do not publish branch until authorized reviewer accepts or removes/sanitizes them while preserving valid attribution.
-- No stock firmware, binary driver, DSL firmware, NVRAM, calibration, credentials, private key, or device dump was intentionally added.
+The new files are handoff documentation, build/evidence metadata, and a list
+of unresolved object symbols. They contain no copied driver implementation,
+upstream source file, firmware, or binary. The symbol table records names and
+object/provider classifications from the diagnostic build; it does not
+include implementation code.
 
-Status: LICENSE REVIEW INCOMPLETE; PUBLICATION BLOCKED pending review of reachable history findings and patch/source provenance.
+The existing OpenWrt patch mail files retain their existing attribution and
+license notices. The handoff does not alter those files or change their
+licensing. The repository's Apache-2.0 license does not override any
+third-party terms.
+
+The external Broadcom family tree and all local stock materials remain outside
+the repository. The available handoff does not establish redistribution
+rights for the full vendor tree, every dependency, prebuilt modules, or DSL
+firmware, so none of those materials is approved for publication. This does
+not block publication of the reviewed documentation-only delta.
+
+## Result
+
+License/provenance review of the handoff delta: **PASS for the listed
+documentation and symbol data**. No conclusion is made about external vendor
+source or binary redistribution. Preserve all existing copyright and license
+notices; do not add external vendor code or blobs without file-level review.
