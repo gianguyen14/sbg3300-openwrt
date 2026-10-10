@@ -84,3 +84,31 @@ pre_final_integration:
   full_firmware_image_build_started: false
   overall_readiness: BLOCKED
   report: reports/PRE-FINAL-ENGINEERING.md
+
+pre_final_integrated_build:
+  prepared_kernel_compile_exit: 0
+  prepared_kernel_vmlinux_sha256: bdb6d92f68fd401655b1d2c9ba7901719833dec1b423273b913c13911c0c27ee
+  selected_package_compile_exit: 0
+  apk_count: 88
+  final_dtb_sha256: 3be99ff1c7e4962384cd292adfd408cace5439625c381026619f60946a99751d
+  full_schema_diagnostics: 0
+  device_interaction: NONE
+  final_full_firmware_build: NOT_STARTED
+  readiness: BLOCKED
+  source_milestone_commit: 8491a5e4c9def587f12391ae409b9cc69d24b1af
+
+pre_final_publication:
+  feature_branch: feat/sbg3300-pre-final-integration
+  source_milestone_remote_sha: 8491a5e4c9def587f12391ae409b9cc69d24b1af
+  draft_pr: https://github.com/gianguyen14/sbg3300-openwrt/pull/3
+  source_license_review: APPROVED_SCOPED_GPL_ORIGINAL_SOURCE
+  public_safety_review: APPROVED_WITH_RETAINED_UPSTREAM_ATTRIBUTION
+  original_router_firmware_modified: false
+
+pre_final_gate:
+  decision: BLOCKED_AWAITING_USER_DECISION
+  all_available_independent_offline_stages_performed: true
+  mandatory_runtime_evidence: NOT_TESTED
+  public_worktree_private_artifacts: NONE
+  private_sandbox_untracked_package: ACCOUNTED_SOURCE_STAGING_ONLY
+  original_kernel_and_initramfs_preserved: true

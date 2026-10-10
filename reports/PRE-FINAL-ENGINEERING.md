@@ -63,7 +63,7 @@ retained in `PRE-FINAL-KERNEL-ARTIFACTS.tsv`.
   `89c26b4d872fb86a9f8839bbbe9f077ce64e5f7f99017d9258ccf1bd54e8f1b2`.
 - Both: ELF32 MIPS big endian/o32, vermagic
   `6.18.54 SMP mod_unload BMIPS 32BIT`, missing kernel imports 0.
-- Disabled SAR resource fixture DTB: SHA256
+- Disabled SAR resource fixture DTB before the USB dependency correction: SHA256
   `fccf54e805a0ac96d1a0b0e6312169d334c9cfc0bdb744bf75afed5cf5615465`.
 - Existing initramfs loader remains unchanged: SHA256
   `3961a39d5d554ce467b9575bbc6f6293d385ddda9fc4dc9b3dbf0c3cf8027b51`.
@@ -137,3 +137,33 @@ but left their upstream exact-SoC PHY disabled. Patch 0005 enables that existing
 provider; a new rejection test enforces this dependency. No VBUS GPIO or board
 calibration value is guessed. This changes the fixture DTB hash; final validation
 records are appended after the new source-tree check.
+
+## Final integrated software results
+
+- Source sandbox OpenWrt HEAD `9d363a34768ce05e7d229242408b3fdf77b29651` has exactly the reviewed tree
+  `2ac5b16d7ba20467a099bf096de89c32d69a9324`. Prepared kernel source was patched
+  explicitly and its enetsw source/header compared byte-for-byte to the strict
+  module inputs before the successful integration build.
+- Corrected integrated vmlinux/modules build exits 0. Integrated vmlinux SHA256:
+  `bdb6d92f68fd401655b1d2c9ba7901719833dec1b423273b913c13911c0c27ee`.
+  The prepared-tree build is separate from a final firmware image build.
+- Selected complete package/compile exits 0; 88 APK files present in the sandbox.
+  Original signing keys and generated package files remain private.
+- Final source DTB/full-schema/round-trip and dependency test pass in
+  `~/.cache/sbg3300-offline-dts/run-ke2Pf5`, with empty diagnostics. DTB SHA256:
+  `3be99ff1c7e4962384cd292adfd408cace5439625c381026619f60946a99751d`.
+- No final production/factory/sysupgrade/rootfs image target was started. Existing
+  initramfs ELF and canonical kernel inputs retain their original hashes.
+- Raw Git whitespace diagnostics are normal unified/nested patch context, not
+  applied source defects; both checker results are retained. Scanner contact
+  findings are reviewed published upstream author attribution, retained intact.
+
+## Gate assessment
+
+All available independent safe offline implementation/build/test stages above
+have been performed. Source, hardware and firmware blockers in the table remain.
+A final Full OpenWrt image is **not technically justified** at this boundary.
+The decision is BLOCKED, not COMPLETE. Obtain new lawful source and exact
+controller/board/storage/boot evidence before extending runtime attachment or
+considering the separately approved final build. Device authorization remains
+separate from source/build approval.

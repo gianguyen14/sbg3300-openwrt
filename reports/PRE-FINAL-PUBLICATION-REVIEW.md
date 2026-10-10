@@ -49,3 +49,8 @@ not whitespace defects in applied source. Non-patch staged files and the actual
 applied OpenWrt source diff pass diff --check. No Git whitespace attributes,
 scanner patterns or validation rules were disabled. The raw nonzero checker
 result is retained in the local project-patch-format-whitespace.log.
+
+Final follow-up scan before report commit: 115 tracked files, 403 reachable
+objects, with only the same two upstream MODULE_AUTHOR contact findings and
+their two historical blob occurrences. All four occurrences are the same
+reviewed public attribution. No new finding or scanner modification.
