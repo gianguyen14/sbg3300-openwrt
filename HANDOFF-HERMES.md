@@ -366,3 +366,34 @@ The earlier `091acf...` build used a TX-underflow bit in its RX error mask;
 RX source-port metadata overlaps it. The 16-vector callback regression rejects
 that earlier source and passes the corrected RX-only mask. Historical build
 success remains valid as compilation evidence but not final source approval.
+
+
+## 2026-10-11 corrected non-DSL validation handoff
+
+Current RX/NAPI code uses a separate RX error mask because exact-family RX bits
+8–11 carry source-port metadata. The prior generic-mask build is superseded and
+retained as a negative finding. The new 16-value source-port regression passes;
+corrected callback tests pass native, Clang ASan/UBSan and static MIPS BE/o32
+QEMU. Two strict W=1/-Werror external builds reproduce the 113,932-byte module
+`ac3576cf5969135fc7bc2b998fac7ec64dd1ca29c5052b7a5f3353a4de591918` (85 imports,
+zero missing, vermagic `6.18.54 SMP mod_unload BMIPS 32BIT`).
+
+Corrected expanded kernel compiler/modpost exit 0: 77 modules audited, zero
+missing imports, vmlinux SHA256
+`ddfcb7681c002a505eb5ebcd553c61c5c666b9b4d8b36a02f6a4c64be745b8fc`; its
+`bcm6368-enetsw.ko` is 114,080 bytes, SHA256
+`f08c8b80969d829969cc7ce031bfeb4a9aded1941bb9fc15f0b95538b0e26785`. Native
+OpenWrt kernel compiler exit 0: vmlinux SHA256
+`85496d07dafa31f27c2b52e3ab9e7db7206c0a9b9c56c37fbfe06ce9fcdc17e7`, 49
+loadable modules, zero missing imports; enetsw/B53 SPI are built in under this
+profile config. Package compilation exit 0 produced/inventoried 96 APKs. Kernel
+build logs retain 76/49 warning matches respectively (mostly modpost metadata),
+with zero errors; the final package log has zero warning/error matches. Current
+manifests were regenerated from those artifacts. No image target or device
+operation occurred.
+
+The source remains a partial port. Jack mappings are stock-only: LAN 1↔`eth0`,
+LAN 2↔`eth1`, LAN 4↔`eth3`; do not convert these directly to PHY numbering.
+Still blocked: DSA cascade and wire tag contract, RGMII timing/reset, LAN 3/WAN
+PHY map, MAC provisioning, onboard Wi-Fi host/calibration, NAND writer/BBT/ECC,
+CFE acceptance and proven recovery route. DSL remains deferred.

@@ -8,8 +8,10 @@ of this milestone.** Existing XTM/PTM code, tests, reports and build artifacts
 are preserved; its hardware remains inactive. No SAR/FAP, DSL PHY, adsldd,
 bcmxtmcfg or XTM platform integration work is being advanced here.
 
-The latest reviewed integration commit is `ee212d7a8920cd7b264693dbc02c86e8a483f7c0`.
-The separate working branch for this milestone is
+The latest reviewed driver-source commit is
+`670f80e9e0a3a9de718088c1160ab9cca491feb6`; this commit includes the corrected
+RX source-port mask. The current follow-up commit updates reports and artifact
+inventories. The separate working branch for this milestone is
 `feat/sbg3300-nondsl-ethernet-wifi`. New read-only stock observations and the
 current non-DSL completion boundary are recorded in
 `reports/NON-DSL-PRIORITY-2026-10-10.md`.
@@ -177,3 +179,24 @@ vectors plus the existing callback tests; two strict modules reproduce
 `ac3576cf5969135fc7bc2b998fac7ec64dd1ca29c5052b7a5f3353a4de591918`.
 Old failing source/test/artifacts are retained; no module was loaded. The
 updated topology report provides the exact-family evidence for the overlap.
+
+
+## Corrected Ethernet RX build and package inventory (2026-10-11)
+
+The RX source-port regression caught the first mask's incorrect inclusion of TX
+underflow bit 9. Patch 0010 now uses an RX-specific mask; all 16 source-port
+values pass the extracted callback tests. The first module is preserved as
+superseded, not treated as a runtime candidate. Corrected strict module builds
+reproduce `ac3576cf5969135fc7bc2b998fac7ec64dd1ca29c5052b7a5f3353a4de591918`
+with 85 imports and no missing imports. The corrected expanded kernel build
+exits 0 (77 modules, no missing imports); the native OpenWrt kernel build exits
+0 (49 loadable modules, no missing imports), and selected package compilation
+exits 0 (96 APKs). Exact output hashes and ABI details are in the artifact TSVs
+and `reports/PRE-FINAL-ENGINEERING.md`. These remain `BUILD-RESULT` only.
+
+The native profile has Ethernet and B53 SPI built into the kernel; no standalone
+modules were produced for those drivers. Kernel logs retain modpost warnings
+(76 in the expanded build log and 49 in the native profile log), with no errors.
+The final package log has zero warning/error matches. Full firmware image build
+was not started. Ethernet runtime, board DSA/RGMII, Wi-Fi calibration, flash
+layout, CFE acceptance and recovery are still unverified.

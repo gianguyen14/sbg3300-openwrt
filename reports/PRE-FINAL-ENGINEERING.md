@@ -167,3 +167,38 @@ The decision is BLOCKED, not COMPLETE. Obtain new lawful source and exact
 controller/board/storage/boot evidence before extending runtime attachment or
 considering the separately approved final build. Device authorization remains
 separate from source/build approval.
+
+
+## Corrected RX source-port mask and final offline integration (2026-10-11)
+
+The generic RX error mask from the first hardening build treated descriptor bit 9
+as TX underflow. Exact-family BCM63168 `bcmenet.c` uses bits 8–11 in RX status
+as source-port metadata, so the first mask could discard packets from valid
+ports. That artifact was superseded. The corrected RX-specific mask excludes
+TX-underflow metadata, and a regression test exercises all 16 source-port values.
+The old source fails the test (exit 134); the corrected callbacks pass native,
+Clang ASan/UBSan, and static MIPS big-endian/o32 QEMU runs.
+
+The corrected source was compiled in three contexts:
+
+| Context | Result |
+|---|---|
+| Strict external module, two fresh W=1/-Werror builds | Exit 0 twice; zero warnings/errors; 113,932 bytes; SHA256 `ac3576cf5969135fc7bc2b998fac7ec64dd1ca29c5052b7a5f3353a4de591918`; 85 imports, none missing; vermagic `6.18.54 SMP mod_unload BMIPS 32BIT`; identical bytes |
+| Expanded standalone Linux 6.18.54 kernel | Compiler/modpost exit 0; vmlinux SHA256 `ddfcb7681c002a505eb5ebcd553c61c5c666b9b4d8b36a02f6a4c64be745b8fc`; 77 modules, zero missing imports. The corrected `bcm6368-enetsw.ko` in this distinct build configuration is 114,080 bytes, SHA256 `f08c8b80969d829969cc7ce031bfeb4a9aded1941bb9fc15f0b95538b0e26785`. Logs contain 76 warning matches, chiefly modpost metadata warnings; no errors were found. |
+| Native pinned OpenWrt profile tree | Kernel compiler exit 0; vmlinux SHA256 `85496d07dafa31f27c2b52e3ab9e7db7206c0a9b9c56c37fbfe06ce9fcdc17e7`; 49 loadable modules, zero missing imports. Logs contain 49 warning matches, including modpost warnings; no errors were found. `CONFIG_BCM6368_ENETSW=y` and `CONFIG_B53_SPI_DRIVER=y`, so these are built in and no separate `.ko` exists in this profile. `CONFIG_INITRAMFS_SOURCE=""`. |
+| Selected OpenWrt package compilation | Exit 0, 96 APKs inventoried, zero warning/error matches in the final package log. The selected `wpad-basic-openssl` package is actual userspace build coverage, not proof of onboard Wi-Fi support. |
+
+All manifests in `NONDSL-INTEGRATED-ARTIFACTS.tsv`,
+`NONDSL-OPENWRT-KERNEL-ARTIFACTS.tsv`, and `NONDSL-SELECTED-PACKAGES.tsv`
+were regenerated from the corresponding actual outputs after the corrected
+source build. In this session the OOB runner was invoked without `BRCMNAND_SOURCE`
+and exited before compiling; the earlier native/sanitizer/MIPS run is preserved
+as the actual OOB test evidence. The `ac3576...` strict external module and `f08c8...` module in
+the expanded kernel are artifacts from different build configurations and are
+listed separately. No firmware image target was built.
+
+The final package/kernel compilation is an offline source/build result only.
+RGMII timing, DSA cascade/tag compatibility, WAN/LAN PHY mapping, board MAC
+provisioning, onboard Wi-Fi host/calibration, NAND writer/ECC/BBT, CFE ELF
+acceptance, and non-UART recovery remain blockers. LAN 1↔`eth0`, LAN 2↔`eth1`,
+and LAN 4↔`eth3` remain verified only at the stock jack-to-netdev layer.

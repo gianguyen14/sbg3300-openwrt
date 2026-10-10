@@ -237,3 +237,44 @@ enetsw_rx_source_port_correction:
   missing_imports: 0
   tested_native_sanitizer_mips: PASS_CPU_ONLY
   firmware_module_loading: NEVER_PERFORMED
+
+non_dsl_final_offline_validation_2026_10_11:
+  source_branch: feat/sbg3300-nondsl-ethernet-wifi
+  source_commit_before_report_update: 670f80e9e0a3a9de718088c1160ab9cca491feb6
+  openwrt_base: 5edcc1c43cb97048b506168fbbe00538956796d6
+  kernel: 6.18.54
+  corrected_rx_source_port_mask: true
+  obsolete_generic_mask_artifact: SUPERSEDED_AND_PRESERVED
+  strict_external_enetsw:
+    exits: [0, 0]
+    warnings: 0
+    bytes: 113932
+    sha256: ac3576cf5969135fc7bc2b998fac7ec64dd1ca29c5052b7a5f3353a4de591918
+    imports: 85
+    missing_imports: 0
+    vermagic: 6.18.54 SMP mod_unload BMIPS 32BIT
+  expanded_kernel:
+    compiler_modpost_exit: 0
+    vmlinux_sha256: ddfcb7681c002a505eb5ebcd553c61c5c666b9b4d8b36a02f6a4c64be745b8fc
+    modules_audited: 77
+    missing_imports: 0
+    warning_matches: 76
+  native_openwrt_kernel:
+    compiler_exit: 0
+    vmlinux_sha256: 85496d07dafa31f27c2b52e3ab9e7db7206c0a9b9c56c37fbfe06ce9fcdc17e7
+    modules_audited: 49
+    missing_imports: 0
+    enetsw_builtin: true
+    b53_spi_builtin: true
+    initramfs_source_empty: true
+    warning_matches: 49
+  selected_package_compile_exit: 0
+  selected_apk_count: 96
+  package_log_warning_error_matches: 0
+  artifact_manifests_regenerated: true
+  python_unit_tests_last_pre_report: 30
+  final_firmware_image_build: NOT_STARTED
+  device_configuration_changed: false
+  device_cable_activity_this_milestone: NONE
+  readiness: BLOCKED_EXTERNAL_HARDWARE_EVIDENCE
+  report: reports/PRE-FINAL-ENGINEERING.md
