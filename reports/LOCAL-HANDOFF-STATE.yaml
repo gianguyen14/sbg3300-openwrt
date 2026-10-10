@@ -1,0 +1,41 @@
+schema_version: 1
+project: sbg3300-openwrt
+repo: https://github.com/gianguyen14/sbg3300-openwrt
+base_main_sha_observed: 9033a7b66971be67d9454edfc465eadf34e4e744
+research_head_preserved: 4dd24d42e7b052550a7d6fb7eaddad2f2a54b306
+research_branch_preserved: hermes/xtm-6.18.54-preflight
+publication_branch: handoff/sbg3300-full-openwrt-6.18.54
+openwrt:
+  sha: 5edcc1c43cb97048b506168fbbe00538956796d6
+  target: bmips/bcm63268
+  kernel_version: 6.18.54
+  durable_checkout_example: ${BUILD_ROOT}/openwrt
+  target_compile_result: PASS
+  target_compile_exit: 0
+  vmlinux_sha256: 102016da3854c24d3db60c19b26e624f73bdb7c5899f42045704fd34140296a2
+  build_log_sha256: 77a06719edacc3cb04c5461998afea6f6e90f5d52f8eccba4625087ae19e5468
+xtm:
+  candidate_compile: PROBE_ONLY_DIAGNOSTIC
+  modpost: FAIL
+  unique_missing_after_module_and_kernel_exports: 19
+  unresolved_inventory: reports/XTM-UNRESOLVED-CANONICAL-6.18.54.tsv
+  module_exists: false
+  runtime_validation: NOT_TESTED
+  probe_shims_present: true
+  proprietary_source_publication: BLOCKED_PENDING_FILE_LEVEL_LICENSE_REVIEW
+safety:
+  router_accessed: false
+  router_modified: false
+  flashable: false
+  device_readonly_plan_authorized: false
+publication:
+  github_push: NOT_ATTEMPTED
+  remote_branch_verified: false
+  public_safety_review: REVIEW_REQUIRED
+  license_audit: INCOMPLETE
+  bundle_export: NOT_CREATED
+next:
+  - preserve dirty project changes in private archive before integration branch work
+  - base publication branch on freshly fetched remote main
+  - manually review reachable history and license findings before selecting public content
+  - preserve XTM vendor derivative diffs privately; publish only approved original material

@@ -1,16 +1,13 @@
 # Public repository safety audit
 
-Audit scope: current tracked files, Git-reachable commit/blob history, checked
-patches/docs/scripts/configs, ignored artifact locations, and the local RD-1
-archive member list. Scan was performed locally; no content was uploaded to an
-external scanning service.
+Audit scope: current tracked files and all reachable Git objects on the proposed feature branch. Scanned locally; nothing uploaded to third-party services.
 
-## Result
+Public-safety status: REVIEW REQUIRED, not PASS. The source scan reports reachable-history placeholder-author and example MAC-like matches. These may be RFC identity placeholders or vendor source examples, but they require manual contextual review before publication. No match values are reproduced here.
 
-- Git history scanned: all reachable project commits/blobs; no matches for private-key
-  PEM headers, common credential assignment fields, GitHub/OpenAI token
-  patterns, or colon/hyphen MAC-address patterns.
-- The original Git author/committer email was replaced with the account's
+- Kernel build logs/artifacts are kept out of the public repository; only hashes and status are documented.
+- Historical XTM vendor-derived code and dependencies are not included in this new branch.
+- No stock firmware, device dumps, NVRAM, calibration, credentials, keys or binaries are intentionally included.
+- Run an independent content and license review before any push; do not weaken scanners to suppress findings.
   GitHub noreply address across commit metadata and every historical version
   of the checked-in OpenWrt patch mails. Rewritten history preserves the
   commit sequence/tree changes; old refs/reflogs were pruned locally before

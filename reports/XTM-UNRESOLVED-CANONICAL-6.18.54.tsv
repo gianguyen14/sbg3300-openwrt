@@ -1,0 +1,105 @@
+symbol	caller_object	provider	class	status
+BcmHalMapInterrupt	bcmxtmrt.o	Broadcom HAL IRQ glue	PROPRIETARY_IMPORT	UNRESOLVED
+__alloc_skb	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+__dev_get_by_name	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+__dev_queue_xmit	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+__fortify_panic	bcmxtmrt.o,bcmxtmrtbond.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+__kmalloc_cache_noprof	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+__kmalloc_noprof	bcmxtmrt.o,xtm_dma.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+__local_bh_enable_ip	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+__napi_schedule	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+__netdev_alloc_skb	bcmxtmrt.o,xtm_dma.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+__raw_copy_from_user	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+__raw_copy_to_user	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+__stack_chk_fail	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+__stack_chk_guard	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+__udelay	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+_printk	bcmxtmrt.o,bcmxtmrtbond.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+_raw_spin_lock	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+_raw_spin_lock_bh	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+_raw_spin_lock_irqsave	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+_raw_spin_unlock_bh	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+_raw_spin_unlock_irqrestore	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+add_timer	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+alloc_netdev_mqs	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+arch_local_irq_restore	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+arch_local_irq_save	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+atm_dev_deregister	bcmxtmrt.o	module objects	PROJECT_LOCAL	RESOLVED_WITHIN_MODULE
+atm_dev_register	bcmxtmrt.o	module objects	PROJECT_LOCAL	RESOLVED_WITHIN_MODULE
+bcmPktDma_XtmAllocRxBds	bcmxtmrt.o	Broadcom pktdma (public family source exists; not linked)	PROPRIETARY_IMPORT	UNRESOLVED
+bcmPktDma_XtmAllocTxBds	bcmxtmrt.o	Broadcom pktdma (public family source exists; not linked)	PROPRIETARY_IMPORT	UNRESOLVED
+bcmPktDma_XtmGetRxBds	bcmxtmrt.o	Broadcom pktdma (public family source exists; not linked)	PROPRIETARY_IMPORT	UNRESOLVED
+bcmPktDma_XtmGetStats_Iudma	bcmxtmrt.o	Broadcom pktdma (public family source exists; not linked)	PROPRIETARY_IMPORT	UNRESOLVED
+bcmPktDma_XtmGetTxBds	bcmxtmrt.o	Broadcom pktdma (public family source exists; not linked)	PROPRIETARY_IMPORT	UNRESOLVED
+bcmPktDma_XtmInitRxChan_Iudma	bcmxtmrt.o	Broadcom pktdma (public family source exists; not linked)	PROPRIETARY_IMPORT	UNRESOLVED
+bcmPktDma_XtmInitTxChan_Iudma	bcmxtmrt.o	Broadcom pktdma (public family source exists; not linked)	PROPRIETARY_IMPORT	UNRESOLVED
+bcmPktDma_XtmRecv_Iudma	bcmxtmrt.o	Broadcom pktdma (public family source exists; not linked)	PROPRIETARY_IMPORT	UNRESOLVED
+bcmPktDma_XtmResetStats_Iudma	bcmxtmrt.o	Broadcom pktdma (public family source exists; not linked)	PROPRIETARY_IMPORT	UNRESOLVED
+bcmPktDma_XtmRxDisable_Iudma	bcmxtmrt.o	Broadcom pktdma (public family source exists; not linked)	PROPRIETARY_IMPORT	UNRESOLVED
+bcmPktDma_XtmRxEnable_Iudma	bcmxtmrt.o	Broadcom pktdma (public family source exists; not linked)	PROPRIETARY_IMPORT	UNRESOLVED
+bcmPktDma_XtmSelectRxIrq_Iudma	bcmxtmrt.o	Broadcom pktdma (public family source exists; not linked)	PROPRIETARY_IMPORT	UNRESOLVED
+bcmPktDma_XtmTxDisable_Iudma	bcmxtmrt.o	Broadcom pktdma (public family source exists; not linked)	PROPRIETARY_IMPORT	UNRESOLVED
+bcmPktDma_XtmTxEnable_Iudma	bcmxtmrt.o	Broadcom pktdma (public family source exists; not linked)	PROPRIETARY_IMPORT	UNRESOLVED
+bcmPktDma_XtmXmitAvailable_Iudma	bcmxtmrt.o	Broadcom pktdma (public family source exists; not linked)	PROPRIETARY_IMPORT	UNRESOLVED
+bcmxtmrt_ptmbond_add_hdr	bcmxtmrt.o	module objects	PROJECT_LOCAL	RESOLVED_WITHIN_MODULE
+bcmxtmrt_ptmbond_calculate_link_weights	bcmxtmrt.o	module objects	PROJECT_LOCAL	RESOLVED_WITHIN_MODULE
+deregister_atm_ioctl	bcmxtmrt.o	module objects	PROJECT_LOCAL	RESOLVED_WITHIN_MODULE
+dev_addr_mod	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+dev_alloc_name	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+dev_driver_string	xtm_dma.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+dev_kfree_skb_any_reason	bcmxtmrt.o,bcmxtmrtbond.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+disable_brcm_irq	bcmxtmrt.o	Broadcom HAL IRQ glue	PROPRIETARY_IMPORT	UNRESOLVED
+dma_alloc_attrs	xtm_dma.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+dma_free_attrs	xtm_dma.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+dma_map_page_attrs	xtm_dma.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+dma_unmap_page_attrs	xtm_dma.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+enable_brcm_irq	bcmxtmrt.o	Broadcom HAL IRQ glue	PROPRIETARY_IMPORT	UNRESOLVED
+eth_type_trans	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+ether_setup	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+free_netdev	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+g_GlobalInfo	bcmxtmrtbond.o	module objects	PROJECT_LOCAL	RESOLVED_WITHIN_MODULE
+init_net	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+is_vmalloc_addr	xtm_dma.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+jiffies	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+kerSysGetMacAddress	bcmxtmrt.o	Broadcom system/NVRAM platform glue	PROPRIETARY_PLATFORM	UNRESOLVED
+kfree	bcmxtmrt.o,xtm_dma.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+kmalloc_caches	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+mem_map	xtm_dma.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+memcmp	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+memcpy	bcmxtmrt.o,bcmxtmrtbond.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+memmove	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+memset	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+mod_timer	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+mutex_lock	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+mutex_unlock	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+napi_complete_done	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+napi_disable	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+napi_enable	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+napi_schedule_prep	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+netif_napi_add_weight_locked	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+netif_receive_skb	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+netif_tx_wake_queue	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+ppp_channel_index	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+ppp_input	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+ppp_register_channel	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+ppp_unit_number	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+ppp_unregister_channel	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+proc_mkdir	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+register_atm_ioctl	bcmxtmrt.o	module objects	PROJECT_LOCAL	RESOLVED_WITHIN_MODULE
+register_netdev	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+remove_proc_entry	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+schedule	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+simple_strtoul	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+sk_skb_reason_drop	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+skb_copy	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+skb_push	bcmxtmrt.o,bcmxtmrtbond.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+skb_put	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+skb_realloc_headroom	bcmxtmrt.o,bcmxtmrtbond.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+sprintf	bcmxtmrtbond.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+strcspn	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+strncpy	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+strnlen	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+timer_delete_sync	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+timer_init_key	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+unregister_netdev	bcmxtmrt.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
+warn_slowpath_fmt	bcmxtmrt.o,xtm_dma.o	pinned Linux Module.symvers	STANDARD_KERNEL_IMPORT	RESOLVED_KERNEL_EXPORT
