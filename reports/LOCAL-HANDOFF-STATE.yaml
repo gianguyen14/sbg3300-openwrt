@@ -29,6 +29,25 @@ safety:
   router_modified: false
   flashable: false
   device_readonly_plan_authorized: false
+xtm_runtime_component:
+  source: drivers/xtm
+  feature_branch: feat/sbg3300-xtm-dma-port
+  kernel_base: 5edcc1c43cb97048b506168fbbe00538956796d6
+  reused_profile_checkout: 18c17336871e73ddfbab3198104d8c42df844146
+  component_compile: PASS
+  component_modpost: PASS
+  module_name: sbg3300_xtm_dma
+  module_sha256: be2beeddc3c1dcad5af9587dc0fca495b25e04767884050fbc22e9598de6470a
+  missing_kernel_imports: 0
+  probe_shims: false
+  legacy_19_import_probe_relinked: false
+  netdev_component_compiled: true
+  platform_netdev_integrated: false
+  kernel_import_count: 65
+  reproducible_external_module: true
+  frontend_report: reports/XTM-PTM-FRONTEND-BUILD.md
+  runtime_validation: NOT_TESTED
+  build_report: reports/XTM-DMA-RUNTIME-BUILD.md
 publication:
   github_push: COMPLETE
   remote_branch_verified: true
