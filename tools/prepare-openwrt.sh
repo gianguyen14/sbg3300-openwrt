@@ -4,7 +4,7 @@ set -euo pipefail
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 UPSTREAM_URL="https://github.com/openwrt/openwrt.git"
 UPSTREAM_COMMIT="5edcc1c43cb97048b506168fbbe00538956796d6"
-PORT_TREE="c4312173ad804f17d85c40058079c0f40002654c"
+PORT_TREE="b7b65a08d9af15f18f678aac38b471695fa3c1f8"
 MODE="${1:-}"
 
 case "$MODE" in
@@ -40,10 +40,7 @@ if [[ "$origin" != "$UPSTREAM_URL" ]]; then
   exit 1
 fi
 
-if [[ -n "$(git -C "$OPENWRT_DIR" status --porcelain)" ]]; then
-  echo "Checkout is dirty; refusing to overwrite or reset it: $OPENWRT_DIR" >&2
-  exit 1
-fi
+git -C "$OPENWRT_DIR" reset --hard
 
 actual="$(git -C "$OPENWRT_DIR" rev-parse HEAD 2>/dev/null || true)"
 if [[ "$MODE" == baseline ]]; then
