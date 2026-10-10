@@ -27,6 +27,9 @@ static void test_contract(void)
 	assert(q.pending == 1); /* DMA retains ownership */
 	assert(!xtm_queue_complete(&q, word & ~XTM_DESC_OWN, 64, &c));
 	assert(c.length == 64 && !q.pending);
+	assert(!xtm_queue_post(&q, XTM_DESC_MAX_LENGTH, XTM_DESC_FSTAT, &i, &word));
+	assert(word == 0x0fffffff);
+	assert(!xtm_queue_complete(&q, word & ~XTM_DESC_OWN, 4095, &c));
 }
 
 static void test_wrap_and_fifo(void)
@@ -83,9 +86,21 @@ static void test_rx_errors_and_cancel(void)
 	assert(!xtm_queue_post(&q, 100, 0, &index, &word));
 	assert(xtm_queue_complete(&q, 0, 100, &c) == -EMSGSIZE);
 	assert(!q.pending);
+	/* Preserve raw SAR cell/match status; do not apply Ethernet error masks. */
 	assert(!xtm_queue_post(&q, 100, 0, &index, &word));
-	assert(!xtm_queue_cancel(&q, &index) && index == 0);
+	assert(!xtm_queue_complete(&q, (53U << 16) | 0x401, 100, &c));
+	assert(c.length == 53 && c.status == 0x401);
+	assert(!xtm_queue_post(&q, 100, 0, &index, &word));
+	assert(!xtm_queue_cancel(&q, &index) && index == 1);
 	assert(xtm_queue_cancel(&q, &index) == -EAGAIN);
+	/* Cancel an entire OWN ring only after simulated controller quiescence. */
+	for (unsigned int j = 0; j < 3; j++)
+		assert(!xtm_queue_post(&q, 100, 0, &index, &word));
+	for (unsigned int j = 0; j < 3; j++) {
+		assert(!xtm_queue_cancel(&q, &index));
+		assert(index == (j + 2) % 3);
+	}
+	assert(!q.pending && q.head == q.tail);
 }
 
 int main(void)

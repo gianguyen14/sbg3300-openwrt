@@ -2,7 +2,7 @@
 
 Pinned OpenWrt commit: `5edcc1c43cb97048b506168fbbe00538956796d6`; Linux 6.18.54; target `bmips/bcm63268`. Target compilation exited 0 in the durable build root. The build and `vmlinux` hashes are recorded in `reports/LOCAL-HANDOFF-STATE.yaml`. Build outputs are not committed.
 
-The XTM external build is diagnostic, uses probe-only compatibility code, and fails modpost. Object scan found 19 unique symbols absent from the linked objects and pinned kernel exports; see `reports/XTM-UNRESOLVED-CANONICAL-6.18.54.tsv` and the source-only dependency analysis in `reports/XTM-DEPENDENCY-REVIEW.md`. The 19 imports are 15 packet-DMA, 3 legacy IRQ, and 1 platform MAC allocator symbol; this is separate from the stock `adsldd.ko` (82) and `bcmxtmcfg.ko` (31) inventories. No XTM `.ko` exists; no runtime claim is made.
+The inherited XTM external probe is diagnostic, uses probe-only compatibility code, and fails modpost with 19 imports (15 packet-DMA, 3 legacy IRQ, 1 platform MAC allocator); see `reports/XTM-UNRESOLVED-CANONICAL-6.18.54.tsv`. That legacy module remains unlinked. The new, original descriptor/ring and Linux DMA component in `drivers/xtm/` builds as `sbg3300_xtm_dma.ko` against the preserved pinned kernel with no probe shims and no missing kernel imports. It is a ring support component without platform/netdev/DSL integration or hardware validation; see `reports/XTM-DMA-RUNTIME-BUILD.md` and `reports/XTM-BCM63168-CONTRACTS.tsv`. The separate stock `adsldd.ko` (82) and `bcmxtmcfg.ko` (31) inventories are unchanged.
 
 **Overall: `PARTIAL-PORT` · `OFFLINE-ONLY` · `NOT-FLASHABLE`.** No OpenWrt
 image has been booted on the SBG3300. No flash/factory/sysupgrade image exists.
@@ -38,6 +38,7 @@ not runtime evidence.
 | DSL stock ABI inventory | PASS | `adsldd.ko` and `bcmxtmcfg.ko` are MIPS BE, Linux 2.6.30 SMP/preempt; undefined imports counted | Stock only | No |
 | XTM source | PARTIAL | Public Broadcom 4.12L.06B source includes `bcmxtmrt`; depends on missing vendor infrastructure | No | No for porting |
 | XTM Linux 6.18 compile probe | ATTEMPTED / FAIL | Corrected harness reached real incompatibilities: NBuff/recycle, DMA types, removed legacy include/API | No | No |
+| XTM descriptor/DMA ring component | BUILD-PASS / COMPONENT-ONLY | Original `drivers/xtm/` code, host/sanitizer tests; Linux 6.18.54 `.ko`, compiler/modpost exit 0, no missing kernel imports | No | Yes for later DMA/channel runtime validation |
 | `adsldd` / `bcmxtmcfg` source | UNRESOLVED | Implementations absent from inspected mirror; absence there does not prove unavailable elsewhere | No | No for source search |
 | DSL sync / XTM netdev / OpenWrt PPPoE | NOT-TESTED | Compile work is not line synchronization or data-path evidence | No | Yes |
 | FAP/HNAT | DEFERRED | Vendor FAP/BPM/ingress-QoS observed in stock; portability unknown | No | No for initial software-routing bring-up |
