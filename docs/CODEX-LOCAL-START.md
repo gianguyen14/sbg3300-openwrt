@@ -10,3 +10,13 @@
 8. Hardware access: use only separately authorized, read-only checks listed in `docs/LOCAL-DEVICE-READONLY-VALIDATION.md`. Every such step remains pending until authorization. No UART, raw MTD/NAND, NVRAM/CFE writes, reset/reboot, firmware upload/flash, or experimental module loading.
 9. Before commit: run tests, syntax checks, `git diff --check`, conservative secret/content and history review, and file-by-file license review. Preserve required copyright/GPL notices. Do not label a scan PASS if review findings remain.
 10. Publish only reviewed, legally distributable source. Push feature branch, verify remote SHA, open a Draft PR, never merge automatically. If no write authorization, export and verify a Git bundle and patch archive with hashes/fresh import.
+
+Current pre-final source/build evidence is in reports/PRE-FINAL-ENGINEERING.md.
+Preserve the original kernel/image; the updated board disables unproved NAND
+and inherited switch/MDIO activation. Do not run the full image helper until
+the separate final-build approval gate is satisfied.
+
+Authorized stock SSH observations from 2026-10-10 are recorded in
+reports/LIVE-READONLY-2026-10-10.md. Reuse only that read-only authorization;
+device-state changes, module/firmware execution and boot/recovery experiments
+still require separate specific approval. Raw device logs stay outside Git.

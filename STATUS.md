@@ -22,9 +22,9 @@ not runtime evidence.
 | Kernel baseline | PASS | Build report records Linux 6.18.54 | No | No |
 | SBG3300 profile | BUILD-PASS | Profile selected and dedicated build exited 0; patch series under `patches/openwrt/` | No | No |
 | SBG3300 initramfs ELF | OFFLINE-ONLY | 5,925,020 bytes; SHA256 `3961a39d5d554ce467b9575bbc6f6293d385ddda9fc4dc9b3dbf0c3cf8027b51`; local artifact only | No | No |
-| DTS | BUILD-PASS / PARTIAL | DTC build and round-trip recorded; intentionally incomplete and conservative | No | No |
+| DTS | BUILD-PASS / PARTIAL | DTC/full schema validated; unverified switch/MDIO/NAND disabled, SAR fixture disabled | No | No |
 | RAM device-tree range | PARTIAL | DTS retains BMIPS discovery behavior rather than asserting an unproven full range | No | Device boot confirms actual usable memory |
-| NAND geometry | PASS | Live stock controller evidence: 128 MiB, 2 KiB page, 64 B OOB, 128 KiB eraseblock, 512-byte ECC step, strength 15, on-flash BBT | Stock only | No for geometry; yes for OpenWrt runtime |
+| NAND geometry | PARTIAL / DISABLED | Historical capacity/page/erase evidence retained; legacy ECC code and OOB units are not a verified Linux 6.18 tuple | Stock only | No for geometry; yes for OpenWrt runtime |
 | NAND physical map | PARTIAL | Live MTD extents plus exact arithmetic; see [NAND-MAP.md](NAND-MAP.md) | Stock only | Yes to validate OpenWrt behavior |
 | NAND image writer / bad-block semantics | INVESTIGATING | Broadcom 4.12L.06B family source strongly corroborates dual slots but is not proven identical to Zyxel’s running writer | No | Exact-source evidence first; device later |
 | Fixed partitions / UBI / sysupgrade | NOT-APPROVED | Boot-critical map and writer semantics incomplete | No | Yes, after offline proof |
@@ -81,3 +81,37 @@ shims. Two fresh builds reproduce the same module bytes, all 65 kernel imports
 exist. See [reports/XTM-PTM-FRONTEND-BUILD.md](reports/XTM-PTM-FRONTEND-BUILD.md).
 Global SAR/FAP ownership, clock/reset/PHY sequencing and DSL events remain
 unresolved; no platform binding or physical functionality is claimed.
+
+## Pre-final integration milestone
+
+Real enetsw C resource/lifetime corrections and shared IRQ/channel policy now
+compile/link on Linux 6.18.54. Full selected package compilation exits 0, and
+three policy tests pass natively, with sanitizers, and under MIPS user-mode QEMU.
+Expanded/independent kernels and all implemented modules have genuine results;
+see [reports/PRE-FINAL-ENGINEERING.md](reports/PRE-FINAL-ENGINEERING.md) and the
+artifact TSVs. Source publication approval is separate from the unresolved
+SAR/DSL/topology/calibration/NAND/boot gates. Overall remains PARTIAL-PORT.
+
+## Authorized stock SSH observation, 2026-10-10
+
+Read-only stock SSH succeeded with strict saved-host-key verification. FAP
+PacketDMA/XTM ownership, SPI `spi1.0` stock binding, PCI Wi-Fi/USB bindings and
+NAND page/OOB/erase metadata corroborated. DSL status Idle; no OpenWrt runtime
+test or device modification. External Wi-Fi SROM/calibration provisioning and
+SAR/FAP ownership remain blockers. See
+[reports/LIVE-READONLY-2026-10-10.md](reports/LIVE-READONLY-2026-10-10.md).
+
+Actual PTM TX callback now checks queue admission before skb mutation. Eight
+callback/API-double cases pass native/sanitizer/MIPS tests and catch the old
+bug. Two fresh strict external builds reproduce SHA256
+`f67b6da34dcc279ee832fbc4210463b8cc89ba2b184186309d324e70e47f80dd`;
+OpenWrt component APK rebuilt. Legacy probe still 19 unresolved imports.
+
+Wi-Fi source cross-check identifies a synthetic on-chip PCI presentation in
+the exact-family source. BCMA SoC host compiles in isolated coverage; two fresh
+BCMA builds reproduce full bytes, but its calibration path remains unresolved
+and no board BCMA node is enabled. Additional kernel artifacts audited (77
+modules). Initial wrapper failure 127 and lost initial compiler log are explicit
+in the report; stable repeat exit 0 is recorded separately. Python tests: 19.
+Standalone DTS now matches the conservative patched board; stale-source guard
+rejects the old version. Full DTC/schema checks pass with unchanged fixture DTB.

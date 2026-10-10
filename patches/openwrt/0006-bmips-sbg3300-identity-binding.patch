@@ -1,0 +1,80 @@
+From: gianguyen14 <231934554+gianguyen14@users.noreply.github.com>
+Subject: [PATCH] bmips: include the SBG3300 identity binding
+
+Document the exact three-string compatible chain, retaining the existing
+SoC-only alternatives. This schema-only patch does not enable hardware.
+
+diff --git a/target/linux/bmips/patches-6.18/999-dt-bindings-mips-brcm-sbg3300-compatible.patch b/target/linux/bmips/patches-6.18/999-dt-bindings-mips-brcm-sbg3300-compatible.patch
+new file mode 100644
+--- /dev/null
++++ b/target/linux/bmips/patches-6.18/999-dt-bindings-mips-brcm-sbg3300-compatible.patch
+@@ -0,0 +1,69 @@
++From: gianguyen14 <231934554+gianguyen14@users.noreply.github.com>
++Subject: [PATCH] dt-bindings: mips: brcm document SBG3300 compatible chain
++
++Add the exact board/family fallback chain used by the offline DTS. Keep the
++existing SoC-only enum as a separate alternative. This documents identity,
++not topology, PHY support or runtime validation. Original patch GPL-2.0-only.
++
++---
++--- a/Documentation/devicetree/bindings/mips/brcm/soc.yaml
+++++ b/Documentation/devicetree/bindings/mips/brcm/soc.yaml
++@@ -19,25 +19,30 @@
++     const: '/'
++ 
++   compatible:
++-    enum:
++-      - brcm,bcm3368
++-      - brcm,bcm3384
++-      - brcm,bcm33843
++-      - brcm,bcm3384-viper
++-      - brcm,bcm33843-viper
++-      - brcm,bcm6328
++-      - brcm,bcm6358
++-      - brcm,bcm6362
++-      - brcm,bcm6368
++-      - brcm,bcm63168
++-      - brcm,bcm63268
++-      - brcm,bcm7125
++-      - brcm,bcm7346
++-      - brcm,bcm7358
++-      - brcm,bcm7360
++-      - brcm,bcm7362
++-      - brcm,bcm7420
++-      - brcm,bcm7425
+++    oneOf:
+++      - enum:
+++          - brcm,bcm3368
+++          - brcm,bcm3384
+++          - brcm,bcm33843
+++          - brcm,bcm3384-viper
+++          - brcm,bcm33843-viper
+++          - brcm,bcm6328
+++          - brcm,bcm6358
+++          - brcm,bcm6362
+++          - brcm,bcm6368
+++          - brcm,bcm63168
+++          - brcm,bcm63268
+++          - brcm,bcm7125
+++          - brcm,bcm7346
+++          - brcm,bcm7358
+++          - brcm,bcm7360
+++          - brcm,bcm7362
+++          - brcm,bcm7420
+++          - brcm,bcm7425
+++      - items:
+++          - const: zyxel,sbg3300-n000
+++          - const: brcm,bcm63168
+++          - const: brcm,bcm63268
++ 
++   cpus:
++     type: object
++@@ -86,7 +91,7 @@
++   properties:
++     cpus:
++       required:
++-        - brcm,bmips-cbr-reg
+++          - brcm,bmips-cbr-reg
++ 
++ additionalProperties: true
++ 

@@ -45,8 +45,10 @@ Evidence labels are defined in `docs/EVIDENCE-POLICY.md`; consult
 - `LIVE-DEVICE`/`STOCK-BOOT-LOG`: model SBG3300-N000, board `963168MXH_17A`,
   BCM63168D0 chip ID `0x631680D0`, 128 MiB RAM/NAND, MIPS big-endian, and stock
   Linux 2.6.30. Stock `MemTotal` is around 123392 KiB.
-- `LIVE-DEVICE`: NAND reports 2 KiB page, 64-byte OOB, 128 KiB eraseblocks,
-  ECC step 512 bytes/strength 15, on-flash BBT. Physical Linux MTD extents are
+- `LIVE-DEVICE`: NAND reports 2 KiB page, 64-byte OOB, 128 KiB eraseblocks.
+  Historical ECC value 15 is not an established Linux 6.18 strength/step
+  tuple; current stock sysfs lacks those attributes. On-flash BBT and the
+  physical Linux MTD extents are
   documented in `NAND-MAP.md`.
 - `EXACT-BOARD-SOURCE`: public Broadcom family source has an entry for
   `963168MXH_17A`. Its equivalence to the running Zyxel 2018 build is not
@@ -127,10 +129,11 @@ and initramfs-only profile. There is no factory or sysupgrade recipe.
 
 ## 9. DTS current assumptions
 
-File: `dts/bcm63168-zyxel-sbg3300-n000.dts`; the same change is carried in
-patch 0001. It identifies Zyxel SBG3300-N000/BCM63168 and retains BMIPS memory
-discovery behavior. It includes the observed Broadcom NAND controller geometry
-but no partitions. It disables unresolved Ethernet configuration and does not
+File: `dts/bcm63168-zyxel-sbg3300-n000.dts`; the skeleton is carried in
+patch 0001 and subsequent integration patches in `patches/openwrt/series`.
+It identifies Zyxel SBG3300-N000/BCM63168 and retains BMIPS memory discovery
+behavior. Current integration disables NAND and removes unverified ECC/OOB
+overrides; there are no partitions. It disables unresolved Ethernet configuration and does not
 assign board GPIOs, switch ports, or MAC offsets. `/chosen` does not require a
 serial console. Every node is still runtime-unvalidated.
 

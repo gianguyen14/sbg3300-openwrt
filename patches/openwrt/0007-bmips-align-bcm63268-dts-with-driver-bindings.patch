@@ -1,0 +1,154 @@
+From: gianguyen14 <231934554+gianguyen14@users.noreply.github.com>
+Subject: [PATCH] bmips: align BCM63268 DTS with actual driver bindings
+
+Correct existing names and compatible chains, remove unused IRQ address-cells,
+and fix a pins property typo. NAND resources retain their physical addresses
+and names but use the documented ordering. No board ports are introduced. Move PCI probe-only to /chosen, where the
+actual driver reads it, and remove unused switch address-cells.
+
+--- a/target/linux/bmips/dts/bcm63268.dtsi
++++ b/target/linux/bmips/dts/bcm63268.dtsi
+@@ -26,6 +26,7 @@
+ 	};
+ 
+ 	chosen {
++		linux,pci-probe-only = <1>;
+ 		bootargs = "earlycon";
+ 		stdout-path = "serial0:115200n8";
+ 	};
+@@ -56,13 +57,13 @@
+ 		mips-hpt-frequency = <200000000>;
+ 
+ 		cpu@0 {
+-			compatible = "brcm,bmips4350", "mips,mips4Kc";
++			compatible = "brcm,bmips4350";
+ 			device_type = "cpu";
+ 			reg = <0>;
+ 		};
+ 
+ 		cpu@1 {
+-			compatible = "brcm,bmips4350", "mips,mips4Kc";
++			compatible = "brcm,bmips4350";
+ 			device_type = "cpu";
+ 			reg = <1>;
+ 		};
+@@ -81,7 +82,7 @@
+ 		reg = <0 0>;
+ 	};
+ 
+-	ubus {
++	ubus: soc {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 
+@@ -95,7 +96,7 @@
+ 		};
+ 
+ 		pll_cntl: syscon@10000008 {
+-			compatible = "syscon", "simple-mfd";
++			compatible = "brcm,bcm63268-pll-control", "syscon", "simple-mfd";
+ 			reg = <0x10000008 0x4>;
+ 			native-endian;
+ 
+@@ -128,7 +129,6 @@
+ 		};
+ 
+ 		periph_intc: interrupt-controller@10000020 {
+-			#address-cells = <1>;
+ 			compatible = "brcm,bcm6345-l1-intc";
+ 			reg = <0x10000020 0x20>,
+ 			      <0x10000040 0x20>;
+@@ -211,7 +211,7 @@
+ 					pins = "gpio9";
+ 				};
+ 
+-				pinctrl_adsl_spi: adsl_spi {
++				pinctrl_adsl_spi: adsl_spi-pins {
+ 					pinctrl_adsl_spi_miso: adsl_spi_miso-pins {
+ 						function = "adsl_spi_miso";
+ 						pins = "gpio18";
+@@ -250,7 +250,7 @@
+ 
+ 				pinctrl_gpio35_alt: gpio35_alt-pins {
+ 					function = "gpio35_alt";
+-					pin = "gpio35";
++					pins = "gpio35";
+ 				};
+ 
+ 				pinctrl_dectpd: dectpd-pins {
+@@ -304,7 +304,7 @@
+ 			interrupts = <BCM63268_IRQ_UART0>;
+ 
+ 			clocks = <&periph_osc>;
+-			clock-names = "periph";
++			clock-names = "refclk";
+ 
+ 			status = "disabled";
+ 		};
+@@ -317,23 +317,23 @@
+ 			interrupts = <BCM63268_IRQ_UART1>;
+ 
+ 			clocks = <&periph_osc>;
+-			clock-names = "periph";
++			clock-names = "refclk";
+ 
+ 			status = "disabled";
+ 		};
+ 
+-		nflash: nand@10000200 {
++		nflash: nand-controller@10000200 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+-			compatible = "brcm,nand-bcm6368",
++			compatible = "brcm,nand-bcm63168", "brcm,nand-bcm6368",
+ 				     "brcm,brcmnand-v4.0",
+ 				     "brcm,brcmnand";
+ 			reg = <0x10000200 0x180>,
+-			      <0x10000600 0x200>,
+-			      <0x100000b0 0x10>;
++			      <0x100000b0 0x10>,
++			      <0x10000600 0x200>;
+ 			reg-names = "nand",
+-				    "nand-cache",
+-				    "nand-int-base";
++				    "nand-int-base",
++				    "nand-cache";
+ 
+ 			interrupt-parent = <&periph_intc>;
+ 			interrupts = <BCM63268_IRQ_NAND>;
+@@ -384,7 +384,7 @@
+ 		};
+ 
+ 		serdes_cntl: syscon@10001804 {
+-			compatible = "syscon";
++			compatible = "brcm,bcm63268-serdes-control", "syscon";
+ 			reg = <0x10001804 0x4>;
+ 			native-endian;
+ 		};
+@@ -459,6 +459,7 @@
+ 			clock-names = "ipsec";
+ 
+ 			resets = <&periph_rst BCM63268_RST_IPSEC>;
++			reset-names = "ipsec";
+ 
+ 			power-domains = <&periph_pwr BCM63268_POWER_DOMAIN_IPSEC>;
+ 		};
+@@ -506,7 +507,6 @@
+ 			device_type = "pci";
+ 			bus-range = <0x00 0x01>;
+ 			ranges = <0x2000000 0 0x11000000 0x11000000 0 0xf00000>;
+-			linux,pci-probe-only = <1>;
+ 
+ 			interrupt-parent = <&periph_intc>;
+ 			interrupts = <BCM63268_IRQ_PCIE_RC>;
+@@ -531,9 +531,7 @@
+ 		};
+ 
+ 		switch0: switch@10700000 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			compatible = "brcm,bcm63268-switch";
++			compatible = "brcm,bcm63268-switch", "brcm,bcm63xx-switch";
+ 			reg = <0x10700000 0x8000>;
+ 			big-endian;
+ 

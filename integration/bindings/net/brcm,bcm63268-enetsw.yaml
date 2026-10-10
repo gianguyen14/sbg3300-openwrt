@@ -1,0 +1,59 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/net/brcm,bcm63268-enetsw.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: BCM63268 Ethernet DMA controller resource contract
+
+maintainers:
+  - gianguyen14 <231934554+gianguyen14@users.noreply.github.com>
+
+description: |
+  Properties consumed by the pinned bcm6368-enetsw driver. This documents the
+  controller interface only, with no physical port or external switch wiring.
+
+allOf:
+  - $ref: ethernet-controller.yaml#
+
+properties:
+  compatible:
+    const: brcm,bcm63268-enetsw
+  reg:
+    maxItems: 3
+  reg-names:
+    items:
+      - const: dma
+      - const: dma-channels
+      - const: dma-sram
+  interrupts:
+    maxItems: 2
+  interrupt-names:
+    items:
+      - const: rx
+      - const: tx
+  clocks:
+    maxItems: 7
+  resets:
+    maxItems: 2
+  power-domains:
+    maxItems: 1
+  dma-rx:
+    $ref: /schemas/types.yaml#/definitions/uint32
+    description: RX channel index in the DMA channel and state resources.
+  dma-tx:
+    $ref: /schemas/types.yaml#/definitions/uint32
+    description: TX channel index in the DMA channel and state resources.
+
+required:
+  - compatible
+  - reg
+  - reg-names
+  - interrupts
+  - interrupt-names
+  - clocks
+  - resets
+  - dma-rx
+  - dma-tx
+
+unevaluatedProperties: false

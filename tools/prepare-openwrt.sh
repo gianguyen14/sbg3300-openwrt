@@ -4,7 +4,7 @@ set -euo pipefail
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 UPSTREAM_URL="https://github.com/openwrt/openwrt.git"
 UPSTREAM_COMMIT="5edcc1c43cb97048b506168fbbe00538956796d6"
-PORT_TREE="e5cec4ff0af6952e3dc43d156148cab62f69f804"
+PORT_TREE="2ac5b16d7ba20467a099bf096de89c32d69a9324"
 MODE="${1:-}"
 
 case "$MODE" in

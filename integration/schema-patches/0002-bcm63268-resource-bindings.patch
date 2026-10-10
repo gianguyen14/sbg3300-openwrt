@@ -1,0 +1,185 @@
+From: gianguyen14 <231934554+gianguyen14@users.noreply.github.com>
+Subject: [PATCH] dt-bindings: describe BCM63268 consumed resources
+
+Document existing native-endian/reset child and powered device contracts.
+Add bindings for properties actually consumed by bcm6368-enetsw and
+pcie-bcm6328. These constraints do not establish board ports or calibration.
+Original additions GPL-2.0-only; existing dual-licensed notices remain intact.
+
+---
+--- a/Documentation/devicetree/bindings/mfd/brcm,bcm63268-gpio-sysctl.yaml
++++ b/Documentation/devicetree/bindings/mfd/brcm,bcm63268-gpio-sysctl.yaml
+@@ -31,7 +31,15 @@
+   reg:
+     maxItems: 1
+ 
++  native-endian:
++    description: Preserve the syscon register map native endianness.
++    type: boolean
++
+ patternProperties:
++  "^reset-controller@[0-9a-f]+$":
++    type: object
++    $ref: /schemas/reset/brcm,bcm6345-reset.yaml#
++
+   "^gpio@[0-9a-f]+$":
+     # Child node
+     type: object
+--- a/Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml
++++ b/Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml
+@@ -32,6 +32,9 @@
+       - const: usbh
+       - const: usb_ref
+ 
++  power-domains:
++    maxItems: 1
++
+   resets:
+     maxItems: 1
+ 
+--- a/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
++++ b/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+@@ -19,6 +19,9 @@
+       - brcm,bcm5301x-rng
+       - brcm,bcm6368-rng
+ 
++  power-domains:
++    maxItems: 1
++
+   reg:
+     maxItems: 1
+ 
+diff --git a/Documentation/devicetree/bindings/net/brcm,bcm63268-enetsw.yaml b/Documentation/devicetree/bindings/net/brcm,bcm63268-enetsw.yaml
+new file mode 100644
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/brcm,bcm63268-enetsw.yaml
+@@ -0,0 +1,59 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/brcm,bcm63268-enetsw.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: BCM63268 Ethernet DMA controller resource contract
++
++maintainers:
++  - gianguyen14 <231934554+gianguyen14@users.noreply.github.com>
++
++description: |
++  Properties consumed by the pinned bcm6368-enetsw driver. This documents the
++  controller interface only, with no physical port or external switch wiring.
++
++allOf:
++  - $ref: ethernet-controller.yaml#
++
++properties:
++  compatible:
++    const: brcm,bcm63268-enetsw
++  reg:
++    maxItems: 3
++  reg-names:
++    items:
++      - const: dma
++      - const: dma-channels
++      - const: dma-sram
++  interrupts:
++    maxItems: 2
++  interrupt-names:
++    items:
++      - const: rx
++      - const: tx
++  clocks:
++    maxItems: 7
++  resets:
++    maxItems: 2
++  power-domains:
++    maxItems: 1
++  dma-rx:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: RX channel index in the DMA channel and state resources.
++  dma-tx:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: TX channel index in the DMA channel and state resources.
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - interrupts
++  - interrupt-names
++  - clocks
++  - resets
++  - dma-rx
++  - dma-tx
++
++unevaluatedProperties: false
+diff --git a/Documentation/devicetree/bindings/pci/brcm,bcm6328-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,bcm6328-pcie.yaml
+new file mode 100644
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pci/brcm,bcm6328-pcie.yaml
+@@ -0,0 +1,55 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pci/brcm,bcm6328-pcie.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: BCM6328 family PCIe host resource contract
++
++maintainers:
++  - gianguyen14 <231934554+gianguyen14@users.noreply.github.com>
++
++description: |
++  Resources consumed by the pinned pcie-bcm6328 driver, also used for BCM63268.
++  This host contract does not identify or calibrate a WLAN endpoint.
++
++allOf:
++  - $ref: /schemas/pci/pci-host-bridge.yaml#
++
++properties:
++  compatible:
++    const: brcm,bcm6328-pcie
++  reg:
++    maxItems: 1
++  interrupts:
++    maxItems: 1
++  clocks:
++    maxItems: 1
++  clock-names:
++    const: pcie
++  resets:
++    minItems: 3
++    maxItems: 4
++  reset-names:
++    minItems: 3
++    items:
++      - const: pcie
++      - const: pcie-ext
++      - const: pcie-core
++      - const: pcie-hard
++  power-domains:
++    maxItems: 1
++  brcm,serdes:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: System controller containing the existing SERDES control word.
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - resets
++  - reset-names
++  - brcm,serdes
++
++unevaluatedProperties: false
+--- a/Documentation/devicetree/bindings/net/realtek,rtl8152.yaml
++++ b/Documentation/devicetree/bindings/net/realtek,rtl8152.yaml
+@@ -21,6 +21,7 @@
+     description: The device number on the USB bus
+ 
+   realtek,led-data:
++    $ref: /schemas/types.yaml#/definitions/uint32
+     description: Value to be written to the LED configuration register.
+ 
+ required:

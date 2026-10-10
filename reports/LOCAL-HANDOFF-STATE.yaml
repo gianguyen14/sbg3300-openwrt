@@ -25,10 +25,10 @@ xtm:
   probe_shims_present: true
   proprietary_source_publication: BLOCKED_PENDING_FILE_LEVEL_LICENSE_REVIEW
 safety:
-  router_accessed: false
+  router_accessed: true
   router_modified: false
   flashable: false
-  device_readonly_plan_authorized: false
+  device_readonly_plan_authorized: true
 xtm_runtime_component:
   source: drivers/xtm
   feature_branch: feat/sbg3300-xtm-dma-port
@@ -62,3 +62,94 @@ next:
   - map the 15 pktdma, 3 HAL IRQ, and 1 platform MAC imports to lawful implementations and exact BCM63168 hardware semantics
   - keep XTM probe shims out of runtime candidates and do not mark the module resolved until compile and modpost succeed without shims
   - continue Ethernet topology and DSL control/PHY source research without enabling guessed hardware configuration
+
+pre_final_integration:
+  source_branch: feat/sbg3300-pre-final-integration
+  approved_openwrt_tree: 2ac5b16d7ba20467a099bf096de89c32d69a9324
+  upstream_kernel_modules_compile: PASS
+  independent_upstream_kernel_compile: PASS
+  normalized_upstream_modules_reproduced: 74
+  reviewed_kernel_candidate_compile: PASS
+  reviewed_kernel_candidate_module_count: 75
+  selected_openwrt_packages_compile_exit: 0
+  xtm_strict_missing_kernel_imports: 0
+  enetsw_strict_missing_kernel_imports: 0
+  enetsw_strict_module_sha256: 89c26b4d872fb86a9f8839bbbe9f077ce64e5f7f99017d9258ccf1bd54e8f1b2
+  python_unit_tests: 16
+  native_sanitizer_policy_groups: 3
+  mips_user_mode_policy_groups: 3
+  sar_runtime_enabled: false
+  nand_runtime_enabled: false
+  ethernet_topology_enabled: false
+  full_firmware_image_build_started: false
+  overall_readiness: BLOCKED
+  report: reports/PRE-FINAL-ENGINEERING.md
+
+pre_final_integrated_build:
+  prepared_kernel_compile_exit: 0
+  prepared_kernel_vmlinux_sha256: bdb6d92f68fd401655b1d2c9ba7901719833dec1b423273b913c13911c0c27ee
+  selected_package_compile_exit: 0
+  apk_count: 88
+  final_dtb_sha256: 3be99ff1c7e4962384cd292adfd408cace5439625c381026619f60946a99751d
+  full_schema_diagnostics: 0
+  device_interaction: NONE
+  final_full_firmware_build: NOT_STARTED
+  readiness: BLOCKED
+  source_milestone_commit: 8491a5e4c9def587f12391ae409b9cc69d24b1af
+
+pre_final_publication:
+  feature_branch: feat/sbg3300-pre-final-integration
+  source_milestone_remote_sha: 8491a5e4c9def587f12391ae409b9cc69d24b1af
+  draft_pr: https://github.com/gianguyen14/sbg3300-openwrt/pull/3
+  source_license_review: APPROVED_SCOPED_GPL_ORIGINAL_SOURCE
+  public_safety_review: APPROVED_WITH_RETAINED_UPSTREAM_ATTRIBUTION
+  original_router_firmware_modified: false
+
+pre_final_gate:
+  decision: BLOCKED_AWAITING_USER_DECISION
+  all_available_independent_offline_stages_performed: true
+  mandatory_runtime_evidence: NOT_TESTED
+  public_worktree_private_artifacts: NONE
+  private_sandbox_untracked_package: ACCOUNTED_SOURCE_STAGING_ONLY
+  original_kernel_and_initramfs_preserved: true
+
+authorized_stock_readonly_observation:
+  date: '2026-10-10'
+  implementation_commit: c034751f24e150a97206fab03f266367b142526f
+  report: reports/LIVE-READONLY-2026-10-10.md
+  ssh_connection: SUCCESS_EXISTING_SETUP_STRICT_SAVED_HOST_KEY
+  router_modified: false
+  dsl_status: IDLE
+  sar_fap_ownership_transition: UNRESOLVED
+  switch_silicon_topology: UNRESOLVED
+  nand_ecc_step_strength_attributes: UNAVAILABLE
+  private_raw_logs_in_git: false
+  xtm_tx_busy_ownership_fix: IMPLEMENTED_AND_COMPILED
+  callback_api_double_scenarios: 8
+  native_sanitizer_mips_policy_groups: 4
+  python_tests: 19
+  external_module_sha256: f67b6da34dcc279ee832fbc4210463b8cc89ba2b184186309d324e70e47f80dd
+  external_module_reproducible: true
+  compiler_modpost_exit: 0
+  missing_kernel_imports: 0
+  package_compile_exit: 0
+  package_sha256: 11dae7f9a8cad685cc05a8961312daaf4a9fbc4e0795ed04f51782306fb3239d
+  legacy_probe_unresolved_imports: 19
+  final_firmware_build_started: false
+  readiness: BLOCKED_AWAITING_USER_DECISION
+  bcma_soc_compile_coverage: true
+  sbg3300_bcma_node_enabled: false
+  bcma_soc_calibration_provider: UNRESOLVED
+  coverage_kernel_wrapper_initial_exit: 127
+  coverage_kernel_initial_complete_log: UNAVAILABLE_OVERWRITTEN_WRAPPER_FAILURE
+  coverage_kernel_corrected_repeat_exit: 0
+  coverage_kernel_audited_modules: 77
+  bcma_external_compile_modpost_exit: 0
+  bcma_external_reproduced: true
+  bcma_external_sha256: 58a464ca7d1eb9094df33df332291ad2bc9a378d52b5d8dff1abf541d3baefd0
+  bcma_external_import_count: 73
+  bcma_missing_imports: 0
+  standalone_dts_matches_reviewed_profile: true
+  stale_dts_negative_fixture: REJECTED_BEFORE_BUILD
+  full_dtc_schema_diagnostics: 0
+  updated_dtb_sha256: 3be99ff1c7e4962384cd292adfd408cace5439625c381026619f60946a99751d
