@@ -1,56 +1,41 @@
 # Public repository safety audit
 
-Audit scope: current tracked files, Git-reachable commit/blob history, checked
-patches/docs/scripts/configs, ignored artifact locations, and the local RD-1
-archive member list. Scan was performed locally; no content was uploaded to an
-external scanning service.
+## Local review of the handoff branch
+
+Review date: 2026-10-10. Scope: the nine paths changed by commit
+`7ce08ef4b586b4b83aa1f409ed2a86d428dbbb97`, its parent, and all Git-reachable
+history. The delta contains documentation, a YAML status record, and a
+symbol-resolution TSV only; it adds no executable source, firmware, build
+logs, or vendor tree.
+
+The local `tools/public-safety-scan.py` scan covered 64 tracked files and 270
+reachable Git objects. It returned exit 0 with no configured high-risk
+patterns. `git diff --check origin/main...HEAD` returned exit 0. Each added
+file was reviewed in context. No credentials, keys, device identifiers,
+calibration, NVRAM, stock binaries, or private build output were found in the
+delta. No scanner patterns were weakened or suppressed.
+
+The handoff's earlier preliminary note about placeholder contact strings and
+MAC-like examples was rechecked against the full reachable history; the
+current scanner reports no matching blob. The new commit's author metadata was
+also reviewed and retained as attribution. Existing historical project
+patches and source material are already present on public `main`; this delta
+does not introduce new third-party implementation code.
+
+The local OpenWrt build tree, module probes, stock modules, firmware, and
+vendor-source checkout remain outside Git. Only sanitized hashes/status and
+symbol names are present in the tracked handoff.
+
+## Scope limits
+
+This review approves the source-only handoff delta for publication. It does
+not approve publishing the local build artifacts, stock firmware/modules,
+calibration, device data, the external Broadcom mirror, or any unreviewed
+vendor-derived implementation. Their provenance and redistribution terms
+remain unsettled. No binary release is approved.
 
 ## Result
 
-- Git history scanned: all reachable project commits/blobs; no matches for private-key
-  PEM headers, common credential assignment fields, GitHub/OpenAI token
-  patterns, or colon/hyphen MAC-address patterns.
-- The original Git author/committer email was replaced with the account's
-  GitHub noreply address across commit metadata and every historical version
-  of the checked-in OpenWrt patch mails. Rewritten history preserves the
-  commit sequence/tree changes; old refs/reflogs were pruned locally before
-  publication.
-- Tracked tree: source code written for this project, OpenWrt patches, DTS,
-  configs, sanitized reports, and documentation. No firmware, extracted
-  rootfs, CFE/NVRAM dump, stock `.ko`, build directory, or calibration blob is
-  tracked.
-- Working-tree ignored areas include local firmware/rootfs/backups/builds,
-  vendor source checkouts, and release artifacts. `.gitignore` excludes them;
-  they must remain untracked.
-- Local RD-1 archive contains 24 regular files: the SBG3300 initramfs ELF, its
-  DTB, project patches/config/docs/reports, and build script. A local pattern
-  scan found no private-key, token, MAC-pattern, or credential-assignment
-  matches. No stock image, extracted stock binary, or device backup appeared.
-  It is not being uploaded because legal/source-completeness review for a
-  binary bundle is outside the evidence available here.
-- Device/private identifiers: project docs intentionally omit actual MAC,
-  serial, credentials, calibration values, and NVRAM content.
-- Workstation paths were found in reports and have been replaced with portable
-  or relative wording.
-- The current `tools/public-safety-scan.py` checks tracked files and all
-  reachable Git blobs locally. It prints finding types and paths only, never
-  matched values.
-- GitHub was not empty: the fetched remote had two commits containing a README
-  and Apache-2.0 `LICENSE`, with no firmware or device data. Preserve that
-  history and license by a non-force reconciliation; do not overwrite remote
-  state.
-
-## Excluded classes
-
-Passwords, PPP/Wi-Fi credentials, tokens/API keys, private keys/certificates,
-cookies/sessions, actual MAC/serial identifiers, device calibration, NVRAM/CFE
-dumps, firmware images, extracted proprietary firmware trees, stock kernel
-modules, full OpenWrt checkout/build outputs, and unreviewed vendor blobs.
-
-## Limitations
-
-Secret scanning is heuristic and is not a legal determination. Review every
-new file and Git diff before publishing. The local release archive was not
-published. Broadcom family source is documented by provenance/hash but not
-included. If new files are added, rerun the scan on current content and Git
-history before another push.
+Public-safety review of the handoff delta: **PASS**. The result applies only to
+the reviewed source/documentation branch and is not a legal opinion about
+external vendor materials or binary artifacts.
