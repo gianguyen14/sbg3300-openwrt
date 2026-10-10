@@ -15,3 +15,8 @@ Current pre-final source/build evidence is in reports/PRE-FINAL-ENGINEERING.md.
 Preserve the original kernel/image; the updated board disables unproved NAND
 and inherited switch/MDIO activation. Do not run the full image helper until
 the separate final-build approval gate is satisfied.
+
+Authorized stock SSH observations from 2026-10-10 are recorded in
+reports/LIVE-READONLY-2026-10-10.md. Reuse only that read-only authorization;
+device-state changes, module/firmware execution and boot/recovery experiments
+still require separate specific approval. Raw device logs stay outside Git.

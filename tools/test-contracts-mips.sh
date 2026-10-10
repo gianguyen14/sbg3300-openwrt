@@ -19,11 +19,15 @@ run_dir="$(mktemp -d "$evidence_root/run-XXXXXX")"
   -o "$run_dir/ptm-core"
 "${cross}gcc" -static -std=c11 -Wall -Wextra -Werror \
   "$project_dir/tests/test_enetsw_contract.c" -o "$run_dir/enetsw-contract"
-for test_binary in xtm-core ptm-core enetsw-contract; do
+python3 "$project_dir/tools/extract-xtm-xmit-test.py" "$run_dir/xtm-xmit-under-test.inc"
+"${cross}gcc" -static -std=c11 -Wall -Wextra -Werror -I"$run_dir" \
+  "$project_dir/tests/test_xtm_xmit.c" -o "$run_dir/xtm-xmit"
+for test_binary in xtm-core ptm-core enetsw-contract xtm-xmit; do
   "$emulator" "$run_dir/$test_binary" > "$run_dir/$test_binary.log" 2>&1
   cat "$run_dir/$test_binary.log"
 done
 python3 "$project_dir/tools/audit-kernel-artifacts.py" \
   "$run_dir/xtm-core" "$run_dir/ptm-core" "$run_dir/enetsw-contract" \
+  "$run_dir/xtm-xmit" \
   > "$run_dir/artifacts.json"
 printf 'MIPS user-mode tests passed; no hardware evidence. Artifacts: %s\n' "$run_dir"

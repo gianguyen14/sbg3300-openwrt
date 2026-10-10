@@ -155,17 +155,21 @@ static netdev_tx_t xtm_ptm_xmit(struct sk_buff *skb, struct net_device *ndev)
 	unsigned long flags;
 	int ret;
 
-	if (skb->len > 1522 || skb_linearize(skb))
-		goto drop;
-	if (skb_put_padto(skb, ETH_ZLEN)) {
-		skb = NULL; /* skb_put_padto frees the buffer on failure. */
-		goto drop;
-	}
 	spin_lock_irqsave(&p->tx_lock, flags);
 	if (!READ_ONCE(p->link_up) || !xtm_dma_available(p->tx)) {
 		netif_stop_queue(ndev);
 		spin_unlock_irqrestore(&p->tx_lock, flags);
 		return NETDEV_TX_BUSY;
+	}
+	/* BUSY leaves the skb untouched and owned by the network stack. Keep
+	 * admission and submission serialized with completion/link updates;
+	 * all skb preparation below is atomic and every failure consumes it.
+	 */
+	if (skb->len > 1522 || skb_linearize(skb))
+		goto unlock_drop;
+	if (skb_put_padto(skb, ETH_ZLEN)) {
+		skb = NULL; /* skb_put_padto frees the buffer on failure. */
+		goto unlock_drop;
 	}
 	ret = xtm_dma_tx_submit(p->tx, skb->data, skb->len, p->tx_status, GFP_ATOMIC);
 	if (!ret) {
@@ -178,6 +182,8 @@ static netdev_tx_t xtm_ptm_xmit(struct sk_buff *skb, struct net_device *ndev)
 		goto drop;
 	dev_consume_skb_any(skb);
 	return NETDEV_TX_OK;
+unlock_drop:
+	spin_unlock_irqrestore(&p->tx_lock, flags);
 drop:
 	spin_lock_irqsave(&p->stats_lock, flags);
 	p->stats.tx_dropped++;

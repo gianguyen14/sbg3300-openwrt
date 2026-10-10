@@ -25,10 +25,10 @@ xtm:
   probe_shims_present: true
   proprietary_source_publication: BLOCKED_PENDING_FILE_LEVEL_LICENSE_REVIEW
 safety:
-  router_accessed: false
+  router_accessed: true
   router_modified: false
   flashable: false
-  device_readonly_plan_authorized: false
+  device_readonly_plan_authorized: true
 xtm_runtime_component:
   source: drivers/xtm
   feature_branch: feat/sbg3300-xtm-dma-port
@@ -112,3 +112,27 @@ pre_final_gate:
   public_worktree_private_artifacts: NONE
   private_sandbox_untracked_package: ACCOUNTED_SOURCE_STAGING_ONLY
   original_kernel_and_initramfs_preserved: true
+
+authorized_stock_readonly_observation:
+  date: '2026-10-10'
+  report: reports/LIVE-READONLY-2026-10-10.md
+  ssh_connection: SUCCESS_EXISTING_SETUP_STRICT_SAVED_HOST_KEY
+  router_modified: false
+  dsl_status: IDLE
+  sar_fap_ownership_transition: UNRESOLVED
+  switch_silicon_topology: UNRESOLVED
+  nand_ecc_step_strength_attributes: UNAVAILABLE
+  private_raw_logs_in_git: false
+  xtm_tx_busy_ownership_fix: IMPLEMENTED_AND_COMPILED
+  callback_api_double_scenarios: 8
+  native_sanitizer_mips_policy_groups: 4
+  python_tests: 16
+  external_module_sha256: f67b6da34dcc279ee832fbc4210463b8cc89ba2b184186309d324e70e47f80dd
+  external_module_reproducible: true
+  compiler_modpost_exit: 0
+  missing_kernel_imports: 0
+  package_compile_exit: 0
+  package_sha256: 11dae7f9a8cad685cc05a8961312daaf4a9fbc4e0795ed04f51782306fb3239d
+  legacy_probe_unresolved_imports: 19
+  final_firmware_build_started: false
+  readiness: BLOCKED_AWAITING_USER_DECISION

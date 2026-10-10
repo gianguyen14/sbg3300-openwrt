@@ -1,4 +1,15 @@
-# Read-Only Device Validation — PENDING AUTHORIZATION
+# Read-Only Device Validation
+
+## Authorized observation recorded 2026-10-10
+
+The owner subsequently authorized existing SSH for non-destructive read-only
+diagnostics. The results and safety boundary are recorded in
+[../reports/LIVE-READONLY-2026-10-10.md](../reports/LIVE-READONLY-2026-10-10.md).
+The pending table below is the original handoff plan, not current authorization
+status. This authorization covers stock observations only; it does not authorize
+module loading, firmware/image execution, device configuration or flash actions.
+
+## Original handoff plan — authorization was pending
 
 Nothing in this document authorizes running commands on the router. No device was accessed in this handoff. Obtain separate, explicit authorization before any device connection or command execution. Use only the device's already enabled, supported management interface; no UART/serial console, raw MTD, bootloader/CFE, NVRAM, calibration, settings changes, reset/reboot, firmware upload/flash, or experimental module loading.
 

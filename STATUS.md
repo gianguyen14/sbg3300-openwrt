@@ -91,3 +91,18 @@ Expanded/independent kernels and all implemented modules have genuine results;
 see [reports/PRE-FINAL-ENGINEERING.md](reports/PRE-FINAL-ENGINEERING.md) and the
 artifact TSVs. Source publication approval is separate from the unresolved
 SAR/DSL/topology/calibration/NAND/boot gates. Overall remains PARTIAL-PORT.
+
+## Authorized stock SSH observation, 2026-10-10
+
+Read-only stock SSH succeeded with strict saved-host-key verification. FAP
+PacketDMA/XTM ownership, SPI `spi1.0` stock binding, PCI Wi-Fi/USB bindings and
+NAND page/OOB/erase metadata corroborated. DSL status Idle; no OpenWrt runtime
+test or device modification. External Wi-Fi SROM/calibration provisioning and
+SAR/FAP ownership remain blockers. See
+[reports/LIVE-READONLY-2026-10-10.md](reports/LIVE-READONLY-2026-10-10.md).
+
+Actual PTM TX callback now checks queue admission before skb mutation. Eight
+callback/API-double cases pass native/sanitizer/MIPS tests and catch the old
+bug. Two fresh strict external builds reproduce SHA256
+`f67b6da34dcc279ee832fbc4210463b8cc89ba2b184186309d324e70e47f80dd`;
+OpenWrt component APK rebuilt. Legacy probe still 19 unresolved imports.
