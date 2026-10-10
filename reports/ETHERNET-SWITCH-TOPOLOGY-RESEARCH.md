@@ -56,7 +56,7 @@ behavior into Linux 6.18 behavior.
 | The stock bootlog selects the C3 boardparms configuration | `SUPPORTED` | Log unit-0 `config_pbmp=0x58` and unit-1 `phypbmp=0x1e` match the source's C3 branch. The C2 alternative is `0x50`/`0x1f` and swaps the port-4/port-6 interface roles. This is a bitmap cross-check, not a firmware hash comparison. |
 | BCM53125 is controlled through HSSPI bus 1 CS0 in the family driver contract | `SUPPORTED` | `FAMILY-SOURCE`: exact entry selects `HS_SPI_SSB_0`; `bcmswaccess.c:618–640` maps SSB0 to ID 0; `bcmenet.c:6786–6802` reserves HSSPI bus 1/CS0, mode 3, 781 kHz. `LIVE-DEVICE` observed `spi1.0` and a generic HSSPI child. Together with the bootlog switch discovery, this supports the stock software path but does not expose PCB traces. |
 | The SSB5 overlay configures an additional HSSPI SS5 pin function | `VERIFIED` | `EXACT-BOARD-SOURCE`: `setup.c:1444–1456` sets the SS5 GPIO mode when the overlay is present. The active Ethernet configuration still selects SSB0. The source comment at `boardparms.c:2923` describes SSB5 as an alternative after specified MDIO resistor changes. What else, if anything, uses the extra SS5 pin on the physical board is `UNKNOWN`. |
-| External BCM53125 switch has PHY ports 1–4 and boardparms map `0x1e` | `VERIFIED` | `EXACT-BOARD-SOURCE`: the external HSSPI group lists PHY IDs 1–4 at `boardparms.c:2921–2928`; `STOCK-BOOT-LOG` reports unit-1 bitmap `0x1e`. No per-jack labels are encoded. |
+| External port bitmap selects indices 1–4; boardparms stores PHY addresses separately | `VERIFIED` | `EXACT-BOARD-SOURCE`: bitmap `0x1e` and PHY address values 1–4 in array slots 0–3 at `boardparms.c:2921–2928`; `STOCK-BOOT-LOG` reports unit-1 bitmap `0x1e`. Bitmap ports, PHY address slots and physical jack labels are distinct. |
 | BCM53125 port 8 is the cascade/IMP connected to SoC port 6 | `SUPPORTED` (high confidence) | Exact-board port 6 is marked external-switch RGMII; same-board-ID boot output shows port 8 tagged while ports 1–4 are untagged in default VLAN 1; Linux 6.18's BCM53125 profile names `imp_port = 8` (`b53_common.c:2883–2891`). These independently align. Neither source shows the PCB net or proves Linux DSA runtime. |
 | SoC port 3 uses the internal PHY at ID 4 | `VERIFIED` as boardparms encoding | `EXACT-BOARD-SOURCE` gives `BP_PHY_ID_4`; pinned `bcm63268.dtsi:564–607` describes SoC MDIO PHY 4 and its GPHY reset. Exact board wiring of that PHY to a connector is unknown. |
 | SoC port 4 is a fixed 100-Mbit/s full-duplex MAC-to-PHY MII connection with encoded ID `0x14` | `VERIFIED` as boardparms encoding | `TMII_DIRECT` definitions set forced 100FD, MAC-to-PHY and MII; low PHY ID bits of `0x14` are 20. Whether the stock Linux build exposes this endpoint as PHY address 20, and its board function, are `UNKNOWN`. |
@@ -236,13 +236,13 @@ Ethernet-only; DSL/XTM is not part of this milestone.
 
 ### Physical jack mapping summary
 
-| Physical jack | Stock netdev | SoC path | BCM53125 port | Evidence | Confidence |
-|---|---|---|---|---|---|
-| ETHERNET 1 | `eth0` | Candidate external-switch path through SoC port 6 | Port 4 supported | Owner-assisted A/B/A verifies jack↔netdev; live boot maps `eth0` to logical index 4; exact-family source interprets the external index as port 4 | `VERIFIED` jack↔netdev; `SUPPORTED` port decode |
-| ETHERNET 2 | `eth1` | Unknown | Unknown | Owner-assisted A/B/A verifies jack↔netdev; no stock logical index for `eth1` was captured | `VERIFIED` jack↔netdev; PHY path `UNKNOWN` |
-| ETHERNET 3 | Unknown | Unknown; external-switch group is only a group-level hypothesis | Unknown | Owner reports this jack is occupied; it was not tested | `UNKNOWN` |
-| ETHERNET 4 | `eth3` | Candidate external-switch path through SoC port 6 | Port 1 supported, conditional on family-source decode | Owner-assisted A/B/A verifies jack↔netdev; stock boot maps `eth3` to logical index 1; exact-family source conditionally decodes the external index | `VERIFIED` jack↔netdev; `SUPPORTED` logical-port decode |
-| ETHERNET WAN | Unknown | Candidate SoC port 3 / PHY 4 | Unknown | Jack remained occupied and untouched; candidate derives from boardparms and logical-index interpretation, not jack observation | Jack mapping `UNKNOWN`; candidate SoC path `INFERRED` |
+| Physical jack | Stock netdev | Stock logical index | BCM53125 port | SoC port | Evidence | Confidence |
+|---|---|---|---|---|---|---|
+| ETHERNET 1 | `eth0` | 4 | 4 conditional | Candidate 6 via external switch | A/B/A jack↔netdev; stock boot index; family port decode | `VERIFIED` netdev; `SUPPORTED` port/path |
+| ETHERNET 2 | `eth1` | Unknown | Unknown | External-switch group candidate only | A/B/A verifies netdev; exact running-driver registration/index needed | `VERIFIED` netdev; chip port `UNKNOWN` |
+| ETHERNET 3 | Unknown | Unknown; `eth2→2` is not jack proof | Unknown | External-switch group candidate only | No cable test; PCB/source or safe stock jack-label mapping needed | `UNKNOWN` |
+| ETHERNET 4 | `eth3` | 1 | 1 conditional | Candidate 6 via external switch | A/B/A jack↔netdev; stock boot index; family port decode | `VERIFIED` netdev; `SUPPORTED` port/path |
+| ETHERNET WAN | Unknown | Unknown; `eth4→11` is only a candidate | Not established as external-switch port | Candidate SoC 3 / PHY 4 | Boardparms plus family index decode; exact jack/source role needed | Jack mapping `UNKNOWN`; SoC path `INFERRED` |
 
 Product documentation labels ETHERNET WAN separately from ETHERNET 1–4 and
 describes a fifth Ethernet port that can be reassigned to LAN under specified
@@ -340,6 +340,67 @@ that as external switch index 1. Therefore LAN 4 → external BCM53125 port 1 is
 `SUPPORTED`, not `VERIFIED`; source-to-running-binary equivalence and physical
 PHY routing remain unknown.
 
+## Further source and protocol reconciliation
+
+The reviewed boardparms, bcmenet, ethsw, synthetic-PCI and NAND source files were
+independently fetched from revision `e2f23ddbb20bf75689372b6e6a5a0dc613f6e313`;
+all five matched the local research copies byte-for-byte. The full recursive
+repository tree has 30,077 entries without API truncation. Vendor source stays
+outside public Git. Build lineage equivalence is still unproven.
+
+`bcmenet.c:1190–1215` enumerates the consolidated port bitmap and selects unit
+1 for low external indices. At `:1268–1351`, multiple compile-time branches
+rename netdevs. The ordinary reverse-label branch maps ascending creation
+slots to eth1/eth2/eth3/eth0, while other Zyxel branches rename again. That
+branch would put eth3 on logical index 3, conflicting with live eth3→1.
+Consequently name ordering cannot establish eth1's index or LAN 3/WAN.
+`bcmenet.h:84,177` preserves indices below 8 as external physical-port
+indices and subtracts 8 for internal ports. This verifies the family translation
+rule, while running-build equivalence remains conditional. The external
+boardparms bitmap selects 1–4 but explicit PHY address entries occupy slots
+0–3; BpGetEthernetMacInfo stores those by slot and defaults a missing slot to
+zero (`boardparms.c:3898–3944`). SPI PHY reads use the physical-port page
+rather than that PHY address array (`ethsw.c:2232–2248`); MDIO access uses the
+array. This distinction is another reason not to copy the array into a second
+MDIO-attached switch or infer PHY addresses from logical port indices.
+An additional authorized, passive ifconfig/SIOCGIFMAP observation at
+17:54:34 UTC exposed no Base address field for any eth0–eth5 interface. The
+family source's `dev->base_addr = j` is therefore not available through that
+stock metadata. No private identifiers were published or cable moved.
+
+The earlier `0x888A` lead is now narrowed: `bcmenet.c:5181` writes that value
+into the received buffer before its software tag-stripping helper; it is not
+proof of a wire EtherType. `bcmenet.h:172–173` and `bcmenet.c:3131–3132`
+construct CPU→switch bytes as opcode 1, three-bit queue, and a 16-bit port map.
+On the verified big-endian CPU, queue 0 / port 1 yields `20 00 00 02`, port 4
+`20 00 00 10`, and port 8 `20 00 01 00`. Those selected TX fields match pinned
+Linux `net/dsa/tag_brcm.c:115–132`. Stock RX extraction uses the last byte's
+low five bits, also matching the Linux source-port mask. The stock rewrite
+hides original opcode/CID bytes, and Linux additionally rejects reserved reason
+codes; complete RX wire compatibility is not established.
+
+The cascade remains a separate software contract. Stock BCM963268 RX uses the
+DMA descriptor's SoC source-port bits and strips an external tag when that port
+is EXTSW_CONNECTED (`bcmenet.c:5176–5195`); internal-switch traffic is untagged
+in that stock path. Linux B53 chooses BRCM_PREPEND for the internal 63xx switch
+and ordinary BRCM for BCM53125. The pinned tag receive helper looks up switch
+index 0, and its TX helper uses a single destination port map rather than an
+explicit two-switch route. Thus matching selected external TX bytes does not
+justify a same-tree DSA cascade or prove how nested tags should be handled.
+A verified transport design and forwarding tests are needed before active DSA
+links. No custom tag module or graph is fabricated here.
+
+Exact-family `ethsw.c:1285–1322` programs MAC mode and a revision-dependent
+TIMING_SEL workaround; D0 takes the normal timing path, while A0/B0 receive
+special treatment. It preserves other state and conditionally changes receive
+clock handling only for a detected PHY type. Linux `b53_adjust_63xx_rgmii()`
+clears both DLL bits; its BCM53125 routine chooses them from phy-mode and the
+IMP legacy-delay quirk. These source paths do not establish both endpoints'
+strap/CFE state or PCB delays. No `rgmii-id`, delay value or reset GPIO is added.
+
+Real software corrections and their exact callback/module tests are recorded
+in `ETHERNET-RX-NAPI-VALIDATION.md`. They do not activate the unresolved graph.
+
 ## Linux 6.18.54 and OpenWrt integration contract
 
 The pinned `target/linux/bmips/dts/bcm63268.dtsi` at OpenWrt commit
@@ -422,7 +483,7 @@ Results on pinned OpenWrt/Linux 6.18.54 source:
 | Candidate DTB SHA256 | `d3e7522c76ace2a0fb567c3f0fc6178b45648b171db655d4f9faa7f74f10ec91` |
 | Existing board fixture DTB SHA256 | `3be99ff1c7e4962384cd292adfd408cace5439625c381026619f60946a99751d` |
 | Existing Ethernet C module compile/modpost | Not repeated: no kernel C, Kconfig, or runtime DTS input was changed. Prior artifact coverage remains in the build report. |
-| Hardware/runtime | Stock LAN 1/LAN 2 jack-to-netdev A/B/A tested; OpenWrt Ethernet/DSA runtime not tested |
+| Hardware/runtime | Stock LAN 1/2/4 jack-to-netdev A/B/A tested; OpenWrt Ethernet/DSA runtime not tested |
 
 This change adds source-contract tests and an inert evidence fixture; it does
 not implement or claim a working Ethernet driver path. No sibling-board DTS
@@ -482,8 +543,8 @@ stock tests do not establish Linux 6.18 runtime behavior.
 
 ## Safety and outcome
 
-Read-only stock SSH was used and the owner moved the LAN 1 cable to LAN 2 and
-back for the authorized A/B/A test. No register/MMIO selector was used and no
+Read-only stock SSH was used and the owner completed LAN1/LAN2 and LAN1/LAN4
+A/B/A tests. The cable is back at LAN 1; no additional movement occurred. No register/MMIO selector was used and no
 router configuration changed. No raw NAND/MTD, UART, module load, reset,
 reboot, firmware operation, or final image build occurred.
 The main board DTS keeps Ethernet, switch, MDIO, and NAND disabled. The

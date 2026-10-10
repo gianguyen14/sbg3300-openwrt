@@ -107,3 +107,10 @@ label is not evidence of BCH4/4K. Actual OOB positions, writer/BBT equivalence
 and Linux runtime remain unproven. No DTS ECC override or partition was added.
 Exact references and validator results are in
 `reports/BOOT-NAND-PERIPHERAL-VALIDATION.md`.
+
+An independent legacy-header comparison now matches Linux 6.18's actual
+Hamming OOB callbacks for the 2048/64/512/strength-1 candidate tuple: 12 ECC
+bytes at identical positions and 50 free bytes, with two BBI bytes reserved.
+Native/sanitizer/MIPS callback tests pass. This is conditional source-layout
+equivalence, not proof of actual flash encoding, BBT compatibility or writer
+behavior. The NAND controller remains disabled.

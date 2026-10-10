@@ -67,8 +67,8 @@ and three ECC bytes. `brcmnand_base.c:10747–10749` selects Hamming's
 printed label alone is not proof of BCH4 or a 4-KiB page. The same-board-ID log
 reports 2-KiB pages, 64-byte OOB, four 512-byte steps and three ECC bytes/step.
 Linux 6.18 `brcmnand.c:1134–1135` translates code 15 with 16-byte spare/sector
-into strength 1. This is `SUPPORTED` interpretation; actual OOB position/BBT
-compatibility and equivalence to the owner's writer are not established.
+into strength 1. This is `SUPPORTED` interpretation; actual device ECC settings/BBT compatibility and equivalence to the owner's
+writer are not established.
 NAND, fixed partitions and firmware image generation remain disabled.
 
 ## USB, GPIO, pinctrl and watchdog
@@ -110,3 +110,28 @@ The remaining gate requires board-specific topology/tag transport and MAC
 provisioning, lawful radio calibration/host integration, NAND writer/BBT/OOB
 compatibility, CFE handoff and a safe non-UART recovery route. Compilation and
 these stricter offline checks do not satisfy those runtime/hardware contracts.
+
+## Executed boot and OOB fixtures
+
+`tools/test-boot-elf.sh` compiles an original four-instruction MIPS userspace
+exit program with the real cross toolchain. Its explicit-o32 ELF passes audit
+and executes in QEMU, exit 0. Binary rewrapping through the pinned-style
+pipeline loses ABI/X metadata and is rejected by strict loader audit, exit 1.
+The fixture has no kernel payload, firmware, UART or device code; only the
+ordinary userspace executable was run. SHA256: positive
+`daea81e1ac9cffc8e1adcf4e56acffe3f36b6b9983fc7c9f3aea03ab4a3bb07d`,
+wrapped negative `cde471fa47555574873aa01c0806052ef3d2c2ce5c4ba55e17fc5fde8bbb0f59`.
+Logs: `sbg3300-boot-elf-tests/run-qivYON`. The synthetic reproduction explains
+the strict failure without changing its criteria or proving CFE acceptance.
+
+The pinned public `kernel/linux/include/mtd/brcmnand_oob.h:46–66` stores ECC
+bytes at 6–8, 22–24, 38–40 and 54–56; free ranges are (2,4), (9,13), (25,13),
+(41,13), (57,7). Actual Linux 6.18 Hamming OOB callbacks produce the same
+layout for 2048-byte pages, 16 spare bytes/512-byte sector: 12 ECC bytes, 50
+free bytes, and two reserved bad-block-marker bytes.
+`tools/test-brcmnand-oob.sh` executes both actual extracted kernel callbacks
+against these independently sourced expected regions. Native, Clang
+ASan/UBSan and MIPS big-endian QEMU tests pass, including section bounds and
+complete no-overlap byte coverage. This establishes conditional source-layout
+equivalence for that tuple; actual media/BBT/image writer remain untested.
+NAND stays disabled. The complete pinned mirror has no CFE ELF loader source.

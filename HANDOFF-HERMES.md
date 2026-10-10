@@ -346,3 +346,14 @@ kernel/compiler/modpost exits 0; all 77 modules audited, zero missing imports.
 The old loader still fails strict audit. Source-supported Hamming interpretation
 narrows ECC metadata but does not approve NAND. See
 `reports/BOOT-NAND-PERIPHERAL-VALIDATION.md` and the non-DSL artifact TSVs.
+
+## Additional non-DSL compile/source contracts
+
+wpad-basic-openssl now has a genuine APK/executable build and version-only MIPS
+QEMU evidence; onboard calibration/discovery remains blocked. ELF rewrapping is
+reproduced with a small original userspace fixture, preserving the old loader's
+failure. Actual Linux Hamming OOB callbacks match the legacy candidate tuple in
+native/sanitizer/MIPS tests; this does not permit NAND activation. The updated
+topology report records the source netdev-rename conflict, SPI PHY-page versus
+MDIO address distinction and 0x888A receive-buffer normalization. No new cable
+test or live hardware activation occurred.

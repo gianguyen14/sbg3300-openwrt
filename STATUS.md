@@ -160,3 +160,12 @@ Python tests and full DTS schemas pass. Strict old-loader failure is preserved.
 The new integrated Linux kernel/modules build exits 0; 77 modules have real ABI
 and symbol audits. See
 [reports/BOOT-NAND-PERIPHERAL-VALIDATION.md](reports/BOOT-NAND-PERIPHERAL-VALIDATION.md).
+
+AP user space now has a genuine wpad-basic-openssl APK build (exit 0) and target
+MIPS PIE executable, with version-only QEMU execution. This does not resolve
+onboard discovery/calibration or prove association. Synthetic ELF compiler/QEMU
+fixtures reproduce the outer-wrapper metadata loss; real Hamming OOB callbacks
+match the independent legacy geometry table natively/with sanitizers/in MIPS.
+No boot or NAND device operation occurred. Further source trace distinguishes
+SPI physical-port PHY pages from boardparms PHY address slots and records the
+netdev-name branch conflict. No new jack or PHY mapping is asserted.

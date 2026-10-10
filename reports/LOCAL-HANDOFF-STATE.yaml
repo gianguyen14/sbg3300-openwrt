@@ -169,9 +169,9 @@ ethernet_switch_topology_research:
   external_cpu_port: 8
   port6_to_external_port8: SUPPORTED_HIGH_CONFIDENCE_NOT_RUNTIME_VERIFIED
   boot_vlan1: {ports_1_to_4: UNTAGGED_PVID_1, port8: TAGGED}
-  dsa_tag_compatibility: STOCK_TYPE2_0x888A_VS_UPSTREAM_BRCM_FORMAT_UNRESOLVED
+  dsa_tag_compatibility: TX_FIELDS_MATCH_RX_NORMALIZATION_AND_DSA_CASCADE_UNRESOLVED
   rgmii_timing_reset: UNRESOLVED
-  wan_lan_and_vlan_mapping: PARTIAL_LOGICAL_INDICES_KNOWN_JACK_ORDER_UNKNOWN
+  wan_lan_and_vlan_mapping: PARTIAL_LAN1_ETH0_LAN2_ETH1_LAN4_ETH3_VERIFIED_LAN3_WAN_UNKNOWN
   product_documentation_ethwan_connector: VERIFIED
   physical_jack_to_chip_port_mapping: UNRESOLVED
   topology_enabled: false
@@ -210,3 +210,20 @@ non_dsl_boot_peripheral_validation:
   peripheral_compiled_object_count: 8
   original_build_artifacts_preserved: true
   final_firmware_build_started: false
+non_dsl_additional_source_tests:
+  boot_synthetic_real_compiler_qemu_exit: 0
+  boot_binary_wrapper_strict_rejection_exit: 1
+  boot_fixture_contains_kernel_or_firmware: false
+  hamming_oob_legacy_source_layout_match: CONDITIONAL_2048_64_512_STRENGTH1
+  oob_actual_callbacks_native_sanitizer_mips: PASS_CPU_ONLY
+  oob_ecc_bytes: 12
+  oob_free_bytes: 50
+  nand_enabled: false
+  physical_flash_encoding: NOT_TESTED
+  onboard_wifi_binding: BLOCKED_HOST_AND_CALIBRATION
+  ap_user_space_package_compile_exit: 0
+  ap_user_space_package_sha256: 221e5dfe32b0a5607596d4ccb9b18bf67effcfa0f7847cbcb1b9a1b4a62d598c
+  ap_user_space_program_sha256: bdb61892f04746adb9f75140a36fee54ebd07c6bbe9c993aa9af9fe97f6ced5d
+  hostapd_qemu_version_exit: 1_EXPECTED_BY_PROGRAM
+  supplicant_qemu_version_exit: 0
+  wifi_association_runtime: NOT_TESTED
