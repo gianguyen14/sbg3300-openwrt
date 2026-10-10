@@ -180,3 +180,18 @@ ethernet_switch_topology_research:
   python_unit_tests: 22
   full_dtc_schema_diagnostics: 0
   runtime_validation: NOT_TESTED
+enetsw_rx_napi_milestone:
+  report: reports/ETHERNET-RX-NAPI-VALIDATION.md
+  openwrt_patch_count: 10
+  reviewed_openwrt_tree: 4769e1aa08793c94a990092080d6db094d67a30f
+  strict_compiler_modpost_exits: [0, 0]
+  artifact_sha256: 091acf5f6c90fc6f2bebe202343fc295817a4a95b93795e1562efafa396da7d0
+  artifact_bytes: 113932
+  module_vermagic: 6.18.54 SMP mod_unload BMIPS 32BIT
+  module_imports: 85
+  missing_imports: 0
+  complete_module_bytes_reproducible: true
+  actual_callbacks_native_sanitizer_mips: PASS_CPU_ONLY
+  pre_fix_test_exit: 134
+  final_firmware_build_started: false
+  runtime: NOT_TESTED

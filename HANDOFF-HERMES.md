@@ -326,3 +326,13 @@ status, new artifact hashes, evidence-label changes, remaining blockers, and
 tests that still require physical hardware. Preserve a clean main branch or
 provide a reviewable branch/PR. Never request device action implicitly; list
 `NEEDS-DEVICE` tasks separately for owner review.
+
+## Ethernet RX/NAPI follow-up
+
+Patch 0010 delivers real RX bounds/error, zero-budget/NAPI-completion and TX
+status-reuse corrections. `reports/ETHERNET-RX-NAPI-VALIDATION.md` records actual
+callback tests and two strict reproducible module builds. New SHA256:
+`091acf5f6c90fc6f2bebe202343fc295817a4a95b93795e1562efafa396da7d0`; 85 real
+imports, none missing. Existing topology/PHY/MAC/boot blockers remain. The
+current OpenWrt patch series has ten entries; use the series file rather than
+this handoff's historical four-patch list. All router changes remain gated.

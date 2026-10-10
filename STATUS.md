@@ -143,3 +143,12 @@ modules). Initial wrapper failure 127 and lost initial compiler log are explicit
 in the report; stable repeat exit 0 is recorded separately. Python tests: 19.
 Standalone DTS now matches the conservative patched board; stale-source guard
 rejects the old version. Full DTC/schema checks pass with unchanged fixture DTB.
+
+Ethernet RX/NAPI corrections now reject malformed/error descriptors, honor
+TX-only zero-budget polling and NAPI completion, and preserve TX status before
+reuse. Actual extracted callbacks pass native/ASan/UBSan/MIPS tests. Two strict
+module builds reproduce SHA256
+`091acf5f6c90fc6f2bebe202343fc295817a4a95b93795e1562efafa396da7d0`, with 85
+imports and none missing. Ten OpenWrt patches apply to a fresh pinned tree.
+See [reports/ETHERNET-RX-NAPI-VALIDATION.md](reports/ETHERNET-RX-NAPI-VALIDATION.md).
+No board activation or OpenWrt runtime result is claimed.

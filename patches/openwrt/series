@@ -7,3 +7,4 @@
 0007-bmips-align-bcm63268-dts-with-driver-bindings.patch
 0008-bmips-bcm63268-resource-bindings.patch
 0009-bmips-enetsw-managed-lifetime.patch
+0010-bmips-enetsw-rx-poll.patch
