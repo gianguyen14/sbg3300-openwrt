@@ -8,6 +8,10 @@ schema_bin="${DT_SCHEMA_BIN:?Set DT_SCHEMA_BIN to the isolated dtschema bin dire
 evidence_root="${DTS_BUILD_ROOT:-$HOME/.cache/sbg3300-offline-dts}"
 test -x "$kernel_dir/scripts/dtc/dtc"
 test -x "$schema_bin/dt-validate"
+# The standalone board source must describe the same conservative board that
+# the reviewed OpenWrt patch series supplies to the compilation below.
+cmp "$project_dir/dts/bcm63168-zyxel-sbg3300-n000.dts" \
+  "$openwrt_dir/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts"
 mkdir -p "$evidence_root"
 run_dir="$(mktemp -d "$evidence_root/run-XXXXXX")"
 mkdir -p "$run_dir/schema-tree/Documentation/devicetree"

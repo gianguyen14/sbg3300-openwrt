@@ -26,23 +26,37 @@
 	status = "okay";
 };
 
-/* bcm63268.dtsi uses memory@0 reg=<0 0>, allowing BMIPS RAM discovery; keep
- * that behavior instead of hard-coding a base/size from MemTotal. */
-/* NAND controller and geometry are direct stock observations. No partition
- * map is published until the vendor slot/WFI translation is proven exact. */
-&nflash {
+&usbh {
 	status = "okay";
+};
+
+/*
+ * bcm63268.dtsi uses memory@0 reg=<0 0>, allowing BMIPS RAM discovery; keep
+ * that behavior instead of hard-coding a base/size from MemTotal.
+ */
+/*
+ * Storage remains disabled: legacy ECC codes and per-sector OOB units have
+ * not been translated to verified Linux 6.18 settings. No partition map.
+ */
+&nflash {
+	status = "disabled";
 
 	nandcs@0 {
 		compatible = "brcm,nandcs";
 		reg = <0>;
 		#address-cells = <1>;
 		#size-cells = <1>;
-		nand-ecc-step-size = <512>;
-		nand-ecc-strength = <15>;
 		nand-on-flash-bbt;
-		brcm,nand-oob-sector-size = <64>;
 	};
+};
+
+/* The SoC include's default CPU port is not an SBG3300 topology proof. */
+&switch0 {
+	status = "disabled";
+};
+
+&mdio {
+	status = "disabled";
 };
 
 /*

@@ -176,6 +176,19 @@ independent kernel results are retained for their previous configuration.
 
 ## Publication and gate
 
+Final source-consistency review found that the standalone `dts/` board file
+still held the old enabled NAND/ECC overrides, although the nine-patch OpenWrt
+board and compiled SAR fixture were already conservative. It now exactly
+matches that reviewed OpenWrt board: NAND/switch/MDIO disabled, ECC/OOB overrides
+removed, existing USB host PHY provider enabled consistently. No new topology.
+The DTS validation helper compares both board sources before compiling; the
+old standalone source negative fixture is rejected with exit 1 before build.
+Full DTC/roundtrip/meta-schema/board-schema/disabled-resource checks pass with
+zero diagnostics in `$HOME/.cache/sbg3300-offline-dts/run-Lnzl8o`.
+DTB SHA256 remains
+`3be99ff1c7e4962384cd292adfd408cace5439625c381026619f60946a99751d`.
+Board source retains its GPL-2.0-or-later license; helper addition is original.
+
 Changed runtime/test/tools are original GPL-2.0-only source; no vendor bodies,
 stock binaries, private logs or firmware included. Existing upstream copyright
 and contact attribution retained. Local scanner findings remain those reviewed

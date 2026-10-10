@@ -113,3 +113,5 @@ BCMA builds reproduce full bytes, but its calibration path remains unresolved
 and no board BCMA node is enabled. Additional kernel artifacts audited (77
 modules). Initial wrapper failure 127 and lost initial compiler log are explicit
 in the report; stable repeat exit 0 is recorded separately. Python tests: 19.
+Standalone DTS now matches the conservative patched board; stale-source guard
+rejects the old version. Full DTC/schema checks pass with unchanged fixture DTB.

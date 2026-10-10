@@ -149,3 +149,7 @@ authorized_stock_readonly_observation:
   bcma_external_sha256: 58a464ca7d1eb9094df33df332291ad2bc9a378d52b5d8dff1abf541d3baefd0
   bcma_external_import_count: 73
   bcma_missing_imports: 0
+  standalone_dts_matches_reviewed_profile: true
+  stale_dts_negative_fixture: REJECTED_BEFORE_BUILD
+  full_dtc_schema_diagnostics: 0
+  updated_dtb_sha256: 3be99ff1c7e4962384cd292adfd408cace5439625c381026619f60946a99751d
