@@ -15,3 +15,14 @@ Collected securely via read-only SSH wrapper on stock firmware.
 2. Wireless ID confirms BCM435f (`14e4:435f`). Upstream compatibility (b43/brcmsmac/brcmfmac) needs explicit verification.
 3. Switch topology matches standard 6-port BCM63xx layout (eth0-5).
 4. Storage is confirmed standard Broadcom NAND (`brcmnand`).
+## Switch and NAND Evidence Addendum (Phase 2, Stock 2.6.30)
+- **NAND Flash Layout (`/proc/mtd`)**: `erasesize` is `0x20000` (128 KiB).
+  - `mtd0` (rootfs): `0x016a0000` (~22.625 MiB).
+  - `mtd1` (data): `0x00400000` (4.0 MiB).
+  - `mtd2` (nvram): `0x00020000` (128 KiB).
+- **Network Interface Map**:
+  - `eth0` - `eth3`: 4 LAN ports (shared base MAC). Test showed Gigabit capability on link up.
+  - `eth4`: Dedicated WAN port (unique MAC). Test showed Gigabit capability on link up.
+  - `eth5`: Internal CPU link (No MII transceiver).
+  - Switch is configured through UBUS (`ethswctl` reports ID 0x63168, Port Map 0x58, Phy Map 0x18).
+- **GPIO / LEDs**: Sysfs is disabled in stock 2.6.30. Pin definitions must be generated from GPL boardparams for `963168MXH_17A`.
