@@ -9,3 +9,4 @@
 0009-bmips-enetsw-managed-lifetime.patch
 0010-bmips-enetsw-rx-poll.patch
 0011-bmips-sbg3300-hardware-bindings.patch
+0012-bmips-sbg3300-add-gpio-leds.patch

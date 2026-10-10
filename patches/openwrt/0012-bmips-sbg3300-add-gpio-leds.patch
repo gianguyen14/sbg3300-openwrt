@@ -1,0 +1,86 @@
+From 2222222222222222222222222222222222222222 Mon Sep 17 00:00:00 2001
+From: Hermes <hermes@localhost>
+Date: Sun, 11 Oct 2026 01:00:00 +0000
+Subject: [PATCH] bmips: sbg3300: add GPIO, LEDs, and Buttons from kcore map
+
+Extracted directly from RAM (`/proc/kcore` dump of g_pBoardInfo)
+of live device (Zyxel SBG3300-N000, ID 963168MXH_17A).
+
+Signed-off-by: Hermes <hermes@localhost>
+---
+ target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts | 63 ++++++++++++++++++++++++
+ 1 file changed, 63 insertions(+)
+
+diff --git a/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts b/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
+index XXXXXXX..XXXXXXX 100644
+--- a/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
++++ b/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
+@@ -10,6 +10,69 @@
+ 		bootargs = "root=/dev/mtdblock2 rootfstype=squashfs,jffs2 noinitrd console=ttyS0,115200";
+ 		stdout-path = "serial0:115200n8";
+ 	};
++
++	keys {
++		compatible = "gpio-keys-polled";
++		poll-interval = <20>;
++
++		wps {
++			label = "wps";
++			gpios = <&ext_irq 1 GPIO_ACTIVE_LOW>;
++			linux,code = <KEY_WPS_BUTTON>;
++			debounce-interval = <60>;
++		};
++
++		reset {
++			label = "reset";
++			gpios = <&ext_irq 0 GPIO_ACTIVE_LOW>;
++			linux,code = <KEY_RESTART>;
++			debounce-interval = <60>;
++		};
++	};
++	
++	leds {
++		compatible = "gpio-leds";
++
++		power_green {
++			label = "green:power";
++			gpios = <&gpio 20 GPIO_ACTIVE_LOW>;
++			default-state = "on";
++		};
++
++		power_red {
++			label = "red:power";
++			gpios = <&gpio 21 GPIO_ACTIVE_LOW>;
++		};
++
++		internet_green {
++			label = "green:internet";
++			gpios = <&gpio 22 GPIO_ACTIVE_HIGH>;
++		};
++
++		internet_red {
++			/* Serial LED */
++			label = "red:internet";
++			gpios = <&gpio 2 GPIO_ACTIVE_LOW>;
++		};
++
++		wan_data {
++			label = "green:wan";
++			gpios = <&gpio 8 GPIO_ACTIVE_LOW>;
++		};
++
++		usb1 {
++			/* Serial LED */
++			label = "green:usb1";
++			gpios = <&gpio 6 GPIO_ACTIVE_LOW>;
++		};
++
++		usb2 {
++			/* Serial LED */
++			label = "green:usb2";
++			gpios = <&gpio 5 GPIO_ACTIVE_LOW>;
++		};
++	};
+ };
+ 
+ &ehci {
