@@ -19,11 +19,11 @@ perform raw MTD/NAND operations.**
 ## 1. Project objective
 
 Port full upstream OpenWrt to the Zyxel SBG3300-N000 while preserving its
-Broadcom BCM63168 hardware support: NAND, Ethernet/switch, USB, Wi-Fi if
-feasible, DSL/XTM/PPPoE if feasible, and a safe stock-compatible upgrade and
-recovery path. The currently working stock-custom router is separate and must
-not be disturbed. This repository is the port research, not a replacement for
-that system.
+Broadcom BCM63168 hardware support. The current milestone prioritizes Ethernet,
+switch, Wi-Fi, NAND/boot, USB and peripherals. DSL/XTM is explicitly deferred
+until the owner requests it. The currently working stock-custom router is
+separate and must not be disturbed. This repository is the port research, not
+a replacement for that system.
 
 ## 2. Absolute safety constraints
 
@@ -171,7 +171,13 @@ of eth3/eth4 and VLAN, external jack mapping, and how SPI indices map to jacks.
 Do not enable speculative DSA topology. `b53_spi` driver availability is only
 upstream evidence.
 
-## 12. DSL/XTM state
+## 12. DSL/XTM state — deferred
+
+`DSL: DEFERRED — NOT PART OF CURRENT MILESTONE`. Preserve existing XTM/PTM
+source, tests, reports and successful build results. Keep DSL-related hardware
+inactive and do not let its incomplete platform integration block independent
+Ethernet, Wi-Fi, boot, USB or peripheral work. The findings below are retained
+as historical engineering evidence, not current task priorities.
 
 The stock path looks PPPoE-like (`ppp2.1` over `eth4.1`), but precise XTM/PTM/
 ATM data flow must be derived from stock source and logs, not guessed from the

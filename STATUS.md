@@ -1,5 +1,19 @@
 ## Canonical OpenWrt and XTM status
 
+## Current non-DSL milestone
+
+Current priority is Ethernet WAN/LAN and switch feasibility, followed by Wi-Fi,
+NAND/boot preparation, USB and peripherals. **DSL is deferred and is not part
+of this milestone.** Existing XTM/PTM code, tests, reports and build artifacts
+are preserved; its hardware remains inactive. No SAR/FAP, DSL PHY, adsldd,
+bcmxtmcfg or XTM platform integration work is being advanced here.
+
+The latest reviewed integration commit is `ee212d7a8920cd7b264693dbc02c86e8a483f7c0`.
+The separate working branch for this milestone is
+`feat/sbg3300-nondsl-ethernet-wifi`. New read-only stock observations and the
+current non-DSL completion boundary are recorded in
+`reports/NON-DSL-PRIORITY-2026-10-10.md`.
+
 Pinned OpenWrt commit: `5edcc1c43cb97048b506168fbbe00538956796d6`; Linux 6.18.54; target `bmips/bcm63268`. Target compilation exited 0 in the durable build root. The build and `vmlinux` hashes are recorded in `reports/LOCAL-HANDOFF-STATE.yaml`. Build outputs are not committed.
 
 The inherited XTM external probe is diagnostic, uses probe-only compatibility code, and fails modpost with 19 imports (15 packet-DMA, 3 legacy IRQ, 1 platform MAC allocator); see `reports/XTM-UNRESOLVED-CANONICAL-6.18.54.tsv`. That legacy module remains unlinked. The new, original descriptor/ring and Linux DMA component in `drivers/xtm/` builds as `sbg3300_xtm_dma.ko` against the preserved pinned kernel with no probe shims and no missing kernel imports. It is a ring support component without platform/netdev/DSL integration or hardware validation; see `reports/XTM-DMA-RUNTIME-BUILD.md` and `reports/XTM-BCM63168-CONTRACTS.tsv`. The separate stock `adsldd.ko` (82) and `bcmxtmcfg.ko` (31) inventories are unchanged.
