@@ -61,6 +61,28 @@ interface, RGMII delays, PHY addresses/reset wiring, MAC selection, WAN/LAN
 separation and physical jack numbering remain `UNKNOWN`. Therefore the SBG3300
 switch/MDIO topology stays disabled, and no WAN/LAN UCI mapping is supplied.
 
+### B53 SPI package feasibility check
+
+`UPSTREAM`: the pinned `target/linux/bmips/bcm63268/config-6.18` sets
+`CONFIG_NET_DSA=y`, `CONFIG_B53=y`, `CONFIG_B53_SPI_DRIVER=y` and
+`CONFIG_BCM6368_ENETSW=y`. In this target profile these are built into the
+kernel; the `b53_spi.ko` listed in the accepted artifact inventory came from a
+separate compile-coverage configuration where that frontend was modular. The
+existing OpenWrt `kmod-dsa-b53` recipe packages B53 common/tag support but does
+not package `b53_spi.ko`.
+
+An isolated package feasibility probe selected a temporary `kmod-dsa-b53-spi`
+candidate and its dependencies. `make defconfig` exited 0 but emitted recursive
+Kconfig dependency diagnostics for unrelated `qt5base-gui` and
+`squeezelite-custom` feed options, as well as missing optional feed-package
+warnings. The resulting bcm63268 kernel config kept `B53_SPI_DRIVER=y`, and the
+expected `b53_spi.ko` did not exist. No package compile was run and no package
+artifact was produced. The candidate package patch was discarded. Changing
+this SoC-wide built-in selection to a module would alter behavior for every
+board in the subtarget and is not justified by the unresolved SBG3300 switch
+identity/topology. No target config or existing source tree was changed.
+The package option existed only in the isolated scratch copy's ignored `.config`.
+
 ## Wi-Fi, boot, storage and peripherals
 
 - `UPSTREAM` and `BUILD-RESULT`: b43, brcmfmac, BCMA and SSB components compile.
@@ -90,6 +112,7 @@ switch/MDIO topology stays disabled, and no WAN/LAN UCI mapping is supplied.
 - `bash tools/test-contracts-mips.sh`: XTM regression suite, PTM policy,
   Ethernet contracts and TX callback tests passed under MIPS user-mode QEMU.
 - `bash -n tools/*.sh` and `python3 -m compileall -q tools tests`: passed.
+- B53 SPI package feasibility: `BLOCKED`; no package build result is claimed.
 
 Previously completed kernel/package/DTS builds are preserved and listed in
 `PRE-FINAL-ENGINEERING.md`, `PRE-FINAL-ACCEPTED-ARTIFACTS.tsv` and
