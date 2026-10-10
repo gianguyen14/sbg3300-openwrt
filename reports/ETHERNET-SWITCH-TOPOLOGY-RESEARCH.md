@@ -3,10 +3,11 @@
 Date: 2026-10-10. Scope: source reconstruction and offline validation for
 Zyxel SBG3300-N000 board ID `963168MXH_17A`. OpenWrt baseline
 `5edcc1c43cb97048b506168fbbe00538956796d6`, Linux 6.18.54,
-`bmips/bcm63268`. DSL is deferred. No router command was run during this
-research pass; previously authorized stock observations are summarized in
-`LIVE-READONLY-2026-10-10.md`. The research fixture is disabled and cannot be
-used as a hardware configuration.
+`bmips/bcm63268`. DSL is deferred. The initial source review was offline;
+owner-authorized read-only SSH and a LAN1/LAN2 cable A/B/A test were completed
+later on 2026-10-10 and are recorded below. No router configuration was
+changed. The research fixture is disabled and cannot be used as a hardware
+configuration.
 
 ## Result
 
@@ -27,10 +28,14 @@ The exact-family boardparms source has a C3 `#if 1` branch and a C2 `#else`
 alternative. Bootlog bitmaps match the C3 branch, but equivalence between the
 public source mirror and Zyxel's running firmware image is not established.
 
-The five product connectors are documented, but the exact Ethernet WAN jack
-mapping and the one-to-one order of LAN jacks to switch ports remain unknown.
-No WAN/LAN DSA labels, active link properties, reset GPIO, RGMII timing, or MAC
-provisioning are justified yet. DSL remains deferred.
+Owner-assisted A/B/A testing now verifies the physical LAN 1 jack maps to
+stock netdev `eth0` and LAN 2 maps to `eth1`. This does not by itself identify
+the PHY or external-switch port behind either netdev. The LAN 1 to stock
+logical switch-index-4 chain is supported by the stock boot observation and
+family-source decode; `eth1`'s logical switch index is not captured. LAN 3,
+LAN 4, and Ethernet WAN were not tested. WAN-to-SoC-PHY mapping, DSA labels,
+reset GPIO, RGMII timing, and MAC provisioning remain unresolved. DSL remains
+deferred.
 
 ## Evidence classes and confidence
 
@@ -55,8 +60,12 @@ behavior into Linux 6.18 behavior.
 | SoC port 3 uses the internal PHY at ID 4 | `VERIFIED` as boardparms encoding | `EXACT-BOARD-SOURCE` gives `BP_PHY_ID_4`; pinned `bcm63268.dtsi:564–607` describes SoC MDIO PHY 4 and its GPHY reset. Exact board wiring of that PHY to a connector is unknown. |
 | SoC port 4 is a fixed 100-Mbit/s full-duplex MAC-to-PHY MII connection with encoded ID `0x14` | `VERIFIED` as boardparms encoding | `TMII_DIRECT` definitions set forced 100FD, MAC-to-PHY and MII; low PHY ID bits of `0x14` are 20. Whether the stock Linux build exposes this endpoint as PHY address 20, and its board function, are `UNKNOWN`. |
 | Ethernet WAN is SoC port 3 / PHY 4 | `INFERRED` (medium-low) | Product docs establish a separate ETHWAN connector; the SoC map has port 3/PHY4 outside the four-port external group, and the live stock logical map has `eth4→11` (internal port 3 under the family port-index algorithm). No exact board source labels it WAN or maps it to that connector. |
-| External ports 1–4 are the four physical ETHERNET 1–4 jacks in that order | `INFERRED` as a group; order `UNKNOWN` | Four external PHY entries, four documented LAN jacks, and boot-time VLAN 1 membership support a LAN-facing group. Neither boardparms nor the bootlog correlates a port to a jack. |
-| Any stock `ethN` logical port equals a physical jack number | `UNKNOWN` | Live logical indices are stock driver indices and virtual interfaces; the source walks consolidated switch indices. No physical jack correlation was observed. |
+| Physical LAN 1 jack ↔ stock netdev `eth0` | `VERIFIED` | `LIVE-DEVICE`: owner-confirmed A/B/A cable placement. With the cable at LAN 1, `eth0` carrier was up and `eth1` down; at LAN 2, `eth0` was down and `eth1` up; after return to LAN 1, the original state returned. No other cable was moved. This verifies the stock jack-to-netdev correlation only. |
+| Physical LAN 2 jack ↔ stock netdev `eth1` | `VERIFIED` | `LIVE-DEVICE`: same owner-confirmed A/B/A sequence. Carrier and counter observations are detailed below. This does not identify a PHY or switch-port number. |
+| LAN 1 ↔ external BCM53125 port 4 | `SUPPORTED` | The A/B/A test verifies LAN 1 ↔ `eth0`; prior live stock boot evidence maps `eth0` to logical switch index 4, and the exact-family source interprets the external low indices as switch ports. Exact running-binary equivalence and PCB trace are not proven. |
+| LAN 2 / `eth1` ↔ a specific BCM53125 PHY port | `UNKNOWN` | The A/B/A test verifies LAN 2 ↔ `eth1`, but no live logical switch index for `eth1` was captured. Do not assign the otherwise plausible remaining port 3 by elimination. |
+| LAN 3, LAN 4, and Ethernet WAN ↔ stock netdev/PHY/switch port | `UNKNOWN` | No cable test was made on these jacks. LAN 3 and Ethernet WAN were physically occupied and left untouched; LAN 4 was not tested. |
+| Any stock `ethN` name equals a physical jack number | `UNKNOWN` generally | `eth0` and `eth1` are now individually correlated by A/B/A, but the remaining stock interfaces are still not mapped to jacks. |
 | External switch uses Linux `b53_spi`, DSA, or the same tag format as stock | `UNKNOWN` for runtime | `UPSTREAM` has matching B53 SPI support and exact BCM53125 chip profile. The stock family source selects a vendor type-2 tag value/format not yet shown byte-compatible with the standard Linux B53 DSA protocol. |
 
 ## Annotated topology reconstruction
@@ -212,10 +221,23 @@ Ethernet-only; DSL/XTM is not part of this milestone.
 |---|---|---|
 | SoC port 6 ↔ BCM53125 port 8 | `SUPPORTED`, high confidence | Boardparms port 6 is explicitly RGMII/direct/external-switch; same-board bootlog tags port 8; Linux profile's BCM53125 IMP port is 8. PCB net and delay not observed. |
 | BCM53125 ports 1–4 are a LAN-facing group | `SUPPORTED` as a group | Exact map has PHY 1–4 and bootlog VLAN 1 makes those ports untagged/PVID 1. Exact front-panel correspondence is not given. |
-| BCM53125 port 1/2/3/4 map in order to ETHERNET 1/2/3/4 | `UNKNOWN` | Port count and VLAN grouping do not reveal connector order. |
+| LAN 1 maps to stock `eth0` | `VERIFIED` | Owner-assisted A/B/A carrier observation; details below. |
+| LAN 2 maps to stock `eth1` | `VERIFIED` | Owner-assisted A/B/A carrier observation; details below. |
+| LAN 1 is BCM53125 PHY/port 4 | `SUPPORTED` | Physical jack maps to `eth0`; stock boot evidence maps `eth0` to logical switch index 4; exact-family source supports interpreting it as external port 4. The source-to-running-binary and PCB net are not proven. |
+| LAN 2 is BCM53125 PHY/port 3 | `UNKNOWN` | `eth1`'s stock logical switch index is absent from captured boot evidence. Port 3 is not assigned by elimination. |
 | SoC port 3 / PHY 4 is Ethernet WAN | `INFERRED` | Separate ETHWAN connector is documented and stock `eth4` maps to candidate internal port 3 under the family algorithm. No board source WAN label or safe link-to-jack correlation. |
 | SoC port 4 / encoded PHY 20 is the fifth Ethernet jack or switch WAN | `UNKNOWN` | Boardparms only gives a direct MII 100FD endpoint. It does not describe its connector or product role. |
 | `eth4.1` is the separate ETHWAN jack | `UNKNOWN` | PPP/VLAN layering without final VLAN membership or physical link correlation is insufficient. |
+
+### Physical jack mapping summary
+
+| Physical jack | Stock netdev | SoC path | BCM53125 port | Evidence | Confidence |
+|---|---|---|---|---|---|
+| ETHERNET 1 | `eth0` | Candidate external-switch path through SoC port 6 | Port 4 supported | Owner-assisted A/B/A verifies jack↔netdev; live boot maps `eth0` to logical index 4; exact-family source interprets the external index as port 4 | `VERIFIED` jack↔netdev; `SUPPORTED` port decode |
+| ETHERNET 2 | `eth1` | Unknown | Unknown | Owner-assisted A/B/A verifies jack↔netdev; no stock logical index for `eth1` was captured | `VERIFIED` jack↔netdev; PHY path `UNKNOWN` |
+| ETHERNET 3 | Unknown | Unknown; external-switch group is only a group-level hypothesis | Unknown | Owner reports this jack is occupied; it was not tested | `UNKNOWN` |
+| ETHERNET 4 | Unknown | Unknown; external-switch group is only a group-level hypothesis | Unknown | Jack was not tested | `UNKNOWN` |
+| ETHERNET WAN | Unknown | Candidate SoC port 3 / PHY 4 | Unknown | Jack remained occupied and untouched; candidate derives from boardparms and logical-index interpretation, not jack observation | Jack mapping `UNKNOWN`; candidate SoC path `INFERRED` |
 
 Product documentation labels ETHERNET WAN separately from ETHERNET 1–4 and
 describes a fifth Ethernet port that can be reassigned to LAN under specified
@@ -224,6 +246,61 @@ board-level wiring or the OpenWrt DSA policy. MAC provisioning is also
 unresolved: the family driver reads factory/NVRAM-derived MAC data, but no
 public, lawful Linux 6.18 nvmem source/offset contract was found. No device MAC
 or offset is included here.
+
+### Owner-assisted LAN 1 / LAN 2 A/B/A test
+
+Date: 2026-10-10. Evidence: `LIVE-DEVICE`, read-only stock SSH through the
+owner's existing `sbg3300` command. The owner confirmed LAN 1 was the cable's
+starting jack, moved that same cable to LAN 2, then returned it to LAN 1. The
+owner separately confirmed the cable was on LAN 2 before the 17:16:45 UTC
+snapshot and back on LAN 1 before the 17:21:58 UTC snapshot. LAN 3 and Ethernet
+WAN remained untouched. The test did not change router configuration or send
+test traffic.
+
+| State | Physical placement | `eth0` | `eth1` | Guard observations |
+|---|---|---:|---:|---|
+| A, 17:12:04 UTC | LAN 1 | carrier up | carrier down | Earlier read-only baseline; SSH responsive |
+| B, 17:16:45 UTC | LAN 2 | carrier down | carrier up | Owner confirmed move occurred before this snapshot; route remained on `ppp2.1` |
+| B stability, 17:19:12 and 17:19:16 UTC | LAN 2 | carrier down | carrier up | Two snapshots retained the same carriers; SSH responsive; default route unchanged |
+| A2, 17:21:58 UTC | LAN 1 | carrier up | carrier down | Fresh `sbg3300` SSH succeeded; full-interface snapshot and route check completed |
+| A2 stability, about 3 seconds later | LAN 1 | carrier up | carrier down | `eth0` remained up and `eth1` down; `eth2` and `eth4` remained up; route remained on `ppp2.1` |
+
+The A2 all-interface snapshot showed `eth0` up, `eth1` down, `eth2` up,
+`eth3` down, `eth4` up, and `eth5` down. The bridge, PPP, VLAN, tunnel,
+loopback, Wi-Fi, and `bcmsw` entries were also inspected through sysfs; the
+route list was unchanged, and `eth0`–`eth5` reported no RX/TX errors. Absolute
+counters for unrelated interfaces are omitted from this public report as
+private runtime telemetry. The A2 check took a second short snapshot of the
+relevant interfaces; `eth0` remained up, `eth1` remained down, and their
+counters behaved consistently with those link states.
+Read-only sysfs `dev_port` and `phys_port_name` attributes were unavailable
+for both `eth0` and `eth1`, so this metadata did not identify a PHY or switch
+port. `dev_id`/interface-index values are not physical switch-port evidence.
+
+The carrier state reversed with the cable placement in both directions and
+returned to the original state in A2. This is direct stock runtime evidence
+for LAN 1 ↔ `eth0` and LAN 2 ↔ `eth1`; both jack-to-netdev mappings are
+`VERIFIED`. It does not prove that either interface is a direct PHY netdev or
+identify `eth1`'s logical switch index. The stock boot's `eth0`→index-4
+observation plus family-source interpretation makes LAN 1→external port 4
+`SUPPORTED`, not `VERIFIED`.
+
+The stock kernel is Linux 2.6.30 on MIPS32/o32. Its upstream
+`struct net_device_stats` uses native `unsigned long` fields for byte and
+packet counts, so a 32-bit counter can wrap at 2³² when that API supplies the
+reported statistics. For example, the captured `eth0` TX byte counter changed
+from 3,816,604,641 to 601,577,519 across A→B. Interpreting one wrap gives a
+modulo delta of 1,079,940,174 bytes. A later `eth4` RX decrease also fits one
+modulo wrap. These decreases are not evidence of lost traffic; the precise
+stock driver's statistics source is not established for every interface.
+The kernel field definition is available in the [Linux v2.6.30 netdevice.h
+source](https://github.com/torvalds/linux/blob/v2.6.30/include/linux/netdevice.h#L2389-L2400).
+
+No active LAN 3 or WAN cable was touched. `ppp2.1` remained the route interface
+throughout. The A/B/A procedure disconnected the other computer from LAN 1
+while its cable was connected to LAN 2. The owner then returned that cable to
+LAN 1; application-level connectivity on the other computer was not separately
+tested. No SSH interruption or router configuration change was observed.
 
 ## Linux 6.18.54 and OpenWrt integration contract
 
@@ -307,7 +384,7 @@ Results on pinned OpenWrt/Linux 6.18.54 source:
 | Candidate DTB SHA256 | `d3e7522c76ace2a0fb567c3f0fc6178b45648b171db655d4f9faa7f74f10ec91` |
 | Existing board fixture DTB SHA256 | `3be99ff1c7e4962384cd292adfd408cace5439625c381026619f60946a99751d` |
 | Existing Ethernet C module compile/modpost | Not repeated: no kernel C, Kconfig, or runtime DTS input was changed. Prior artifact coverage remains in the build report. |
-| Hardware/runtime | Not tested; no router access in this pass |
+| Hardware/runtime | Stock LAN 1/LAN 2 jack-to-netdev A/B/A tested; OpenWrt Ethernet/DSA runtime not tested |
 
 This change adds source-contract tests and an inert evidence fixture; it does
 not implement or claim a working Ethernet driver path. No sibling-board DTS
@@ -327,15 +404,13 @@ below. The evidence needed is actionable and bounded:
    SoC-port-6 nets and BCM53125 port-8 nets. This decides `phy-mode`, delay
    properties, fixed link and reset ownership. Do not use register selectors
    or probe live signals without separate approval.
-2. **Physical ETHERNET jack ↔ logical switch-port mapping.** Needed: an
-   owner-assisted, separately approved, non-disruptive test on an otherwise
-   unused jack with a known peer. Observe only existing carrier/link metadata
-   and per-interface counters while the peer emits a small identifiable packet
-   stream; change no interface/VLAN/router setting and do not move an active
-   service cable. Expected evidence is a single interface/link counter changing
-   for each labeled jack. Risk is incidental traffic/service interruption if a
-   jack is not actually unused. Roll back by stopping test traffic and removing
-   only the test cable. Do not conduct this test under the present authorization.
+2. **Remaining physical ETHERNET jack ↔ switch-port mapping.** LAN 1↔`eth0`
+   and LAN 2↔`eth1` are now `VERIFIED` by owner-assisted stock A/B/A carrier
+   observations. Needed for further mapping: equivalent owner-authorized
+   testing of LAN 3/LAN 4 only when their service impact is acceptable; the
+   physically occupied LAN 3 and WAN were not touched in this pass. `eth1`'s
+   stock switch index and LAN 2's BCM53125 PHY remain unknown. Do not infer
+   these from sibling boards or port-number elimination.
 3. **Full VLAN membership and WAN mode.** Needed: a published/read-only stock
    status interface whose implementation is confirmed not to write registers,
    or owner-provided sanitized output of such an interface. Boot-time VLAN 1
@@ -351,11 +426,11 @@ below. The evidence needed is actionable and bounded:
    provisioning mechanism, not any address values. Until then, no `mac-address`
    or NVRAM offset should be added.
 
-The proposed jack test is owner-assisted and not performed here. Any live
-OpenWrt DSA/forwarding test, module loading, boot, cable movement, device
-configuration change, reset, flash access, or RGMII probing needs separate
-explicit authorization. The existing read-only SSH authorization does not
-cover those actions.
+The owner-authorized stock A/B/A cable test was completed only on LAN 1 and
+LAN 2. No OpenWrt DSA/forwarding test, module loading, boot, router
+configuration change, reset, flash access, or RGMII probing occurred. The
+Ethernet, switch, and MDIO Device Tree nodes remain disabled; this stock test
+does not establish Linux 6.18 runtime behavior.
 
 ## Source inventory
 
@@ -369,14 +444,17 @@ cover those actions.
 
 ## Safety and outcome
 
-No router access occurred in this pass. No cable was moved, no register/MMIO
-selector was used, and no device state was changed. No raw NAND/MTD, UART,
-module load, reset, reboot, firmware operation, or final image build occurred.
+Read-only stock SSH was used and the owner moved the LAN 1 cable to LAN 2 and
+back for the authorized A/B/A test. No register/MMIO selector was used and no
+router configuration changed. No raw NAND/MTD, UART, module load, reset,
+reboot, firmware operation, or final image build occurred.
 The main board DTS keeps Ethernet, switch, MDIO, and NAND disabled. The
 candidate DTS exists only as an offline evidence fixture.
 
 **Outcome: `ETHERNET TOPOLOGY PARTIAL — SPECIFIC HARDWARE VALIDATION REQUIRED`.**
 The SoC port map, active family source HSSPI selection, BCM53125 identity,
-stock VLAN-1 group, and likely 6↔8 cascade are source-backed. Jack mapping,
-RGMII timing/reset, final VLAN/WAN state, tag-format compatibility and runtime
-DSA remain blockers.
+stock VLAN-1 group, likely 6↔8 cascade, and LAN 1/LAN 2 to stock `eth0`/`eth1`
+mapping are source-backed or directly observed as labeled above. LAN 2's
+external PHY index, LAN 3/LAN 4/WAN mapping, RGMII timing/reset, final
+VLAN/WAN state, tag-format compatibility, and Linux 6.18 DSA runtime remain
+blockers.
