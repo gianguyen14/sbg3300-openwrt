@@ -2,8 +2,9 @@ schema_version: 1
 project: sbg3300-openwrt
 repo: https://github.com/gianguyen14/sbg3300-openwrt
 base_main_sha_observed: 9033a7b66971be67d9454edfc465eadf34e4e744
-research_head_preserved: 4dd24d42e7b052550a7d6fb7eaddad2f2a54b306
-research_branch_preserved: hermes/xtm-6.18.54-preflight
+research_head_expected: 4dd24d42e7b052550a7d6fb7eaddad2f2a54b306
+research_branch_expected: hermes/xtm-6.18.54-preflight
+research_object_available_in_public_checkout: false
 publication_branch: handoff/sbg3300-full-openwrt-6.18.54
 openwrt:
   sha: 5edcc1c43cb97048b506168fbbe00538956796d6
@@ -29,13 +30,16 @@ safety:
   flashable: false
   device_readonly_plan_authorized: false
 publication:
-  github_push: NOT_ATTEMPTED
-  remote_branch_verified: false
-  public_safety_review: REVIEW_REQUIRED
-  license_audit: INCOMPLETE
+  github_push: COMPLETE
+  remote_branch_verified: true
+  remote_head_at_draft_pr_creation: d8bda343fbcc8ff7eb6a20c504bfd564933a328f
+  public_safety_review: PASS_SOURCE_DOCUMENTATION_SCOPE
+  license_audit: PASS_SOURCE_DOCUMENTATION_SCOPE
+  draft_pr: https://github.com/gianguyen14/sbg3300-openwrt/pull/1
   bundle_export: NOT_CREATED
 next:
-  - preserve dirty project changes in private archive before integration branch work
-  - base publication branch on freshly fetched remote main
-  - manually review reachable history and license findings before selecting public content
-  - preserve XTM vendor derivative diffs privately; publish only approved original material
+  - preserve local OpenWrt build artifacts and stock-module research; do not rebuild unless inputs change
+  - recover the private XTM research branch or its diagnostics if needed; its recorded research commit is not present in this public checkout
+  - map the 15 pktdma, 3 HAL IRQ, and 1 platform MAC imports to lawful implementations and exact BCM63168 hardware semantics
+  - keep XTM probe shims out of runtime candidates and do not mark the module resolved until compile and modpost succeed without shims
+  - continue Ethernet topology and DSL control/PHY source research without enabling guessed hardware configuration

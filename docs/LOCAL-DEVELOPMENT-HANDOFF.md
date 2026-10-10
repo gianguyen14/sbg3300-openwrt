@@ -14,10 +14,10 @@ Research evidence identifies Zyxel SBG3300-N000, board `963168MXH_17A`, BCM63168
 
 ## Repository map
 
-- `patches/openwrt/`, `patches/dsl/`, `patches/switch/`: upstream/RFC patches; RFC-only material must remain inactive.
+- `patches/openwrt/`: the conservative offline SBG3300 profile patches. This public handoff does not contain `patches/dsl/`, `patches/switch/`, or XTM implementation patches.
 - `dts/`, `configs/`: offline device profile and build configurations; not flash approval.
-- `compat/`: XTM DMA research and compatibility/probe code. `compat/linux/nbuff.h` and `compat/xtm_compat.h` contain fake semantics and are PROBE-ONLY; never include in runtime-candidate builds.
-- `reports/`: evidence and blocker records. `reports/logs/xtm-probe-noncanonical-6.18.52.log` is historical and noncanonical.
+- `compat/`: absent from this public handoff checkout. Do not assume the private probe shims described in earlier research are available here or use them in a runtime candidate.
+- `reports/`: evidence and blocker records. The durable build log, XTM compile log, and noncanonical probe logs were not transferred in this checkout; hashes and summarized evidence are retained where available.
 - `tests/`, `tools/`: offline tests and build/research helpers.
 - `source/vendor/README.md`: source lineage metadata only. External vendor trees remain outside Git.
 
@@ -27,7 +27,7 @@ Use `docs/LOCAL-BUILD-QUICKSTART.md`. Prefer a persistent checkout outside `/tmp
 
 ## XTM source and dependencies
 
-Historical source was recorded in commit `4915412012bf93ce52e6671531dd968da1da573f`. Its main driver files contain Broadcom DUAL/GPL notices referencing GPL-2.0, but that does not establish rights for every included implementation, header, binary, or dependency. The historical Makefile hardcoded local include paths and enabled BLOG. The local external mirror is identified in `source/vendor/README.md`; obtain its contents from a lawful local source and review each file before reuse or redistribution.
+Historical source work was recorded outside this public handoff; the referenced research commit is not present in this checkout. A separately available, Git-ignored mirror is identified in `source/vendor/README.md`. Its main driver files carry Broadcom DUAL/GPL notices referencing GPL-2.0, but that does not establish rights for every included implementation, header, binary, or dependency. The historical Makefile hardcoded local include paths and enabled BLOG. Review each file and dependency before reuse or redistribution; keep the mirror and any derived changes outside public Git until that review is complete.
 
 XTM next steps: review all canonical probe diagnostics, use the exact pinned kernel and public Linux APIs, establish register/descriptor semantics from lawful sources, then replace one real dependency at a time. Do not force FKB false, add empty helpers, or use fake IRQ/DMA/cache success. The public unresolved-symbol table is a measurement, not evidence that the functions are irreducible.
 
