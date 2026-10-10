@@ -77,11 +77,13 @@ Kconfig dependency diagnostics for unrelated `qt5base-gui` and
 `squeezelite-custom` feed options, as well as missing optional feed-package
 warnings. The resulting bcm63268 kernel config kept `B53_SPI_DRIVER=y`, and the
 expected `b53_spi.ko` did not exist. No package compile was run and no package
-artifact was produced. The candidate package patch was discarded. Changing
-this SoC-wide built-in selection to a module would alter behavior for every
-board in the subtarget and is not justified by the unresolved SBG3300 switch
-identity/topology. No target config or existing source tree was changed.
-The package option existed only in the isolated scratch copy's ignored `.config`.
+artifact was produced. The candidate package patch was not retained in the
+public patch series; the probe itself remains in the isolated scratch build
+tree. Changing this SoC-wide built-in selection to a module would alter
+behavior for every board in the subtarget and is not justified by the
+unresolved SBG3300 switch identity/topology. No target config file or original
+source checkout was changed. The package option existed only in the isolated
+scratch copy's ignored `.config`.
 
 ## Wi-Fi, boot, storage and peripherals
 
