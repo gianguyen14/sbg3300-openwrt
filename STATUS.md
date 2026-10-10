@@ -38,9 +38,9 @@ not runtime evidence.
 | DSL stock ABI inventory | PASS | `adsldd.ko` and `bcmxtmcfg.ko` are MIPS BE, Linux 2.6.30 SMP/preempt; undefined imports counted | Stock only | No |
 | XTM source | PARTIAL | Public Broadcom 4.12L.06B source includes `bcmxtmrt`; depends on missing vendor infrastructure | No | No for porting |
 | XTM Linux 6.18 compile probe | ATTEMPTED / FAIL | Corrected harness reached real incompatibilities: NBuff/recycle, DMA types, removed legacy include/API | No | No |
-| XTM descriptor/DMA ring component | BUILD-PASS / COMPONENT-ONLY | Original `drivers/xtm/` code, host/sanitizer tests; Linux 6.18.54 `.ko`, compiler/modpost exit 0, no missing kernel imports | No | Yes for later DMA/channel runtime validation |
+| XTM descriptor/DMA ring + PTM frontend | BUILD-PASS / COMPONENT-ONLY | Original `drivers/xtm/` code, host/sanitizer tests; Linux 6.18.54 `.ko`, compiler/modpost exit 0, no missing kernel imports | No | Yes for later DMA/channel runtime validation |
 | `adsldd` / `bcmxtmcfg` source | UNRESOLVED | Implementations absent from inspected mirror; absence there does not prove unavailable elsewhere | No | No for source search |
-| DSL sync / XTM netdev / OpenWrt PPPoE | NOT-TESTED | Compile work is not line synchronization or data-path evidence | No | Yes |
+| DSL sync / XTM board attachment / OpenWrt PPPoE | NOT-TESTED | PTM frontend compiled; controller/DSL attachment and runtime remain blocked | No | Yes |
 | FAP/HNAT | DEFERRED | Vendor FAP/BPM/ingress-QoS observed in stock; portability unknown | No | No for initial software-routing bring-up |
 | Recovery route | UNPROVEN | No exact non-console route proven for this model/revision | No | Yes |
 | Runtime boot / LAN / DSA / Wi-Fi / DSL / PPP | NOT-TESTED | No OpenWrt runtime tests have occurred | No | Yes |
@@ -73,3 +73,11 @@ not runtime evidence.
 Tasks requiring the actual device remain explicitly `NEEDS-DEVICE` in
 [HANDOFF-HERMES.md](HANDOFF-HERMES.md). Do not upgrade any status from build
 evidence alone.
+
+## PTM frontend milestone
+
+Original IRQ/NAPI/netdev PTM code now builds with the real DMA ring, no probe
+shims. Two fresh builds reproduce the same module bytes, all 65 kernel imports
+exist. See [reports/XTM-PTM-FRONTEND-BUILD.md](reports/XTM-PTM-FRONTEND-BUILD.md).
+Global SAR/FAP ownership, clock/reset/PHY sequencing and DSL events remain
+unresolved; no platform binding or physical functionality is claimed.

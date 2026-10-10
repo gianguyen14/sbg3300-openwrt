@@ -10,6 +10,7 @@ struct xtm_dma_ring;
 struct xtm_dma_packet {
 	void *data;
 	u32 length;
+	u32 capacity;
 	u16 status;
 	int error;
 };
@@ -49,4 +50,8 @@ int xtm_dma_rx_post(struct xtm_dma_ring *r, unsigned int capacity, gfp_t gfp);
 int xtm_dma_poll(struct xtm_dma_ring *r, struct xtm_dma_packet *packet);
 void xtm_dma_packet_free(struct xtm_dma_packet *packet);
 void xtm_dma_get_stats(struct xtm_dma_ring *r, struct xtm_dma_stats *stats);
+unsigned int xtm_dma_available(struct xtm_dma_ring *r);
+void xtm_dma_irq_mask(struct xtm_dma_ring *r, bool enable);
+u32 xtm_dma_irq_status(struct xtm_dma_ring *r);
+u32 xtm_dma_irq_ack(struct xtm_dma_ring *r);
 #endif

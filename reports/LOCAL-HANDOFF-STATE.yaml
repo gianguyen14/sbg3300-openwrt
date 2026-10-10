@@ -37,11 +37,15 @@ xtm_runtime_component:
   component_compile: PASS
   component_modpost: PASS
   module_name: sbg3300_xtm_dma
-  module_sha256: e613ad71903b82dbe363a500ce2292b9ba8ea82f7de28a23158fa6c22abeaa40
+  module_sha256: 44e54b9388521052bd0fbb4f9b4994b3c4f8e5296ffc0c2ec533ffc889dca95e
   missing_kernel_imports: 0
   probe_shims: false
   legacy_19_import_probe_relinked: false
+  netdev_component_compiled: true
   platform_netdev_integrated: false
+  kernel_import_count: 65
+  reproducible_external_module: true
+  frontend_report: reports/XTM-PTM-FRONTEND-BUILD.md
   runtime_validation: NOT_TESTED
   build_report: reports/XTM-DMA-RUNTIME-BUILD.md
 publication:

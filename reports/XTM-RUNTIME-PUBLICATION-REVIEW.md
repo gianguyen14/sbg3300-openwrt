@@ -9,8 +9,8 @@ substitute. Both trees remain external and unchanged.
 
 | Files | Origin and license | Publication decision |
 |---|---|---|
-| `drivers/xtm/xtm_core.[ch]`, `xtm_dma.[ch]`, `Makefile` | Newly written GPL-2.0-only code; hardware layout/flag facts and functional API signatures are documented in the contract TSV. No vendor implementation body or header copied. | Source approved |
-| `tests/test_xtm_core.c`, `tools/test-xtm-core.sh`, `tools/build-xtm-dma.sh` | Newly written GPL-2.0-only tests/build tools. | Source approved |
+| `drivers/xtm/xtm_core.[ch]`, `xtm_dma.[ch]`, `xtm_ptm.[ch]`, `xtm_ptm_core.[ch]`, `Makefile` | Newly written GPL-2.0-only code; hardware layout/flag facts and functional API signatures are documented in the contract TSV. No vendor implementation body or header copied. | Source approved |
+| `tests/test_xtm_core.c`, `tests/test_xtm_ptm.c`, `tools/test-xtm-core.sh`, `tools/build-xtm-dma.sh` | Newly written GPL-2.0-only tests/build tools. | Source approved |
 | `drivers/xtm/COPYING` | Verbatim GPL version 2 license text from the pinned kernel `LICENSES/preferred/GPL-2.0`; FSF copyright and permission to copy preserved. | License text approved |
 | README, contract TSV, runtime/build reports, status updates | Original explanatory text and factual measurements; no device data or implementation excerpts. | Documentation/data approved |
 | Source mirrors, stock modules, probe material and all generated `.ko`/logs | External source/build/research material with separate provenance/licensing/privacy boundaries. | Excluded from public Git |

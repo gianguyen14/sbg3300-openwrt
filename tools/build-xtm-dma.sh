@@ -13,7 +13,7 @@ case "$source_sha" in
 esac
 test "$(git -C "$openwrt_dir" merge-base HEAD "$pinned")" = "$pinned"
 test -z "$(git -C "$openwrt_dir" status --porcelain)"
-kernel_dir="$openwrt_dir/build_dir/target-mips_mips32_musl/linux-bmips_bcm63268/linux-6.18.54"
+kernel_dir="${KERNEL_DIR:-$openwrt_dir/build_dir/target-mips_mips32_musl/linux-bmips_bcm63268/linux-6.18.54}"
 cross="$openwrt_dir/staging_dir/toolchain-mips_mips32_gcc-14.4.0_musl/bin/mips-openwrt-linux-musl-"
 export STAGING_DIR="$openwrt_dir/staging_dir/target-mips_mips32_musl"
 test -x "${cross}gcc"
@@ -28,7 +28,7 @@ done
 mkdir -p "$evidence_root"
 run_dir="$(mktemp -d "$evidence_root/run-XXXXXX")"
 mkdir "$run_dir/module"
-cp "$project_dir/drivers/xtm/"{Makefile,xtm_core.c,xtm_core.h,xtm_dma.c,xtm_dma.h} "$run_dir/module/"
+cp "$project_dir/drivers/xtm/"{Makefile,xtm_core.c,xtm_core.h,xtm_dma.c,xtm_dma.h,xtm_ptm.c,xtm_ptm.h,xtm_ptm_core.c,xtm_ptm_core.h} "$run_dir/module/"
 python3 - "$run_dir/module" > "$run_dir/source-inputs.json" <<'PY'
 import hashlib, json, pathlib, sys
 root = pathlib.Path(sys.argv[1])
@@ -51,7 +51,10 @@ printf '%s\n' "$source_sha" > "$run_dir/openwrt-revision.txt"
 date -u +%FT%TZ > "$run_dir/start-utc.txt"
 set +e
 make -C "$kernel_dir" M="$run_dir/module" ARCH=mips CROSS_COMPILE="$cross" \
-  W=1 KCFLAGS=-Werror V=1 modules > "$run_dir/compiler-modpost.log" 2>&1
+  W=1 "KCFLAGS=-Werror -ffile-prefix-map=$run_dir/module=/build/xtm -ffile-prefix-map=$kernel_dir=/build/kernel" \
+  KBUILD_BUILD_USER=builder KBUILD_BUILD_HOST=offline \
+  KBUILD_BUILD_TIMESTAMP='2026-10-04 04:00:00 UTC' V=1 modules \
+  > "$run_dir/compiler-modpost.log" 2>&1
 build_rc=$?
 set -e
 date -u +%FT%TZ > "$run_dir/end-utc.txt"

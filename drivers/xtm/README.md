@@ -55,3 +55,11 @@ source in `reports/XTM-BCM63168-CONTRACTS.tsv`. Sampled vendor files have DUAL/G
 notices, but the full dependency tree has unsettled redistribution rights;
 those files remain outside this repository. This is not a claim of a clean-room
 process or a grant of rights for the external mirrors.
+
+## PTM frontend
+
+`xtm_ptm_register` builds a netdev only for an owning parent with verified
+resources/MAC/DSL configuration. IRQ/NAPI/BQL, refill, statistics and teardown
+are implemented. See `xtm_ptm.h` and the PTM build report for lifetime rules.
+There is no automatic platform binding, SAR/FAP ownership acquisition or DSL
+PHY/control implementation. Keep hardware inactive until those contracts exist.

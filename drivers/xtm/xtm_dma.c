@@ -146,12 +146,15 @@ int xtm_dma_start(struct xtm_dma_ring *r)
 		ret = -ESHUTDOWN;
 	else if (r->running || (ioread32be(r->channel) & XTM_CH_ENABLE))
 		ret = -EBUSY;
-	else if (!r->queue.pending)
+	else if (r->queue.direction == XTM_RX && !r->queue.pending)
 		ret = -ENODATA;
 	else {
-		dma_wmb();
-		iowrite32be(XTM_CH_ENABLE, r->channel + XTM_CH_CFG);
-		ioread32be(r->channel + XTM_CH_CFG);
+		/* Host TX is primed in software; first submission kicks an empty ring. */
+		if (r->queue.pending) {
+			dma_wmb();
+			iowrite32be(XTM_CH_ENABLE, r->channel + XTM_CH_CFG);
+			ioread32be(r->channel + XTM_CH_CFG);
+		}
 		r->running = true;
 	}
 	spin_unlock_irqrestore(&r->lock, flags);
@@ -307,6 +310,7 @@ int xtm_dma_poll(struct xtm_dma_ring *r, struct xtm_dma_packet *packet)
 	dma_unmap_single(r->dev, slot.dma, slot.capacity, xtm_dma_direction(r));
 	packet->data = slot.buffer;
 	packet->length = ret ? 0 : completion.length;
+	packet->capacity = slot.capacity;
 	packet->status = completion.status;
 	packet->error = ret;
 	if (ret)
@@ -340,6 +344,63 @@ void xtm_dma_get_stats(struct xtm_dma_ring *r, struct xtm_dma_stats *stats)
 	spin_unlock_irqrestore(&r->lock, flags);
 }
 EXPORT_SYMBOL_GPL(xtm_dma_get_stats);
+
+unsigned int xtm_dma_available(struct xtm_dma_ring *r)
+{
+	unsigned long flags;
+	unsigned int available;
+
+	spin_lock_irqsave(&r->lock, flags);
+	available = r->stopping ? 0 : r->queue.count - r->queue.pending;
+	spin_unlock_irqrestore(&r->lock, flags);
+	return available;
+}
+EXPORT_SYMBOL_GPL(xtm_dma_available);
+
+void xtm_dma_irq_mask(struct xtm_dma_ring *r, bool enable)
+{
+	unsigned long flags;
+
+	spin_lock_irqsave(&r->lock, flags);
+	if (r->channel) {
+		iowrite32be(enable && r->running && !r->stopping ?
+			    XTM_CH_DONE_MASK : 0, r->channel + XTM_CH_IRQ_MASK);
+		ioread32be(r->channel + XTM_CH_IRQ_MASK);
+	}
+	spin_unlock_irqrestore(&r->lock, flags);
+}
+EXPORT_SYMBOL_GPL(xtm_dma_irq_mask);
+
+u32 xtm_dma_irq_status(struct xtm_dma_ring *r)
+{
+	u32 status = 0;
+	unsigned long flags;
+
+	spin_lock_irqsave(&r->lock, flags);
+	if (r->channel)
+		status = ioread32be(r->channel + XTM_CH_IRQ_STATUS) & XTM_CH_DONE_MASK;
+	spin_unlock_irqrestore(&r->lock, flags);
+	return status;
+}
+EXPORT_SYMBOL_GPL(xtm_dma_irq_status);
+
+u32 xtm_dma_irq_ack(struct xtm_dma_ring *r)
+{
+	u32 status = 0;
+	unsigned long flags;
+
+	spin_lock_irqsave(&r->lock, flags);
+	if (r->channel) {
+		status = ioread32be(r->channel + XTM_CH_IRQ_STATUS) & XTM_CH_DONE_MASK;
+		if (status) {
+			iowrite32be(status, r->channel + XTM_CH_IRQ_STATUS);
+			ioread32be(r->channel + XTM_CH_IRQ_STATUS);
+		}
+	}
+	spin_unlock_irqrestore(&r->lock, flags);
+	return status;
+}
+EXPORT_SYMBOL_GPL(xtm_dma_irq_ack);
 
 int xtm_dma_destroy(struct xtm_dma_ring *r, struct xtm_dma_stats *final_stats)
 {
