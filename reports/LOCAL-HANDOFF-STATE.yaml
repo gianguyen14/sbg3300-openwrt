@@ -115,6 +115,7 @@ pre_final_gate:
 
 authorized_stock_readonly_observation:
   date: '2026-10-10'
+  implementation_commit: c034751f24e150a97206fab03f266367b142526f
   report: reports/LIVE-READONLY-2026-10-10.md
   ssh_connection: SUCCESS_EXISTING_SETUP_STRICT_SAVED_HOST_KEY
   router_modified: false

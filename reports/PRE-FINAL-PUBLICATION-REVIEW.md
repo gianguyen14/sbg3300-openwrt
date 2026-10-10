@@ -54,7 +54,8 @@ Final follow-up scan before report commit: 115 tracked files, 403 reachable
 objects, with only the same two upstream MODULE_AUTHOR contact findings and
 their two historical blob occurrences. All four occurrences are the same
 reviewed public attribution. No new finding or scanner modification.
-# Subsequent authorized stock observation and runtime correction
+
+## Subsequent authorized stock observation and runtime correction
 
 2026-10-10 follow-up review is in
 [LIVE-READONLY-2026-10-10.md](LIVE-READONLY-2026-10-10.md).
@@ -65,4 +66,3 @@ Raw SSH logs, local connection wrapper/authentication and binaries remain
 outside Git. Existing upstream attribution and scanner heuristics unchanged.
 Incremental whitespace check passes; inherited 271 patch-format diagnostics and
 legitimate upstream-contact findings remain explicitly reviewed, not hidden.
-

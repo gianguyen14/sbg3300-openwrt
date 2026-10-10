@@ -4,6 +4,8 @@ Date: 2026-10-10. Evidence: `LIVE-DEVICE` / `STOCK-BOOT-LOG`, collected
 through the owner's existing SSH setup. Source parent:
 `b89c4408c1edfd4d7545f099e25dbfc19aca82b2`.
 Overall remains `PARTIAL-PORT`, `OFFLINE-ONLY`, `NOT-FLASHABLE`.
+Runtime correction/test/evidence commit:
+`c034751f24e150a97206fab03f266367b142526f`.
 
 ## Connection, collection and privacy
 
@@ -143,6 +145,8 @@ raw exit 1 for two legitimate upstream contacts and their history occurrences.
 Incremental `git diff --cached --check` exit 0; `git diff --check
 origin/main...HEAD` raw exit 2 with the same 271 patch-format diagnostics.
 Neither scanner nor whitespace settings were weakened. Logs retained privately.
+An extra EOF blank line introduced in the publication-review follow-up was
+reported by the next incremental whitespace check and corrected before push.
 
 Read-only evidence narrows discovery/stock ownership/calibration questions but
 does not resolve lawful DSL PHY/control implementation, exclusive SAR/FAP
