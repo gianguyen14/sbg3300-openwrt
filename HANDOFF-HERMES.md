@@ -181,14 +181,15 @@ nets, RGMII delay ownership, final VLAN configuration, or runtime Linux DSA.
 The CFE/Linux log does not reveal PCB silkscreen revision.
 
 Owner-assisted stock A/B/A testing on 2026-10-10 verified physical LAN 1 ↔
-stock netdev `eth0` and LAN 2 ↔ `eth1` from reversible carrier transitions.
-This is stock Linux evidence, not an OpenWrt link test. The stock boot maps
-`eth0→logical switch index 4`; exact-family driver interpretation supports
-LAN 1→external BCM53125 port 4, but exact binary equivalence and the PCB net
-are not proven. `eth1`'s stock switch index is not captured; do not assign it
-to port 3 by elimination. Other observed logical indices remain
-`eth2→2`, `eth3→1`, `eth4→11` and `eth5→12`, not physical jack labels. LAN 3,
-LAN 4, and ETHWAN PHY mappings remain unknown. The stock type-2 packet tag may
+stock netdev `eth0`, LAN 2 ↔ `eth1`, and LAN 4 ↔ `eth3` from reversible
+carrier transitions. This is stock Linux evidence, not an OpenWrt link test.
+The stock boot maps `eth0→logical switch index 4` and `eth3→index 1`;
+exact-family driver interpretation supports LAN 1→external BCM53125 port 4
+and LAN 4→port 1, but exact binary equivalence and PCB/PHY wiring are not
+proven. `eth1`'s stock switch index is not captured; do not assign it to port 3
+by elimination. Other observed logical indices remain `eth2→2`, `eth4→11` and
+`eth5→12`, not physical jack labels. LAN 3 and ETHWAN PHY mappings remain
+unknown. The stock type-2 packet tag may
 not match upstream DSA BRCM tag encoding. Switch/reset sequence and MAC source
 are unresolved. Do not add active DSA links or labels. Details and the
 counter-wrap caveat are in
@@ -259,7 +260,8 @@ prove source does not exist.
 ## 16. Tasks that must not be marked PASS without router
 
 OpenWrt boot; usable RAM; OpenWrt LAN link; DSA CPU port and remaining
-physical jack-to-PHY mapping (stock LAN 1/2-to-netdev mappings are documented);
+physical jack-to-PHY mapping (stock LAN 1/2/4-to-netdev mappings are
+documented; only LAN 1/4 external-port decodes have conditional support);
 OpenWrt switch PHY links; Wi-Fi discovery/association/calibration;
 DSL initialization/sync/stats; XTM netdev; PPP session and Internet routing;
 USB functionality; hardware acceleration; NAND read/write/ECC behavior; CFE

@@ -46,7 +46,7 @@ not runtime evidence.
 | Ethernet MAC driver | PARTIAL | Upstream bmips support exists; stock board evidence shows `bcm_enet`, `eth3`, `eth4` | Stock only | Yes |
 | BCM53125 driver | UPSTREAM-AVAILABLE | Public SBG3300 bootlog for board ID `963168MXH_17A` reports external switch ID 53125; pinned `b53_spi` has the compatible. Compile coverage exists; no SBG runtime bind | No | Yes for runtime |
 | Switch silicon | PASS | Public bootlog reports BCM53125 and the same board ID as live stock SSH; boot also reports two MDK switch units and maps their port bitmaps to the two exact-family boardparms groups | Stock only | No for identity; yes for Linux runtime |
-| Switch topology / WAN-LAN | PARTIAL / DISABLED | Same-board-ID bootlog verifies BCM53125 and VLAN-1 port group; exact-family source selects HSSPI bus 1/CS0, mode 3/781 kHz and SoC port 6 RGMII; boot VLAN plus Linux BCM53125 profile strongly supports external port 8 as cascade/IMP. Owner-assisted stock A/B/A verified LAN 1↔`eth0` and LAN 2↔`eth1`; `eth0`→logical index 4 supports LAN 1→external port 4, while `eth1` index, LAN 3/4/WAN PHY mappings, RGMII timing, tag compatibility and Linux 6.18 runtime remain unresolved | Stock only | Yes |
+| Switch topology / WAN-LAN | PARTIAL / DISABLED | Same-board-ID bootlog verifies BCM53125 and VLAN-1 port group; exact-family source selects HSSPI bus 1/CS0, mode 3/781 kHz and SoC port 6 RGMII; boot VLAN plus Linux BCM53125 profile strongly supports external port 8 as cascade/IMP. Owner-assisted stock A/B/A verifies LAN 1↔`eth0`, LAN 2↔`eth1`, and LAN 4↔`eth3`; stock logical indices 4 and 1 conditionally support external ports 4 and 1 for LAN 1 and LAN 4. LAN 2 index, LAN 3/WAN mappings, exact PHY wiring, RGMII timing, tag compatibility and Linux 6.18 runtime remain unresolved | Stock only | Yes |
 | USB | PARTIAL | Stock PCI functions `14e4:6300`; EHCI/OHCI observed | Stock only | Yes for OpenWrt USB runtime |
 | Wi-Fi identity | PASS | PCI `14e4:435f`, subsystem `14e4:0513`, class `0x028000`; stock proprietary `wl` family | Stock only | No for identity |
 | Wi-Fi upstream binding | INVESTIGATING | b43 has a BCM6362/`0x435f` band-classification case, not proof of PCI discovery/binding; calibration location unresolved | No | Yes for radio validation |
@@ -127,12 +127,13 @@ same-board-ID stock bootlog, stock logical-port observations, and Linux 6.18.54
 B53/DSA sources. The SBG-specific switch fixture remains disabled; its CS0
 contract passes DTC and full schemas. Twenty-two native tests pass. See
 [reports/ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md](reports/ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md).
-External port 8 is strongly supported as the SoC port-6 cascade endpoint;
-owner-assisted stock A/B/A now verifies LAN 1↔`eth0` and LAN 2↔`eth1`.
-`eth0`→logical switch index 4 supports LAN 1→external port 4; `eth1`'s switch
-index, LAN 3/4/WAN mapping, RGMII timing, type-2 tag compatibility and Linux
-6.18 runtime remain unresolved. No new Ethernet kernel module was compiled in
-this milestone.
+External port 8 is strongly supported as the SoC port-6 cascade endpoint.
+Owner-assisted stock A/B/A verifies LAN 1↔`eth0`, LAN 2↔`eth1`, and LAN 4↔
+`eth3`. Stock logical indices 4 and 1 conditionally support LAN 1→external
+port 4 and LAN 4→external port 1; neither decode proves PCB PHY wiring or
+running-binary equivalence. LAN 2's switch index, LAN 3/WAN mapping, exact PHY
+wiring, RGMII timing, type-2 tag compatibility and Linux 6.18 runtime remain
+unresolved. No new Ethernet kernel module was compiled in this milestone.
 
 Wi-Fi source cross-check identifies a synthetic on-chip PCI presentation in
 the exact-family source. BCMA SoC host compiles in isolated coverage; two fresh
