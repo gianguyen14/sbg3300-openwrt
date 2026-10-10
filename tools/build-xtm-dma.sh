@@ -7,8 +7,9 @@ evidence_root="${XTM_BUILD_ROOT:-$HOME/.cache/sbg3300-xtm-runtime}"
 pinned=5edcc1c43cb97048b506168fbbe00538956796d6
 tested_port=18c17336871e73ddfbab3198104d8c42df844146
 source_sha="$(git -C "$openwrt_dir" rev-parse HEAD)"
-case "$source_sha" in
-  "$pinned"|"$tested_port") ;;
+source_tree="$(git -C "$openwrt_dir" rev-parse 'HEAD^{tree}')"
+case "$source_sha:$source_tree" in
+  "$pinned:"*|"$tested_port:"*|*:2ac5b16d7ba20467a099bf096de89c32d69a9324) ;;
   *) echo "Unapproved source revision: $source_sha" >&2; exit 1 ;;
 esac
 test "$(git -C "$openwrt_dir" merge-base HEAD "$pinned")" = "$pinned"

@@ -2,14 +2,16 @@
 
 ## Proven controller/chip geometry
 
-Live stock boot log identifies the Broadcom NAND controller v4 and 128 MiB
-flash. The reported geometry is 2048-byte writesize, 64-byte OOB, 512-byte ECC
-step, ECC strength 15, and on-flash bad-block table. This matches the broad
-geometry configured by existing bmips BCM63168 reference DTS files. The
-hardware inventory identifies the chip as Spansion S34ML01G1; a fresh read-only
-`dmesg` query on 2026-10-04 did not print a JEDEC part ID, so that part number
-is recorded as inventory evidence rather than independently confirmed by the
-running boot log. Runtime ECC/OOB geometry is confirmed.
+The historical stock summary records a Broadcom v4 controller, 128 MiB capacity,
+2048-byte writesize, 128 KiB eraseblocks, OOB value 64, ECC-step value 512 and
+ECC code 15 with BBT. These records are preserved, but the modern ECC/OOB tuple
+is **not confirmed**. Linux brcmnand interprets spare size per 512-byte sector;
+legacy code 15 may identify Hamming rather than literal strength 15. The earlier
+DTS copied these values into modern properties without resolving that mapping.
+The new candidate disables NAND and removes the unverified overrides. Obtain
+exact source/geometry evidence before enabling it; no raw device access is used.
+The S34ML01G1 part number remains inventory evidence, not a live JEDEC result.
+See reports/PRE-FINAL-ENGINEERING.md for the source-level correction.
 
 ## Linux partition table observed
 

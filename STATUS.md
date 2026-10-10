@@ -22,9 +22,9 @@ not runtime evidence.
 | Kernel baseline | PASS | Build report records Linux 6.18.54 | No | No |
 | SBG3300 profile | BUILD-PASS | Profile selected and dedicated build exited 0; patch series under `patches/openwrt/` | No | No |
 | SBG3300 initramfs ELF | OFFLINE-ONLY | 5,925,020 bytes; SHA256 `3961a39d5d554ce467b9575bbc6f6293d385ddda9fc4dc9b3dbf0c3cf8027b51`; local artifact only | No | No |
-| DTS | BUILD-PASS / PARTIAL | DTC build and round-trip recorded; intentionally incomplete and conservative | No | No |
+| DTS | BUILD-PASS / PARTIAL | DTC/full schema validated; unverified switch/MDIO/NAND disabled, SAR fixture disabled | No | No |
 | RAM device-tree range | PARTIAL | DTS retains BMIPS discovery behavior rather than asserting an unproven full range | No | Device boot confirms actual usable memory |
-| NAND geometry | PASS | Live stock controller evidence: 128 MiB, 2 KiB page, 64 B OOB, 128 KiB eraseblock, 512-byte ECC step, strength 15, on-flash BBT | Stock only | No for geometry; yes for OpenWrt runtime |
+| NAND geometry | PARTIAL / DISABLED | Historical capacity/page/erase evidence retained; legacy ECC code and OOB units are not a verified Linux 6.18 tuple | Stock only | No for geometry; yes for OpenWrt runtime |
 | NAND physical map | PARTIAL | Live MTD extents plus exact arithmetic; see [NAND-MAP.md](NAND-MAP.md) | Stock only | Yes to validate OpenWrt behavior |
 | NAND image writer / bad-block semantics | INVESTIGATING | Broadcom 4.12L.06B family source strongly corroborates dual slots but is not proven identical to Zyxel’s running writer | No | Exact-source evidence first; device later |
 | Fixed partitions / UBI / sysupgrade | NOT-APPROVED | Boot-critical map and writer semantics incomplete | No | Yes, after offline proof |
@@ -81,3 +81,13 @@ shims. Two fresh builds reproduce the same module bytes, all 65 kernel imports
 exist. See [reports/XTM-PTM-FRONTEND-BUILD.md](reports/XTM-PTM-FRONTEND-BUILD.md).
 Global SAR/FAP ownership, clock/reset/PHY sequencing and DSL events remain
 unresolved; no platform binding or physical functionality is claimed.
+
+## Pre-final integration milestone
+
+Real enetsw C resource/lifetime corrections and shared IRQ/channel policy now
+compile/link on Linux 6.18.54. Full selected package compilation exits 0, and
+three policy tests pass natively, with sanitizers, and under MIPS user-mode QEMU.
+Expanded/independent kernels and all implemented modules have genuine results;
+see [reports/PRE-FINAL-ENGINEERING.md](reports/PRE-FINAL-ENGINEERING.md) and the
+artifact TSVs. Source publication approval is separate from the unresolved
+SAR/DSL/topology/calibration/NAND/boot gates. Overall remains PARTIAL-PORT.

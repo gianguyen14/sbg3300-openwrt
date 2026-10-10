@@ -2,3 +2,8 @@
 0002-bmips-label-sbg3300-initramfs-offline-only.patch
 0003-bmips-format-sbg3300-dts-comments.patch
 0004-bmips-sbg3300-no-uart-console.patch
+0005-bmips-sbg3300-disable-unverified-switch-storage.patch
+0006-bmips-sbg3300-identity-binding.patch
+0007-bmips-align-bcm63268-dts-with-driver-bindings.patch
+0008-bmips-bcm63268-resource-bindings.patch
+0009-bmips-enetsw-managed-lifetime.patch

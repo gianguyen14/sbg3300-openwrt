@@ -1,0 +1,42 @@
+// SPDX-License-Identifier: GPL-2.0-only
+/* Resource-contract fixture, never an active board configuration. */
+#include "bcm63168-zyxel-sbg3300-n000.dts"
+
+/* The generic SoC include leaves these enabled. Keep unverified board
+ * topology inactive even when testing against the preserved old skeleton.
+ */
+&switch0 {
+	status = "disabled";
+};
+
+&mdio {
+	status = "disabled";
+};
+
+&nflash {
+	status = "disabled";
+	nandcs@0 {
+		/delete-property/ nand-ecc-step-size;
+		/delete-property/ nand-ecc-strength;
+		/delete-property/ brcm,nand-oob-sector-size;
+	};
+};
+
+&ubus {
+	xtm_dma: xtm-dma@1000c000 {
+		compatible = "brcm,bcm63268-xtm-dma";
+		/* Global cfg, RX0 channel/state, TX hardware channel 4/state. */
+		reg = <0x1000c000 0x4>, <0x1000c200 0x10>, <0x1000c400 0x10>,
+		      <0x1000c240 0x10>, <0x1000c440 0x10>;
+		reg-names = "global", "rx-channel", "rx-state", "tx-channel", "tx-state";
+		interrupt-parent = <&periph_intc>;
+		interrupts = <BCM63268_IRQ_ATM_DMA0>, <BCM63268_IRQ_ATM_DMA4>;
+		interrupt-names = "rx", "tx";
+		clocks = <&periph_clk BCM63268_CLK_SAR>;
+		clock-names = "sar";
+		resets = <&periph_rst BCM63268_RST_SAR>;
+		reset-names = "sar";
+		power-domains = <&periph_pwr BCM63268_POWER_DOMAIN_SAR>;
+		status = "disabled";
+	};
+};

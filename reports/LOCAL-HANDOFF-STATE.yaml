@@ -62,3 +62,25 @@ next:
   - map the 15 pktdma, 3 HAL IRQ, and 1 platform MAC imports to lawful implementations and exact BCM63168 hardware semantics
   - keep XTM probe shims out of runtime candidates and do not mark the module resolved until compile and modpost succeed without shims
   - continue Ethernet topology and DSL control/PHY source research without enabling guessed hardware configuration
+
+pre_final_integration:
+  source_branch: feat/sbg3300-pre-final-integration
+  approved_openwrt_tree: 2ac5b16d7ba20467a099bf096de89c32d69a9324
+  upstream_kernel_modules_compile: PASS
+  independent_upstream_kernel_compile: PASS
+  normalized_upstream_modules_reproduced: 74
+  reviewed_kernel_candidate_compile: PASS
+  reviewed_kernel_candidate_module_count: 75
+  selected_openwrt_packages_compile_exit: 0
+  xtm_strict_missing_kernel_imports: 0
+  enetsw_strict_missing_kernel_imports: 0
+  enetsw_strict_module_sha256: 89c26b4d872fb86a9f8839bbbe9f077ce64e5f7f99017d9258ccf1bd54e8f1b2
+  python_unit_tests: 16
+  native_sanitizer_policy_groups: 3
+  mips_user_mode_policy_groups: 3
+  sar_runtime_enabled: false
+  nand_runtime_enabled: false
+  ethernet_topology_enabled: false
+  full_firmware_image_build_started: false
+  overall_readiness: BLOCKED
+  report: reports/PRE-FINAL-ENGINEERING.md

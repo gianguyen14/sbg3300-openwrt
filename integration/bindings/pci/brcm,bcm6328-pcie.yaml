@@ -1,0 +1,55 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/pci/brcm,bcm6328-pcie.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: BCM6328 family PCIe host resource contract
+
+maintainers:
+  - gianguyen14 <231934554+gianguyen14@users.noreply.github.com>
+
+description: |
+  Resources consumed by the pinned pcie-bcm6328 driver, also used for BCM63268.
+  This host contract does not identify or calibrate a WLAN endpoint.
+
+allOf:
+  - $ref: /schemas/pci/pci-host-bridge.yaml#
+
+properties:
+  compatible:
+    const: brcm,bcm6328-pcie
+  reg:
+    maxItems: 1
+  interrupts:
+    maxItems: 1
+  clocks:
+    maxItems: 1
+  clock-names:
+    const: pcie
+  resets:
+    minItems: 3
+    maxItems: 4
+  reset-names:
+    minItems: 3
+    items:
+      - const: pcie
+      - const: pcie-ext
+      - const: pcie-core
+      - const: pcie-hard
+  power-domains:
+    maxItems: 1
+  brcm,serdes:
+    $ref: /schemas/types.yaml#/definitions/phandle
+    description: System controller containing the existing SERDES control word.
+
+required:
+  - compatible
+  - reg
+  - clocks
+  - clock-names
+  - resets
+  - reset-names
+  - brcm,serdes
+
+unevaluatedProperties: false

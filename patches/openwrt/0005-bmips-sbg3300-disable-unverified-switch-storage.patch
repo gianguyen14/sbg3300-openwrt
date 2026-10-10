@@ -1,0 +1,56 @@
+From: gianguyen14 <231934554+gianguyen14@users.noreply.github.com>
+Subject: [PATCH] bmips: sbg3300 disable unverified switch and NAND configuration
+
+Keep inherited switch/MDIO topology and NAND inactive. Legacy ECC codes and
+per-sector spare-area units have not been mapped to verified Linux 6.18
+settings; remove the unproven ECC/OOB overrides. Enable the exact-SoC USB PHY required by the observed EHCI/OHCI controllers.
+No device operation is used.
+
+--- a/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
++++ b/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
+@@ -26,29 +26,39 @@
+ 	status = "okay";
+ };
+ 
++&usbh {
++	status = "okay";
++};
++
+ /*
+  * bcm63268.dtsi uses memory@0 reg=<0 0>, allowing BMIPS RAM discovery; keep
+  * that behavior instead of hard-coding a base/size from MemTotal.
+  */
+ /*
+- * NAND controller and geometry are direct stock observations. No partition
+- * map is published until the vendor slot/WFI translation is proven exact.
++ * Storage remains disabled: legacy ECC codes and per-sector OOB units have
++ * not been translated to verified Linux 6.18 settings. No partition map.
+  */
+ &nflash {
+-	status = "okay";
++	status = "disabled";
+ 
+ 	nandcs@0 {
+ 		compatible = "brcm,nandcs";
+ 		reg = <0>;
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+-		nand-ecc-step-size = <512>;
+-		nand-ecc-strength = <15>;
+ 		nand-on-flash-bbt;
+-		brcm,nand-oob-sector-size = <64>;
+ 	};
+ };
+ 
++/* The SoC include's default CPU port is not an SBG3300 topology proof. */
++&switch0 {
++	status = "disabled";
++};
++
++&mdio {
++	status = "disabled";
++};
++
+ /*
+  * Physical partition offsets remain partially unresolved. Ethernet, DSA, LEDs
+  * and buttons are omitted until exact SBG3300 mapping is recovered.
