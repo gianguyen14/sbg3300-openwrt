@@ -140,9 +140,9 @@ static int xtm_ptm_poll(struct napi_struct *napi, int budget)
 		if (xtm_dma_rx_post(p->rx, XTM_PTM_RX_CAPACITY, GFP_ATOMIC))
 			schedule_delayed_work(&p->refill, msecs_to_jiffies(20));
 	}
-	if (work < budget && napi_complete_done(napi, work)) {
+	if (work < budget) {
 		spin_lock_irqsave(&p->irq_lock, flags);
-		if (p->opened)
+		if (napi_complete_done(napi, work) && p->opened)
 			xtm_ptm_masks(p, true);
 		spin_unlock_irqrestore(&p->irq_lock, flags);
 	}
@@ -228,6 +228,12 @@ static int xtm_ptm_stop(struct net_device *ndev)
 		napi_disable(&p->napi);
 		p->napi_enabled = false;
 	}
+	/* Completion releases NAPI ownership before poll returns. Join its final
+	 * locked IRQ-unmask section before freeing a ring or the parent netdev.
+	 */
+	spin_lock_irqsave(&p->irq_lock, flags);
+	xtm_ptm_masks(p, false);
+	spin_unlock_irqrestore(&p->irq_lock, flags);
 	cancel_delayed_work_sync(&p->refill);
 	if (p->irqs_requested) {
 		free_irq(p->cfg.rx_irq, p);

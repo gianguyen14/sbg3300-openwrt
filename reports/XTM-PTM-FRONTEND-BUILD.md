@@ -34,7 +34,7 @@ rather than guessing the DSL-configured VCID or trailer-removal state.
 
 ## Build results
 
-Two fresh external build directories, `run-ZG1LGA` and `run-82hkqS`, under
+Two fresh external build directories, `run-25b038` and `run-hneomQ`, under
 `~/.cache/sbg3300-xtm-runtime/`, produced identical module bytes with normalized
 debug source paths. Compiler/modpost exits 0, W=1 plus -Werror, no compiler
 warnings. Both use the preserved kernel .config/Module.symvers/vmlinux/UTS
@@ -42,7 +42,7 @@ inputs and confirm their hashes unchanged. Full compiler commands/logs,
 source hashes and symbol inventories remain local in each run directory.
 
 - Module: `sbg3300_xtm_dma.ko` (ring plus PTM frontend).
-- SHA256: `44e54b9388521052bd0fbb4f9b4994b3c4f8e5296ffc0c2ec533ffc889dca95e`.
+- SHA256: `be2beeddc3c1dcad5af9587dc0fca495b25e04767884050fbc22e9598de6470a`.
 - ELF: 32-bit, big endian, MIPS/o32.
 - Vermagic: `6.18.54 SMP mod_unload BMIPS 32BIT`.
 - Imports: 65, all present in the preserved kernel exports; missing 0.
@@ -65,3 +65,9 @@ and must not already hold RTNL. Parent lifetime must serialize all exported APIs
 The inherited probe remains **unlinked with 19 imports**, separately from stock
 `adsldd.ko` (82) and `bcmxtmcfg.ko` (31). This new component does not resolve or
 relink that legacy module. No device has been accessed or module loaded.
+
+A follow-up teardown review found that `napi_disable` waits for NAPI ownership,
+not the end of the poll callback. Completion/unmask now shares `irq_lock` and
+stop joins that final critical section before freeing rings or the netdev.
+The previous module hash `44e54b9388521052bd0fbb4f9b4994b3c4f8e5296ffc0c2ec533ffc889dca95e`
+and its build runs are retained as superseded evidence.

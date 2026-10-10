@@ -37,7 +37,7 @@ xtm_runtime_component:
   component_compile: PASS
   component_modpost: PASS
   module_name: sbg3300_xtm_dma
-  module_sha256: 44e54b9388521052bd0fbb4f9b4994b3c4f8e5296ffc0c2ec533ffc889dca95e
+  module_sha256: be2beeddc3c1dcad5af9587dc0fca495b25e04767884050fbc22e9598de6470a
   missing_kernel_imports: 0
   probe_shims: false
   legacy_19_import_probe_relinked: false
