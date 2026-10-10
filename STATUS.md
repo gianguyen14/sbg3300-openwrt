@@ -46,7 +46,7 @@ not runtime evidence.
 | Ethernet MAC driver | PARTIAL | Upstream bmips support exists; stock board evidence shows `bcm_enet`, `eth3`, `eth4` | Stock only | Yes |
 | BCM53125 driver | UPSTREAM-AVAILABLE | Public SBG3300 bootlog for board ID `963168MXH_17A` reports external switch ID 53125; pinned `b53_spi` has the compatible. Compile coverage exists; no SBG runtime bind | No | Yes for runtime |
 | Switch silicon | PASS | Public bootlog reports BCM53125 and the same board ID as live stock SSH; boot also reports two MDK switch units and maps their port bitmaps to the two exact-family boardparms groups | Stock only | No for identity; yes for Linux runtime |
-| Switch topology / WAN-LAN | PARTIAL / DISABLED | Exact-family table describes SoC port 6 RGMII to external switch and HSSPI SSB0 ports 1–4; SSB5 external-CS overlay conflicts; CPU port, delay, VLAN/jack mapping remain unproven | No OpenWrt runtime | Yes |
+| Switch topology / WAN-LAN | PARTIAL / DISABLED | Exact-family table describes SoC port 6 RGMII to external switch and HSSPI SSB0 ports 1–4; the purpose of the coexisting SSB5 external-CS overlay is unresolved; CPU port, delay, VLAN/jack mapping remain unproven | No OpenWrt runtime | Yes |
 | USB | PARTIAL | Stock PCI functions `14e4:6300`; EHCI/OHCI observed | Stock only | Yes for OpenWrt USB runtime |
 | Wi-Fi identity | PASS | PCI `14e4:435f`, subsystem `14e4:0513`, class `0x028000`; stock proprietary `wl` family | Stock only | No for identity |
 | Wi-Fi upstream binding | INVESTIGATING | b43 has a BCM6362/`0x435f` band-classification case, not proof of PCI discovery/binding; calibration location unresolved | No | Yes for radio validation |

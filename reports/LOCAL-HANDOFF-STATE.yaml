@@ -161,7 +161,7 @@ ethernet_switch_topology_research:
   public_bootlog_external_switch: BCM53125
   exact_family_mirror_revision: e2f23ddbb20bf75689372b6e6a5a0dc613f6e313
   boardparms_groups: [MMAP_0x58, HS_SPI_SSB0_0x1e]
-  hsspi_chip_select: UNRESOLVED_SSB0_VS_SSB5_EXTERNAL_CS_OVERLAY
+  hsspi_chip_select: SSB0_SELECTED_SSB5_OVERLAY_PURPOSE_UNRESOLVED
   dsa_cpu_port: UNRESOLVED
   rgmii_timing: UNRESOLVED
   wan_lan_and_vlan_mapping: UNRESOLVED

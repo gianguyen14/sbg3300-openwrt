@@ -16,7 +16,8 @@ references and evidence boundaries.
 Live stock sysfs exposes `/sys/devices/platform/bcmhs_spi.1/spi1.0`, bound to
 generic `bcm_HSSpiDev0`; it does not expose the switch ID. The board table
 selects HSSPI SSB0 but also requests an HSSPI SSB5 external-chip-select overlay
-and mentions SSB5 as an alternate after MDIO resistor changes. The controller,
+and mentions SSB5 as an alternate after MDIO resistor changes. The source does
+not establish whether SSB5 is active for this switch. The controller,
 chip-select pinmux, CPU port, RGMII delays, PHY scan ownership, and reset
 sequence are therefore not fully resolved.
 

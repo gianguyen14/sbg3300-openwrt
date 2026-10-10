@@ -22,7 +22,9 @@ the BCM53125 CPU port, RGMII delay settings, electrical interface details,
 per-port roles, or jack mapping. The same boardparms entry enables an HSSPI
 SSB5 external-chip-select overlay while selecting SSB0 for the external switch;
 the source comments also mention SSB5 as an alternate after MDIO resistor
-changes. That CS discrepancy is not explained by the available evidence.
+changes. The source does not explain whether the SSB5 overlay is only pinmux
+capability for an alternate configuration or serves another board function;
+it does not prove that SSB5 actively selects this switch.
 
 No SBG3300 port is labelled WAN in the active boardparms branch. Stock
 `eth4.1`/PPP layering and the stock logical port numbers are not physical-jack
@@ -41,7 +43,7 @@ ports.
 | Stock software binds a generic HSSPI child at `spi1.0` | `LIVE-DEVICE`: sysfs modalias/driver `bcm_HSSpiDev0`, previously recorded in the live report. It does not report the chip ID or tell which switch registers are behind that child. |
 | Live stock logical interfaces map to switch index values | `LIVE-DEVICE`: boot maps `eth0→4`, `eth2→2`, `eth3→1`, `eth4→11`, `eth5→12`; `eth4.1` appears under PPP. These are stock driver indices, not DSA port numbers or physical jacks. |
 | Exact-family boardparms has two Ethernet groups | `FAMILY-SOURCE`, local mirror revision `e2f23ddbb20bf75689372b6e6a5a0dc613f6e313`, `boardparms.c:2878–2944`: active `#if 1` branch selects MMAP map `0x58` and HSSPI SSB0 map `0x1e`. Mirror was read-only and remains outside the public repository. |
-| The board table carries a CS alternative/overlay mismatch | `FAMILY-SOURCE`, same entry: GPIO overlay includes `BP_OVERLAY_HS_SPI_SSB5_EXT_CS`; selected switch config is `BP_ENET_CONFIG_HS_SPI_SSB_0`; adjacent comment says SSB5 requires MDIO hardware/resistor changes. Board ID alone does not prove which fitted/strapped option the running 2018 firmware selected. |
+| The board table combines an SSB0 switch setting with an SSB5 external-CS overlay | `FAMILY-SOURCE`, same entry: selected switch config is `BP_ENET_CONFIG_HS_SPI_SSB_0`; the GPIO overlay includes `BP_OVERLAY_HS_SPI_SSB5_EXT_CS`; adjacent comment describes SSB5 as an alternate after MDIO hardware/resistor changes. Their relationship is not established, and the overlay does not prove active SSB5 selection. |
 | Pinned OpenWrt has the needed driver families | `UPSTREAM`: target config selects `CONFIG_BCM6368_ENETSW`, `CONFIG_B53`, `CONFIG_B53_SPI_DRIVER`, and `CONFIG_NET_DSA`; pinned `b53_spi.c` contains the `brcm,bcm53125` match. Availability is source/build evidence only. |
 
 The public blog describes the bootlog as coming from an SBG3300 and the bootlog
@@ -65,7 +67,9 @@ reviewed locally; no vendor source was copied into this repository.
   pinmux contract.
 - `shared/opensource/include/bcm963xx/boardparms.h:296–301` defines the
   external SSB4/5/6/7 overlays. The SBG entry requests SSB5 external CS in its
-  overlay while the active switch config decodes to HSSPI SSB0. The HSSPI
+  overlay while the active switch config decodes to HSSPI SSB0. This is an
+  unresolved coexistence, not proof that both selects are active for this switch.
+  The HSSPI
   decoder in `bcmdrivers/opensource/net/enet/shared/bcmswaccess.c:608–641`
   maps an HSSPI config enum to a bus plus SSB index; its following ID-read
   path (`:710–725`) uses that HSSPI bus/index for the switch identity. These
@@ -92,7 +96,7 @@ BCM53125 external switch                                   │ CPU-side port not
   ports 1–4 (boardparms PHY map 0x1e) --------------------- │ proven
   port 8 as CPU/DSA link ----------------------------------┘ sibling-DTS inference
   HSSPI control path: likely bcm6328 HSSPI, alias spi1, SSB0 candidate;
-                     overlay additionally selects external SSB5 CS (unresolved)
+                     overlay also enables external SSB5 CS (purpose unresolved)
 ```
 
 The port-8 CPU link is plausible, not an SBG3300-verified fact. Both comparison
@@ -105,8 +109,9 @@ The pinned OpenWrt `bcm63268.dtsi` aliases `spi1` to `&hsspi` and declares the
 controller as `brcm,bcm6328-hsspi` at `0x10001000`; it has individual pinctrl
 groups including `pinctrl_hsspi_cs5`. The live `spi1.0` observation is
 consistent with alias `spi1` and CS index 0. The exact-family boardparms
-SSB0 setting is consistent with CS/index 0. The separate SSB5 external-CS
-overlay prevents treating this as a fully resolved board pinctrl contract.
+SSB0 setting is consistent with CS/index 0. The SSB5 external-CS overlay and
+alternate-configuration comment are not explained well enough to identify
+their relation to the active switch wiring.
 
 The active boardparms external group describes HSSPI, not MDIO. Linux has two
 possible B53 access paths relevant here: `b53_spi` supports
@@ -130,8 +135,8 @@ reset sequencing.
   pinctrl, 781 kHz, CPHA+CPOL, BCM53125 at `switch@5`, DSA member `<1 0>`,
   external port 8 linked to internal `switch0port6` with `rgmii-id`, and a
   labeled port 4 `wan`. This demonstrates one valid driver/bus arrangement;
-  it is BCM63169 hardware and does not resolve the SBG's SSB0/SSB5 conflict or
-  prove its WAN port.
+  it is BCM63169 hardware and does not resolve the SBG's SSB0/SSB5 overlay
+  question or prove its WAN port.
 - Pinned OpenWrt `bcm63168-sagem-fast-3864-op.dts` attaches a BCM53125 at
   `&mdio_ext`, address `0x1e`; its external port 8 links to internal
   `switch0port4` with `rgmii-id`. This is same-SoC-family comparison only. Its
@@ -182,9 +187,9 @@ driver implementation is the current blocker.
 
 Required before enabling nodes:
 
-- resolve whether SBG uses native HSSPI CS0 or GPIO/external CS5 and set the
-  corresponding controller pinctrl, chip select, mode, and clock from actual
-  board evidence;
+- resolve the active HSSPI chip-select wiring and the purpose of the SSB5
+  external-CS overlay, then set controller pinctrl, select, mode, and clock
+  from board-specific evidence;
 - identify BCM53125 CPU port and the DSA link to the exact internal port;
 - verify RGMII delays/clock direction and whether a fixed link is valid;
 - determine which internal/external PHY addresses are scanned by each Linux
@@ -222,7 +227,7 @@ not enable HSSPI for the switch. This report does not activate them.
 
 ## Remaining evidence
 
-1. Board-specific confirmation of HSSPI bus/CS and its relation to the SSB5
+1. Board-specific confirmation of HSSPI bus/CS and the purpose of the SSB5
    external-CS overlay.
 2. BCM53125 CPU port, port interface mode, clock delay responsibility, and
    reset/strap ownership for `963168MXH_17A`.
