@@ -106,3 +106,10 @@ callback/API-double cases pass native/sanitizer/MIPS tests and catch the old
 bug. Two fresh strict external builds reproduce SHA256
 `f67b6da34dcc279ee832fbc4210463b8cc89ba2b184186309d324e70e47f80dd`;
 OpenWrt component APK rebuilt. Legacy probe still 19 unresolved imports.
+
+Wi-Fi source cross-check identifies a synthetic on-chip PCI presentation in
+the exact-family source. BCMA SoC host compiles in isolated coverage; two fresh
+BCMA builds reproduce full bytes, but its calibration path remains unresolved
+and no board BCMA node is enabled. Additional kernel artifacts audited (77
+modules). Initial wrapper failure 127 and lost initial compiler log are explicit
+in the report; stable repeat exit 0 is recorded separately. Python tests: 19.

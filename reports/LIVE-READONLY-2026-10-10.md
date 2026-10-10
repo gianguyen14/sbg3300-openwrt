@@ -17,7 +17,7 @@ No credentials, destination, host keys or authentication values are published.
 
 Raw output is outside Git in `$HOME/.cache/sbg3300-readonly-20261010/`, with
 directory mode 0700 and logs mode 0600. Only manually selected hardware facts
-are in this report. No MACs, bridge identifiers, addresses, serials, calibration,
+are in this report. No MACs, bridge identifiers, network addresses, serials, calibration,
 NVRAM contents, firmware contents or persistent settings were added to Git.
 
 Collected uname, CPU/cmdline/IRQ/iomem/MTD/partition/module metadata, ifconfig,
@@ -92,6 +92,7 @@ privately under `tests/negative-before-fix/`. New tests pass natively, with
 Clang ASan/UBSan, and as static MIPS BE/o32 executables under user-mode QEMU.
 Existing descriptor/PTM/Ethernet tests and 16 Python tests pass. Shell syntax,
 Python compilation and the incremental whitespace check pass.
+The subsequent coverage-checker tests add three Python cases, for **19 total**.
 
 ## Genuine build results
 
@@ -126,6 +127,53 @@ The legacy probe still has **19 unresolved imports**. Stock `adsldd` 82 and
 relink the legacy probe or prove SAR initialization, DMA/IRQ operation,
 netdev traffic, DSL synchronization, radio or boot.
 
+## Additional BCMA SoC-host compile boundary
+
+Family source supplies a software PCI header for the on-chip WLAN with the
+observed slot/ID/subsystem. It is not proof of a discrete PCIe radio. See
+WIFI-UPSTREAM-REVIEW.md for exact source paths and the source/live mapping
+discrepancy. The pinned prepared kernel's fallback-SPROM implementation rejects
+SoC hosts; adding a PCI ID does not resolve bus or calibration integration.
+
+`configs/kernel-pre-final.fragment` now covers CONFIG_BCMA_HOST_SOC=y only in
+the isolated compile environment; BCMA serial flash explicitly disabled.
+No SBG3300 BCMA node or calibration provider added. The helper now validates
+negative Kconfig selections as well as positive ones. Three tests run its actual
+shell loop: valid selections pass, dropped host and enabled serial-flash fail.
+A first private fixture invocation lacked rg in its artificial PATH; its failure
+was retained, then the fixture used the existing PATH and all cases passed.
+
+Build root: `bcma-soc-kernel/run-BmtL8Z` inside the private evidence directory.
+The initial helper invocation ended **127**, reporting `vmlinux: command not
+found`, after artifacts had been produced. The helper was edited while its Bash
+process was still executing; the subsequent erroneous command overwrote that
+target's compiler log. The original complete kernel compiler log is therefore
+**not available**, and this invocation is not labelled a clean build success.
+The failure/log is retained. A stable explicit `vmlinux modules V=1` repeat
+exits **0** with .config/Module.symvers/vmlinux/UTS hashes unchanged. Its log is
+`corrected-compiler-modpost.log`. No original build tree was changed.
+
+Audit: **77 kernel modules**, all ELF32 MIPS BE/o32, expected vermagic, no
+unresolved imports against the real Module.symvers. Inherited FSL USB modules
+are compile coverage, not SBG3300 USB hardware support. Two fresh independent
+external BCMA builds include real host_soc.c, using -Werror (not W=1), each
+compiler/modpost exit 0, zero warnings, identical complete module bytes.
+Both full C/compiler/modpost logs are retained as `external-one-compiler-modpost.log`
+and `external-two-compiler-modpost.log`; 73 real imports, none missing.
+
+| Artifact | Bytes | SHA256 |
+|---|---:|---|
+| SoC-host coverage vmlinux | 58793900 | `41c3452a3b18130026a62f4a242db4c152e79580cf2375d139d4007fb6ee1a64` |
+| In-tree BCMA PCI + SoC-host module | 316020 | `213112dcbb73010ca8fb638a66e04867ae55d6c3b0d33a3abb28c67c8da37362` |
+| Reproduced external BCMA module | 315528 | `58a464ca7d1eb9094df33df332291ad2bc9a378d52b5d8dff1abf541d3baefd0` |
+
+Configuration SHA256:
+`955b90720b5ace2ac4e2cd05f95486b33686b14966f178757b3649188f9f7569`.
+Verbatim module hashes/dependencies are in LIVE-READONLY-KERNEL-ARTIFACTS.tsv.
+Kernel repeat stability and external-module reproduction do not constitute an
+independent clean reproduction of this entire new kernel configuration. Earlier
+independent kernel results are retained for their previous configuration.
+
 ## Publication and gate
 
 Changed runtime/test/tools are original GPL-2.0-only source; no vendor bodies,
@@ -139,7 +187,9 @@ File-level review: runtime callback and extracted-body test/harness contain
 only original source; test runners contain local compile/emulation commands;
 STATUS/HANDOFF/start/read-only guidance and YAML contain reviewed facts and
 scope updates; this report contains selected non-identifying hardware evidence
-and offline build results. All approved for publication, no additional vendor
+and offline build results. Coverage fragment/helper/three tests are original;
+Wi-Fi follow-up is attributed source facts, not copied vendor implementation;
+artifact TSV contains only audited software metadata. All approved for publication, no additional vendor
 licensing claim. Staged scanner: 118 tracked files, 410 reachable objects,
 raw exit 1 for two legitimate upstream contacts and their history occurrences.
 Incremental `git diff --cached --check` exit 0; `git diff --check
@@ -153,8 +203,9 @@ does not resolve lawful DSL PHY/control implementation, exclusive SAR/FAP
 transition, external switch topology, upstream Wi-Fi bus/calibration, NAND
 ECC/writer/CFE acceptance, or a non-UART recovery path. No additional hardware
 activation is defensible from this observation. Existing independent kernel,
-Ethernet, packages and full DTS validation remain valid; unchanged components
-were not rebuilt. No final production/factory/sysupgrade image is justified.
+Ethernet, packages and full DTS validation remain valid; the additional kernel
+coverage build above preserves those earlier artifacts. No final
+production/factory/sysupgrade image is justified.
 
 Further device-state experiments, OpenWrt/module execution, interface/link
 changes and recovery/boot testing require separate specific owner approval.

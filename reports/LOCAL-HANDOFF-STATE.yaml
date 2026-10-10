@@ -127,7 +127,7 @@ authorized_stock_readonly_observation:
   xtm_tx_busy_ownership_fix: IMPLEMENTED_AND_COMPILED
   callback_api_double_scenarios: 8
   native_sanitizer_mips_policy_groups: 4
-  python_tests: 16
+  python_tests: 19
   external_module_sha256: f67b6da34dcc279ee832fbc4210463b8cc89ba2b184186309d324e70e47f80dd
   external_module_reproducible: true
   compiler_modpost_exit: 0
@@ -137,3 +137,15 @@ authorized_stock_readonly_observation:
   legacy_probe_unresolved_imports: 19
   final_firmware_build_started: false
   readiness: BLOCKED_AWAITING_USER_DECISION
+  bcma_soc_compile_coverage: true
+  sbg3300_bcma_node_enabled: false
+  bcma_soc_calibration_provider: UNRESOLVED
+  coverage_kernel_wrapper_initial_exit: 127
+  coverage_kernel_initial_complete_log: UNAVAILABLE_OVERWRITTEN_WRAPPER_FAILURE
+  coverage_kernel_corrected_repeat_exit: 0
+  coverage_kernel_audited_modules: 77
+  bcma_external_compile_modpost_exit: 0
+  bcma_external_reproduced: true
+  bcma_external_sha256: 58a464ca7d1eb9094df33df332291ad2bc9a378d52b5d8dff1abf541d3baefd0
+  bcma_external_import_count: 73
+  bcma_missing_imports: 0

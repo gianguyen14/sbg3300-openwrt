@@ -57,3 +57,45 @@ used in the offline image.
 `INVESTIGATING`; no Wi-Fi support is included in the initial profile. No radio
 runtime test was performed under OpenWrt. An eventual driver build or PCI bind
 would still not prove correct RF calibration or regulatory behavior.
+
+## Authorized stock/source cross-check, 2026-10-10
+
+`LIVE-DEVICE`: PCI sysfs driver symlink now confirms `wl` and IRQ 15.
+Boot explicitly reports SROM/OTP not programmed, memory-mapped SROM data and
+loading the WLAN map/common-variable files. Those private files were not read;
+upstream calibration format and legal provision remain unresolved.
+
+`FAMILY-SOURCE`, mirror revision
+`e2f23ddbb20bf75689372b6e6a5a0dc613f6e313`:
+
+- `bcmdrivers/opensource/include/bcm963xx/bcmpci.h:31-34` defines on-chip
+  WLAN slot 0, packed ID `0x435f14e4` and resource size `0x2000`.
+- `kernel/linux/arch/mips/pci/ops-bcm63xx.c:57-79` supplies a software PCI
+  configuration header for CONFIG_BCM963268, including class `0x028000` and
+  subsystem `0x051314e4`; its read/write handlers at 370/405 access that array.
+  This is a synthetic PCI presentation of on-chip WLAN in that source.
+- `shared/opensource/include/bcm963xx/63268_map_part.h:50` gives family
+  WLAN ChipCommon physical base `0x10004000`.
+
+`INFERENCE`: the observed ID/slot/subsystem are consistent with this virtual
+PCI lineage; enumeration is not proof of a discrete PCIe radio or justification
+for simply adding a PCI ID to b43/BCMA. Live BAR0 is `0xa0000000` (64 KiB),
+different from the family ChipCommon resource. The running Zyxel mapping/fixup,
+AI/EROM cores and MMIO/endian/DMA/IRQ translations are still unproven.
+
+`UPSTREAM`: Linux 6.18.54 `drivers/bcma/host_soc.c` has an OF `brcm,bus-axi`
+host using of_iomap, bus enumeration and DT core interrupts. Kconfig's help
+limits established SoC support to BCM47xx; that does not prove BCM63168
+compatibility. The earlier preflight built only the PCI host. The additional
+SoC-host configuration is **offline compile coverage only**, with BCMA serial
+flash disabled. No SBG3300 BCMA node, PCI ID workaround or calibration blob is
+enabled. Build results are recorded in LIVE-READONLY-2026-10-10.md.
+
+The pinned OpenWrt-prepared kernel also carries GPL fallback-SPROM support in
+`drivers/bcma/fallback-sprom.c`. Its `bcma_get_fallback_sprom()` explicitly
+rejects non-PCI hosts with `-ENOENT`. Thus compiling `host_soc` does not provide
+a SoC calibration path. `bcma_arch_register_fallback_sprom()` exists but is
+not exported for an external provider module. A future verified host needs a
+legal calibration provider/matching contract in addition to MMIO/core discovery;
+no such provider is installed here. Existing PCI firmware-loading support is
+not evidence that the stock map file can be used unchanged.

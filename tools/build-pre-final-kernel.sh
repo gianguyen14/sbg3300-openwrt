@@ -53,7 +53,13 @@ make -C "$kernel" ARCH=mips CROSS_COMPILE="$cross" olddefconfig \
   > "$run_dir/config.log" 2>&1
 # Kconfig may silently drop symbols with unsatisfied dependencies: reject that.
 while IFS= read -r setting; do
-  [[ "$setting" == CONFIG_*=* ]] || continue
+  if [[ "$setting" == CONFIG_*=* ]]; then
+    :
+  elif [[ "$setting" =~ ^#\ CONFIG_[A-Z0-9_]+\ is\ not\ set$ ]]; then
+    : # Explicit negative coverage settings must survive Kconfig too.
+  else
+    continue
+  fi
   rg -F -x -q "$setting" "$kernel/.config" || {
     printf 'Missing requested setting: %s\nEvidence: %s\n' "$setting" "$run_dir" >&2
     exit 1
