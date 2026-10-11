@@ -4,14 +4,14 @@ Date: Sun, 11 Oct 2026 03:10:39 +0700
 Subject: [PATCH] bmips: sbg3300: add GPIO, LEDs, and Buttons from kcore map
 
 ---
- .../bmips/dts/bcm63168-zyxel-sbg3300-n000.dts | 62 +++++++++++++++++++
- 1 file changed, 62 insertions(+)
+ .../bmips/dts/bcm63168-zyxel-sbg3300-n000.dts | 58 +++++++++++++++++++
+ 1 file changed, 58 insertions(+)
 
 diff --git a/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts b/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
 index 905ff23ae8..ca198d79a7 100644
 --- a/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
 +++ b/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
-@@ -11,6 +11,68 @@
+@@ -11,6 +11,58 @@
  		bootargs = "";
  		stdout-path = "";
  	};
@@ -49,32 +49,24 @@ index 905ff23ae8..ca198d79a7 100644
 +			gpios = <&gpio 21 GPIO_ACTIVE_LOW>;
 +		};
 +
++		dsl {
++			label = "green:dsl";
++			gpios = <&gpio 14 GPIO_ACTIVE_LOW>;
++		};
++
++		vdsl {
++			label = "green:vdsl";
++			gpios = <&gpio 15 GPIO_ACTIVE_LOW>;
++		};
++
 +		internet_green {
 +			label = "green:internet";
 +			gpios = <&gpio 22 GPIO_ACTIVE_HIGH>;
 +		};
 +
-+		internet_red {
-+			/* Serial LED */
-+			label = "red:internet";
-+			gpios = <&gpio 2 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		wan_data {
++		wan {
 +			label = "green:wan";
 +			gpios = <&gpio 8 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		usb1 {
-+			/* Serial LED */
-+			label = "green:usb1";
-+			gpios = <&gpio 6 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		usb2 {
-+			/* Serial LED */
-+			label = "green:usb2";
-+			gpios = <&gpio 5 GPIO_ACTIVE_LOW>;
 +		};
 +	};
  };
