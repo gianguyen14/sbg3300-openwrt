@@ -87,7 +87,7 @@ jobs:
             - Target: BMIPS4350 / BCM63168
             - Switch: 4x LAN ports + 1x Dedicated WAN port
             - Flash: 128KiB erase block NAND layout (Sysupgrade Image)
-            - LEDs & Buttons: Power, Internet, WAN, USB LEDs mapped; Reset and WPS buttons via ExtIRQ 0/1.
+            - LEDs & Buttons: Power, Internet, WAN, USB LEDs mapped; Reset and WPS buttons via GPIO keys.
           files: |
             bin-output/*
         env:
