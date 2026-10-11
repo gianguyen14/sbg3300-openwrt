@@ -30,6 +30,9 @@ jobs:
 
       - name: Setup OpenWrt Base
         run: |
+          git config --global user.email "ci@openwrt.org"
+          git config --global user.name "CI Builder"
+
           git clone https://github.com/openwrt/openwrt.git /tmp/openwrt
           cd /tmp/openwrt
           git checkout 5edcc1c43cb97048b506168fbbe00538956796d6
