@@ -22,14 +22,14 @@ index 905ff23ae8..ca198d79a7 100644
 +
 +		wps {
 +			label = "wps";
-+			gpios = <&ext_irq 1 GPIO_ACTIVE_LOW>;
++			gpios = <&gpio 1 GPIO_ACTIVE_LOW>;
 +			linux,code = <KEY_WPS_BUTTON>;
 +			debounce-interval = <60>;
 +		};
 +
 +		reset {
 +			label = "reset";
-+			gpios = <&ext_irq 0 GPIO_ACTIVE_LOW>;
++			gpios = <&gpio 0 GPIO_ACTIVE_LOW>;
 +			linux,code = <KEY_RESTART>;
 +			debounce-interval = <60>;
 +		};
@@ -82,4 +82,3 @@ index 905ff23ae8..ca198d79a7 100644
  /* These controllers are directly observed on the stock device. */
 -- 
 2.47.3
-
