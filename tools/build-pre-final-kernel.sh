@@ -61,12 +61,20 @@ while IFS= read -r setting; do
   else
     continue
   fi
-  rg -F -x -q "$setting" "$kernel/.config" || {
+  if command -v rg >/dev/null 2>&1; then
+    rg -F -x -q -- "$setting" "$kernel/.config"
+  else
+    grep -F -x -q -- "$setting" "$kernel/.config"
+  fi || {
     printf 'Missing requested setting: %s\nEvidence: %s\n' "$setting" "$run_dir" >&2
     exit 1
   }
 done < "$run_dir/coverage.fragment"
-rg -q '^#define UTS_RELEASE "6\.18\.54"$' "$kernel/include/generated/utsrelease.h"
+if command -v rg >/dev/null 2>&1; then
+  rg -q '^#define UTS_RELEASE "6\.18\.54"$' "$kernel/include/generated/utsrelease.h"
+else
+  grep -E -q '^#define UTS_RELEASE "6\.18\.54"$' "$kernel/include/generated/utsrelease.h"
+fi
 set +e
 make -C "$kernel" -j"${JOBS:-3}" ARCH=mips CROSS_COMPILE="$cross" \
   KBUILD_BUILD_USER=builder KBUILD_BUILD_HOST=offline \

@@ -12,12 +12,15 @@ class CoverageTests(unittest.TestCase):
         script = (Path(__file__).resolve().parents[1] /
                   "tools/build-pre-final-kernel.sh").read_text()
         start = script.index("while IFS= read -r setting; do")
-        end = script.index("\nrg -q", start)
+        end = script.index("\nset +e", start)
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             (root / "coverage.fragment").write_text(
                 "CONFIG_BCMA_HOST_SOC=y\n# CONFIG_BCMA_SFLASH is not set\n")
             (root / ".config").write_text(config)
+            generated = root / "include/generated"
+            generated.mkdir(parents=True)
+            (generated / "utsrelease.h").write_text('#define UTS_RELEASE "6.18.54"\n')
             env = os.environ.copy()
             env.update(kernel=str(root), run_dir=str(root))
             return subprocess.run(["bash", "-c", "set -e\n" + script[start:end]],
