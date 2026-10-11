@@ -1,0 +1,91 @@
+name: Build Zyxel SBG3300-N000 Full Firmware
+
+on:
+  push:
+    branches:
+      - feat/sbg3300-nondsl-ethernet-wifi
+      - main
+    paths:
+      - 'target/**'
+      - 'patches/**'
+      - 'tools/**'
+      - 'dts/**'
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build OpenWrt Image
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential clang flex bison g++ gawk \
+            gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev \
+            python3-distutils rsync unzip zlib1g-dev file wget subversion swig
+
+      - name: Setup OpenWrt Base
+        run: |
+          git clone https://github.com/openwrt/openwrt.git /tmp/openwrt
+          cd /tmp/openwrt
+          git checkout 5edcc1c43cb97048b506168fbbe00538956796d6
+          
+          # Apply patch series
+          while IFS= read -r patch; do
+            [[ -z "$patch" || "$patch" =~ ^# ]] && continue
+            echo "Applying $patch..."
+            git am "$GITHUB_WORKSPACE/patches/openwrt/$patch"
+          done < "$GITHUB_WORKSPACE/patches/openwrt/series"
+
+      - name: Update and Install Feeds
+        run: |
+          cd /tmp/openwrt
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+
+      - name: Configure Target
+        run: |
+          cd /tmp/openwrt
+          cp "$GITHUB_WORKSPACE/configs/sbg3300_port_defconfig" .config
+          make defconfig
+
+      - name: Compile Firmware
+        run: |
+          cd /tmp/openwrt
+          make -j$(nproc) V=s
+
+      - name: Prepare Artifacts
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/bin-output"
+          cp -r /tmp/openwrt/bin/targets/bmips/bcm63268/* "$GITHUB_WORKSPACE/bin-output/" || true
+          cd "$GITHUB_WORKSPACE/bin-output"
+          sha256sum * > SHA256SUMS || true
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbg3300-n000-firmware
+          path: bin-output/
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/heads/feat/') || github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: release-sbg3300-${{ github.run_id }}
+          name: "Zyxel SBG3300-N000 OpenWrt Firmware (${{ github.sha }})"
+          body: |
+            Automated cloud build for Zyxel SBG3300-N000 (Broadcom BCM63168).
+            
+            Included Hardware Support:
+            - Target: BMIPS4350 / BCM63168
+            - Switch: 4x LAN ports + 1x Dedicated WAN port
+            - Flash: 128KiB erase block NAND layout (Sysupgrade Image)
+            - LEDs & Buttons: Power, Internet, WAN, USB LEDs mapped; Reset and WPS buttons via ExtIRQ 0/1.
+          files: |
+            bin-output/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
