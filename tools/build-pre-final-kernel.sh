@@ -10,7 +10,7 @@ approved=18c17336871e73ddfbab3198104d8c42df844146
 source_sha="$(git -C "$openwrt_dir" rev-parse HEAD)"
 source_tree="$(git -C "$openwrt_dir" rev-parse 'HEAD^{tree}')"
 case "$source_sha:$source_tree" in
-  "$pinned:"*|"$approved:"*|*:2ac5b16d7ba20467a099bf096de89c32d69a9324) ;;
+  "$pinned:"*|"$approved:"*|*:2ac5b16d7ba20467a099bf096de89c32d69a9324|*:4769e1aa08793c94a990092080d6db094d67a30f|*:634453e43a523ce799428fd21ef5e24a78288144) ;;
   *) exit 1 ;;
 esac
 test "$(git -C "$openwrt_dir" merge-base HEAD "$pinned")" = "$pinned"
@@ -30,7 +30,8 @@ kernel="$run_dir/kernel"
 # Each delta must apply to the preserved unmodified kernel source. If the
 # kernel was already patched, use that prepared tree directly instead.
 for patch in 0001-brcm-sbg3300-compatible.patch 0002-bcm63268-resource-bindings.patch \
-             0003-bcm6368-enetsw-managed-lifetime.patch; do
+             0003-bcm6368-enetsw-managed-lifetime.patch \
+             0004-bcm6368-enetsw-rx-poll.patch; do
   if patch -d "$kernel" -p1 --batch --forward --dry-run \
       < "$project_dir/integration/schema-patches/$patch" \
       >> "$run_dir/patch-application.log" 2>&1; then

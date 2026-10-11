@@ -74,6 +74,21 @@ class ImageInfoTests(unittest.TestCase):
         with self.assertRaises(image_info.ImageError):
             image_info.parse_image(data)
 
+    def test_board_prefix_is_not_exact_board_identity(self):
+        data = valid_fixture()
+        data[0x2C:0x2C + 18] = b"963168MXH_17AX".ljust(18, b"\0")
+        struct.pack_into(">I", data, 0xEC, image_info.raw_crc32(data[:0xEC]))
+        result = image_info.parse_image(data)
+        self.assertTrue(result["header_crc_ok"])
+        self.assertFalse(result["structural_ok"])
+
+    def test_unknown_trailer_flag_is_rejected(self):
+        data = valid_fixture()
+        data[0xCE] = 2
+        struct.pack_into(">I", data, 0xEC, image_info.raw_crc32(data[:0xEC]))
+        with self.assertRaises(image_info.ImageError):
+            image_info.parse_image(data)
+
 
 if __name__ == "__main__":
     unittest.main()

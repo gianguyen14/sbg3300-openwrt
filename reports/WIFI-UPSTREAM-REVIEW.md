@@ -99,3 +99,44 @@ not exported for an external provider module. A future verified host needs a
 legal calibration provider/matching contract in addition to MMIO/core discovery;
 no such provider is installed here. Existing PCI firmware-loading support is
 not evidence that the stock map file can be used unchanged.
+
+## Non-DSL AP software build, 2026-10-11
+
+The pinned synthetic-PCI source was checked byte-for-byte against the public
+mirror revision. `fixup-bcm63xx.c:105–108` also resets the synthetic WLAN BAR
+resource to the family ChipCommon base; it does not explain the running stock
+BAR discrepancy or provide an upstream host registration contract. No raw BAR,
+EROM, SPROM or calibration was read. Existing SoC/PCI BCMA, SSB, b43 and
+brcmfmac compile coverage remains valid; their discovery/firmware/calibration
+blockers are unchanged. Do not inject 435f into a PCI table.
+
+An isolated copy of the verified OpenWrt package environment now selects and
+actually builds `wpad-basic-openssl`. Target compile exits 0, zero compiler
+warnings/errors, with CONFIG_DRIVER_NL80211=y and 802.11n/ac user-space support.
+AP package: 564122 bytes, SHA256
+`221e5dfe32b0a5607596d4ccb9b18bf67effcfa0f7847cbcb1b9a1b4a62d598c`.
+Installed multicall executable: 1286420 bytes, ELF32 MIPS BE/o32 PIE; SHA256
+`bdb61892f04746adb9f75140a36fee54ebd07c6bbe9c993aa9af9fe97f6ced5d`.
+It is a software artifact, not an onboard-radio binding or AP association test.
+
+MIPS QEMU version-only invocations execute the actual target program with the
+private staged target root's dynamic libraries. hostapd v2.12 prints its version
+and exits 1, exactly its main.c:930–934 convention. wpa_supplicant v2.12 exits 0.
+No interfaces or RF hardware are accessed. The first QEMU prefix pointed at the
+staging directory rather than root-bmips and failed to find the interpreter
+(exit 255); the corrected root resolves it. The initial package-selection
+invocation mistakenly treated scripts/config (a directory) as an executable;
+that unselected/no-artifact run is not counted. Corrected selection plus actual
+artifact existence establishes the build. Defconfig retains the previously
+known unrelated qt5base/squeezelite feed recursion diagnostics; target package
+C compilation itself has none. All logs and artifacts remain private.
+
+`configs/sbg3300-pre-final.config` includes this optional package for compile
+coverage. It is not a production WLAN configuration and provides no firmware,
+calibration, regulatory overrides or guessed radio node. Existing routing,
+firewall/DHCP package builds remain separate from physical Ethernet evidence.
+
+Alternative future use of a supported external USB radio still requires an
+actual dongle VID/PID, its driver and lawful firmware, USB VBUS/runtime evidence
+and AP testing. An external Ethernet access point can avoid onboard-radio
+binding once Ethernet works; neither alternative proves internal Wi-Fi support.

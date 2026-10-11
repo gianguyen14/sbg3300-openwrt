@@ -19,11 +19,11 @@ perform raw MTD/NAND operations.**
 ## 1. Project objective
 
 Port full upstream OpenWrt to the Zyxel SBG3300-N000 while preserving its
-Broadcom BCM63168 hardware support: NAND, Ethernet/switch, USB, Wi-Fi if
-feasible, DSL/XTM/PPPoE if feasible, and a safe stock-compatible upgrade and
-recovery path. The currently working stock-custom router is separate and must
-not be disturbed. This repository is the port research, not a replacement for
-that system.
+Broadcom BCM63168 hardware support. The current milestone prioritizes Ethernet,
+switch, Wi-Fi, NAND/boot, USB and peripherals. DSL/XTM is explicitly deferred
+until the owner requests it. The currently working stock-custom router is
+separate and must not be disturbed. This repository is the port research, not
+a replacement for that system.
 
 ## 2. Absolute safety constraints
 
@@ -65,14 +65,19 @@ Evidence labels are defined in `docs/EVIDENCE-POLICY.md`; consult
   dependencies after correcting an initial path-with-spaces harness error.
 - `LIVE-DEVICE`: PCI Wi-Fi function is `14e4:435f`, subsystem `14e4:0513`;
   stock driver is proprietary `wl` family `6.30.102.7.cpe4.12L06B.1`.
-- `UPSTREAM`: b53 SPI supports `brcm,bcm53125`; a similar BCM63168 device uses
-  it. Neither fact proves the SBG3300's switch silicon/topology.
+- `STOCK-BOOT-LOG`: a public log reporting the same board ID
+  `963168MXH_17A` identifies external BCM53125 silicon. `EXACT-BOARD-SOURCE`
+  plus the stock VLAN log and Linux B53's BCM53125 profile strongly support
+  the external port-8/SoC-port-6 cascade; see the detailed confidence labels
+  in `reports/ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md`.
 
 ## 4. What has NOT been proven
 
 - OpenWrt boot, CFE handoff, or usable board RAM under OpenWrt.
-- Ethernet link, exact MAC selection, switch silicon ID, DSA CPU port, RGMII
-  timing, or mapping from LAN jacks to ports.
+- OpenWrt Ethernet link/DSA runtime, exact MAC selection, physical confirmation
+  of the switch cascade, RGMII timing/reset ownership, or mapping from LAN
+  jacks to ports. The same-board-ID bootlog does identify stock BCM53125; that
+  does not prove Linux 6.18 binding or runtime.
 - NAND OpenWrt read/write, ECC/OOB compatibility, complete writer semantics,
   safe partition scheme, bad-block translation, or image acceptance.
 - DSL driver port, DSL initialization, sync, XTM interface, PPPoE, or Internet.
@@ -159,19 +164,44 @@ unapproved. See `NAND-MAP.md`.
 
 ## 11. Ethernet/switch state
 
-Exact boardparms branch `963168MXH_17A` configures an external HSSPI switch
-group (`BP_ENET_CONFIG_HS_SPI_SSB_0`, PHY map `0x1e`) and a separate memory
-mapped group (`0x58`). It describes port 4 as `TMII_DIRECT | 0x14` and port 6
-as `RGMII_DIRECT | EXTSW_CONNECTED`. Live stock evidence has `bcm_enet`,
-`eth3`, `eth4`; WAN is `ppp2.1 -> eth4.1 -> eth4`; boot logs mention switch
-indices 1, 11, 12. HSSPI sysfs path is observed.
+Exact boardparms entry `963168MXH_17A` has an active C3 configuration: SoC
+port map `0x58`; port 3/PHY 4; port 4 `TMII_DIRECT|0x14`; and port 6
+`RGMII_DIRECT|EXTSW_CONNECTED`. Its external switch group selects HSSPI SSB0
+with PHY map `0x1e`/ports 1–4. Family driver source maps that selection to bus
+1/CS0, reserves mode 3 at 781 kHz, and uses a Broadcom type-2 header. The
+boardparms also requests SS5 pinmux, but the active switch selection is CS0;
+the adjacent source comment describes SSB5 only as an alternative after
+resistor changes.
 
-Unresolved: exact switch silicon ID, CPU port, MAC role, RGMII timing, meanings
-of eth3/eth4 and VLAN, external jack mapping, and how SPI indices map to jacks.
-Do not enable speculative DSA topology. `b53_spi` driver availability is only
-upstream evidence.
+The public bootlog reports BCM53125 for the same firmware board ID, the C3
+port bitmaps, and startup VLAN 1 with external ports 1–4 untagged and port 8
+tagged. Linux 6.18's BCM53125 profile calls port 8 its IMP. This strongly
+supports a port-6-to-port-8 RGMII cascade. It does not establish physical PCB
+nets, RGMII delay ownership, final VLAN configuration, or runtime Linux DSA.
+The CFE/Linux log does not reveal PCB silkscreen revision.
 
-## 12. DSL/XTM state
+Owner-assisted stock A/B/A testing on 2026-10-10 verified physical LAN 1 ↔
+stock netdev `eth0`, LAN 2 ↔ `eth1`, and LAN 4 ↔ `eth3` from reversible
+carrier transitions. This is stock Linux evidence, not an OpenWrt link test.
+The stock boot maps `eth0→logical switch index 4` and `eth3→index 1`;
+exact-family driver interpretation supports LAN 1→external BCM53125 port 4
+and LAN 4→port 1, but exact binary equivalence and PCB/PHY wiring are not
+proven. `eth1`'s stock switch index is not captured; do not assign it to port 3
+by elimination. Other observed logical indices remain `eth2→2`, `eth4→11` and
+`eth5→12`, not physical jack labels. LAN 3 and ETHWAN PHY mappings remain
+unknown. The stock type-2 packet tag may
+not match upstream DSA BRCM tag encoding. Switch/reset sequence and MAC source
+are unresolved. Do not add active DSA links or labels. Details and the
+counter-wrap caveat are in
+`reports/ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md`.
+
+## 12. DSL/XTM state — deferred
+
+`DSL: DEFERRED — NOT PART OF CURRENT MILESTONE`. Preserve existing XTM/PTM
+source, tests, reports and successful build results. Keep DSL-related hardware
+inactive and do not let its incomplete platform integration block independent
+Ethernet, Wi-Fi, boot, USB or peripheral work. The findings below are retained
+as historical engineering evidence, not current task priorities.
 
 The stock path looks PPPoE-like (`ppp2.1` over `eth4.1`), but precise XTM/PTM/
 ATM data flow must be derived from stock source and logs, not guessed from the
@@ -218,10 +248,8 @@ prove source does not exist.
 - Analyze upstream b53, bcm63xx Ethernet, BMIPS NAND, image formats, and
   sibling-device commits.
 - Continue public-source searches and provenance/licensing review.
-- Port `bcmxtmrt` incrementally; classify 2.6-to-6.18 API changes and write
-  narrow compatibility layers/compile probes.
-- Reconstruct vendor ABI from sanitized symbol inventories; search for
-  `adsldd`/`bcmxtmcfg` sources without asserting absence globally.
+- Preserve the existing XTM/PTM source, tests, and artifacts. DSL/XTM source
+  recovery and porting are deferred until the owner requests them.
 - Research Wi-Fi PCI/BCMA/SSB discovery and OpenWrt driver tables.
 - Improve offline image parser, static analysis, tests, patch series, scripts,
   docs, and runtime test plans.
@@ -231,8 +259,10 @@ prove source does not exist.
 
 ## 16. Tasks that must not be marked PASS without router
 
-OpenWrt boot; usable RAM; LAN link; DSA CPU port and physical jack mapping;
-runtime BCM53125 ID; switch PHY links; Wi-Fi discovery/association/calibration;
+OpenWrt boot; usable RAM; OpenWrt LAN link; DSA CPU port and remaining
+physical jack-to-PHY mapping (stock LAN 1/2/4-to-netdev mappings are
+documented; only LAN 1/4 external-port decodes have conditional support);
+OpenWrt switch PHY links; Wi-Fi discovery/association/calibration;
 DSL initialization/sync/stats; XTM netdev; PPP session and Internet routing;
 USB functionality; hardware acceleration; NAND read/write/ECC behavior; CFE
 handoff; stock recovery; factory image acceptance; sysupgrade; reboot soak;
@@ -248,7 +278,8 @@ none of those actions.
 
 ## 18. Current blockers
 
-1. Exact BCM63168/BCM53125 switch topology and safe DSA mapping.
+1. Exact RGMII timing/reset, stock-vs-DSA tag compatibility, and WAN/LAN jack
+   mapping needed to finish a safe BCM63168/BCM53125 DSA configuration.
 2. Exact NAND writer/slot/bad-block/ECC semantics and non-UART recovery path.
 3. XTM forward-port's structural Broadcom dependencies; missing ADSL and XTM
    config source/objects.
@@ -261,19 +292,16 @@ P0: maintain public-safe, reproducible repo and scripts.
 
 P1: incremental `bcmxtmrt` Linux 6.18 port compile probes.
 
-P2: exact `963168MXH_17A` Ethernet and switch topology.
+P1: exact `963168MXH_17A` Ethernet and switch topology.
 
-P3: Broadcom image writer, dual-slot and WFI/bad-block behavior.
+P2: Broadcom image writer, dual-slot and WFI/bad-block behavior.
 
-P4: source search and ABI reconstruction for `adsldd`/`bcmxtmcfg`.
+P3: Wi-Fi host discovery and calibration path; then USB and peripherals.
 
-P5: Wi-Fi PCI discovery.
+P4: complete non-DSL kernel/package integration and offline tests.
 
-P6: FAP/HNAT only after software-routing bring-up.
-
-For DSL, compile after each small change and record the first meaningful error
-class. Do not import Linux 2.6 headers wholesale or hide structural failures
-with blanket warning suppression.
+DSL/XTM, `adsldd`/`bcmxtmcfg`, SAR/FAP integration, and DSL PHY work are
+deferred until the owner requests them. Preserve their source and evidence.
 
 ## 20. Evidence policy
 
@@ -298,3 +326,74 @@ status, new artifact hashes, evidence-label changes, remaining blockers, and
 tests that still require physical hardware. Preserve a clean main branch or
 provide a reviewable branch/PR. Never request device action implicitly; list
 `NEEDS-DEVICE` tasks separately for owner review.
+
+## Ethernet RX/NAPI follow-up
+
+Patch 0010 delivers real RX bounds/error, zero-budget/NAPI-completion and TX
+status-reuse corrections. `reports/ETHERNET-RX-NAPI-VALIDATION.md` records actual
+callback tests and two strict reproducible module builds. New SHA256:
+`091acf5f6c90fc6f2bebe202343fc295817a4a95b93795e1562efafa396da7d0`; 85 real
+imports, none missing. Existing topology/PHY/MAC/boot blockers remain. The
+current OpenWrt patch series has ten entries; use the series file rather than
+this handoff's historical four-patch list. All router changes remain gated.
+
+## Boot/storage/peripheral validator follow-up
+
+Container board identity is exact, unknown trailer flags rejected. ELF checks
+now reject physical overflow/alignment errors, loader-memory overlap and BSS-only
+entry. Unverified BCMA/GPIO consumers must remain disabled. New integrated
+kernel/compiler/modpost exits 0; all 77 modules audited, zero missing imports.
+The old loader still fails strict audit. Source-supported Hamming interpretation
+narrows ECC metadata but does not approve NAND. See
+`reports/BOOT-NAND-PERIPHERAL-VALIDATION.md` and the non-DSL artifact TSVs.
+
+## Additional non-DSL compile/source contracts
+
+wpad-basic-openssl now has a genuine APK/executable build and version-only MIPS
+QEMU evidence; onboard calibration/discovery remains blocked. ELF rewrapping is
+reproduced with a small original userspace fixture, preserving the old loader's
+failure. Actual Linux Hamming OOB callbacks match the legacy candidate tuple in
+native/sanitizer/MIPS tests; this does not permit NAND activation. The updated
+topology report records the source netdev-rename conflict, SPI PHY-page versus
+MDIO address distinction and 0x888A receive-buffer normalization. No new cable
+test or live hardware activation occurred.
+
+## Required RX-mask correction
+
+Use the current patch 0010 and final strict module SHA256
+`ac3576cf5969135fc7bc2b998fac7ec64dd1ca29c5052b7a5f3353a4de591918`.
+The earlier `091acf...` build used a TX-underflow bit in its RX error mask;
+RX source-port metadata overlaps it. The 16-vector callback regression rejects
+that earlier source and passes the corrected RX-only mask. Historical build
+success remains valid as compilation evidence but not final source approval.
+
+
+## 2026-10-11 corrected non-DSL validation handoff
+
+Current RX/NAPI code uses a separate RX error mask because exact-family RX bits
+8–11 carry source-port metadata. The prior generic-mask build is superseded and
+retained as a negative finding. The new 16-value source-port regression passes;
+corrected callback tests pass native, Clang ASan/UBSan and static MIPS BE/o32
+QEMU. Two strict W=1/-Werror external builds reproduce the 113,932-byte module
+`ac3576cf5969135fc7bc2b998fac7ec64dd1ca29c5052b7a5f3353a4de591918` (85 imports,
+zero missing, vermagic `6.18.54 SMP mod_unload BMIPS 32BIT`).
+
+Corrected expanded kernel compiler/modpost exit 0: 77 modules audited, zero
+missing imports, vmlinux SHA256
+`ddfcb7681c002a505eb5ebcd553c61c5c666b9b4d8b36a02f6a4c64be745b8fc`; its
+`bcm6368-enetsw.ko` is 114,080 bytes, SHA256
+`f08c8b80969d829969cc7ce031bfeb4a9aded1941bb9fc15f0b95538b0e26785`. Native
+OpenWrt kernel compiler exit 0: vmlinux SHA256
+`85496d07dafa31f27c2b52e3ab9e7db7206c0a9b9c56c37fbfe06ce9fcdc17e7`, 49
+loadable modules, zero missing imports; enetsw/B53 SPI are built in under this
+profile config. Package compilation exit 0 produced/inventoried 96 APKs. Kernel
+build logs retain 76/49 warning matches respectively (mostly modpost metadata),
+with zero errors; the final package log has zero warning/error matches. Current
+manifests were regenerated from those artifacts. No image target or device
+operation occurred.
+
+The source remains a partial port. Jack mappings are stock-only: LAN 1↔`eth0`,
+LAN 2↔`eth1`, LAN 4↔`eth3`; do not convert these directly to PHY numbering.
+Still blocked: DSA cascade and wire tag contract, RGMII timing/reset, LAN 3/WAN
+PHY map, MAC provisioning, onboard Wi-Fi host/calibration, NAND writer/BBT/ECC,
+CFE acceptance and proven recovery route. DSL remains deferred.

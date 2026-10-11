@@ -95,3 +95,22 @@ extent, active-slot selection, CFE placement and bad-block translation.
 No writable image, sysupgrade layout, or stock-web wrapper is permitted until
 all boot-critical ranges and bad-block/ECC behaviors are proven from exact
 source/binary behavior. No raw NAND operations are part of this project.
+
+## Further ECC source reconciliation
+
+The pinned family header explicitly defines legacy ECC code 15 as Hamming
+(three ECC bytes per 512-byte step). Its Hamming/64-byte-OOB branch prints the
+misleading string `brcmnand_oob_bch4_4k` while selecting `brcmnand_oob_64`.
+Linux 6.18 translates code 15 with 16 spare bytes per sector into strength 1.
+This narrows the numeric interpretation to `SUPPORTED`; the incorrect log
+label is not evidence of BCH4/4K. Actual OOB positions, writer/BBT equivalence
+and Linux runtime remain unproven. No DTS ECC override or partition was added.
+Exact references and validator results are in
+`reports/BOOT-NAND-PERIPHERAL-VALIDATION.md`.
+
+An independent legacy-header comparison now matches Linux 6.18's actual
+Hamming OOB callbacks for the 2048/64/512/strength-1 candidate tuple: 12 ECC
+bytes at identical positions and 50 free bytes, with two BBI bytes reserved.
+Native/sanitizer/MIPS callback tests pass. This is conditional source-layout
+equivalence, not proof of actual flash encoding, BBT compatibility or writer
+behavior. The NAND controller remains disabled.
