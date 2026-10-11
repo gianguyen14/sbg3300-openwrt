@@ -11,7 +11,7 @@ diff --git a/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts b/target/lin
 index 905ff23ae8..ca198d79a7 100644
 --- a/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
 +++ b/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
-@@ -11,6 +11,58 @@
+@@ -11,6 +11,60 @@
  		bootargs = "";
  		stdout-path = "";
  	};
