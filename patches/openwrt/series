@@ -10,3 +10,4 @@
 0010-bmips-enetsw-rx-poll.patch
 0011-bmips-sbg3300-hardware-bindings.patch
 0012-bmips-sbg3300-add-gpio-leds.patch
+0013-bmips-sbg3300-finalize-image-buttons.patch
