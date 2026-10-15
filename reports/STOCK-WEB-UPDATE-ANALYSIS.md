@@ -63,11 +63,22 @@ The old candidate `/home/hermes/sbg3300-build/output-firmware/openwrt-sbg3300-n0
 
 Do not upload it. The `openwrt-...-squashfs-sysupgrade.bin` is a TAR intended for sysupgrade from a running OpenWrt instance, not stock Zyxel firmware update.
 
-## Remaining blockers to Web Update
+## Stock updater format (from BCM 4.12L.06B source)
 
-1. Identify the stock updater's exact validation and write path: signature policy, accepted model/version policy, ROM-D policy, container fields and trailer requirements.
-2. Establish stock NAND mapping: CFE/gaps, dual-slot selection, ECC/OOB encoding, bad-block handling, data/ROM-D/BBT, and how logical offsets map to physical media.
-3. Obtain exact matching Zyxel source or another independent stock-image specimen/format reference. The one stock sample can validate parsing/CRC values but not updater acceptance.
-4. Rebuild using the verified vendor container recipe only after those semantics are understood; otherwise stop at offline research.
+`bcm63xx_flash.c`/`board.c` implement the web-update flash path:
 
-No new web-flash candidate was generated. Flash readiness remains `NOT-FLASHABLE`; no upload should be attempted.
+- **Container accepted by the updater** = `[128 KiB tag block][JFFS2 filesystem][optional ROM-D trailer]`. The web upload is consumed as logical bytes; ECC/OOB is added by the NAND controller on MTD writes. The earlier raw page/OOB "candidate" label was a hypothesis and is superseded by source-level reading.
+- If the first two bytes are JFFS2 magic `0x1985`, the image is filesystem-only (`ofs=0`); otherwise the first block is treated as the CFE/boot block, the updater injects current NVRAM data at `NVRAM_DATA_OFFSET`, and it skips `ofs=128 KiB` (NAND128) or `16 KiB` (NAND16) when scanning for the `cferam.000` sequence number.
+- A 20-byte `WFI_TAG` (crc/version/chipId/flashType/reserved) is read from the image end; version `0x5732`, flash type `3` = NAND128. An all-zero WFI tag fails the `(version & 0xff00) == 0x5700` guard and is tolerated. The stock payload-end WFI area is all zero.
+- Filesystem is flashed to MTD `rootfs_update` (fallback `rootfs`) starting at erase block 8 (1 MiB), with `cferam.000` placed in the leading blocks.
+- `FILE_TAG` (`bcmTag.h`, MitraStar/Zyxel variant) matches the observed stock tag: MSTC identity, external/internal version, `imageNext` ROM-D flag, and a CRC over the tag checked in `board.c` before flashing.
+
+## Consequences and remaining blockers to Web Update
+
+A web-update-shaped image is constructible offline: 128 KiB MSTC tag block (valid tag CRC) + JFFS2 containing `cferam.000` (182,060 B, extracted from stock) + kernel + rootfs. OpenWrt already ships matching pieces: `imagetag` (custom signature/board id), `mkfs.jffs2`, and the `cfe-wfi-tag` recipe. Still unproven before generating one:
+
+1. Exact `FILE_TAG` `tagValidationToken` CRC scope in the updater's pre-flash check (board.c ~line 2187).
+2. Whether the ROM-D trailer (`IMAGE_TAG` + LZW blob) is mandatory or optional.
+3. Runtime NAND writer/bad-block behavior: cferam sequence rewrite and `rootfs_update` MTD availability inside the stock kernel.
+
+No candidate image was generated. Flash readiness remains `NOT-FLASHABLE`; no upload should be attempted.
