@@ -39,6 +39,7 @@ The physical NAND has 128 MiB capacity, 2 KiB page, 64-byte OOB, and 128 KiB era
 - Stock tag declares payload length 23,724,032 = 11,233 full page+OOB records plus 1,664 bytes; it is divisible by 128 KiB eraseblocks.
 - The 545-byte file remainder consists of a 256-byte trailer header plus 289 bytes, so the file length is consistent with an appended trailer around an eraseblock-aligned tagged payload; it does not establish whether all payload records are physically raw NAND pages or whether a downloader strips/rewrites portions.
 - The stock image payload starts with `19 85 e0 ...` record-like bytes, not a normal kernel magic; this resembles page/OOB encoding but is not decoded or proven.
+- JFFS2 signatures confirm the payload contains a JFFS2 filesystem with CFE boot artifacts: `cferam.000`, kernel blob (`vmlinux.lz`-like), `busybox`, shared libraries, web UI assets, and a `CFE1CFE1` boot chain near the start of the filesystem region. Name offsets are approximate (±1-2 bytes) because this Broadcom/CFE JFFS2 variant does not follow the stock Linux `jffs2_raw_dirent` layout exactly; the filesystem was not fully decoded. The `cferam.000` + kernel + rootfs JFFS2 structure is what CFE expects, so rebuilding a flashable container would require, at least: an exact decoder for this JFFS2 variant, correct NAND ECC/OOB/bad-block writer mapping, and the updater's validation rules (including any signature/version policy) — none of which are established.
 
 ## Offline integrity checks
 
