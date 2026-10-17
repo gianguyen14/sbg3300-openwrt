@@ -45,10 +45,15 @@ ethernet:
   stock_devices: [bcm_enet, eth3, eth4]
   stock_wan_path: ppp2.1 -> eth4.1 -> eth4
   b53_spi_bcm53125_upstream: true
-  switch_silicon_on_device: UNKNOWN
-  dsa_cpu_port: UNKNOWN
+  public_same_board_id_switch_silicon: BCM53125
+  exact_boardparms: C3_PORTMAP_0x58_HSSPI_SSB0_MAP_0x1e
+  hsspi_software_path: BUS1_CS0_MODE3_781KHZ
+  external_cpu_port: 8
+  soc_port6_to_external_port8: SUPPORTED_HIGH_CONFIDENCE
+  boot_vlan1: EXT_PORTS_1_TO_4_UNTAGGED_PVID1_PORT8_TAGGED
+  dsa_tag_compatibility: UNRESOLVED_STOCK_TYPE2_VS_UPSTREAM_BRCM
   physical_jack_mapping: UNKNOWN
-  topology: PARTIAL
+  topology: PARTIAL_DISABLED
   runtime: NOT_TESTED
 
 dsl:
@@ -85,7 +90,7 @@ flash:
 
 needs_device:
   - OpenWrt boot and memory validation
-  - Ethernet link, switch ID, DSA CPU port, and jack mapping
+  - OpenWrt Ethernet/DSA runtime, RGMII timing/reset validation, and jack mapping
   - USB runtime
   - Wi-Fi discovery, calibration, association, and regulatory behavior
   - DSL/XTM initialization and sync
@@ -96,7 +101,7 @@ needs_device:
 
 next_offline:
   - Continue incremental bcmxtmrt compatibility probes against Linux 6.18
-  - Reconstruct exact 963168MXH_17A Ethernet topology
+  - Resolve stock type-2 versus Linux DSA tag semantics and MAC provisioning
   - Find and compare exact image-writer source lineage
   - Search for adsldd and bcmxtmcfg implementation sources
   - Investigate Wi-Fi host-bus discovery

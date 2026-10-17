@@ -121,7 +121,8 @@ authorized_stock_readonly_observation:
   router_modified: false
   dsl_status: IDLE
   sar_fap_ownership_transition: UNRESOLVED
-  switch_silicon_topology: UNRESOLVED
+  switch_silicon: BCM53125_VERIFIED_BY_PUBLIC_BOOTLOG_FOR_BOARD_ID_963168MXH_17A
+  switch_topology: PARTIAL_CPU_PORT_TIMING_VLAN_AND_JACK_MAPPING_UNRESOLVED
   nand_ecc_step_strength_attributes: UNAVAILABLE
   private_raw_logs_in_git: false
   xtm_tx_busy_ownership_fix: IMPLEMENTED_AND_COMPILED
@@ -153,3 +154,127 @@ authorized_stock_readonly_observation:
   stale_dts_negative_fixture: REJECTED_BEFORE_BUILD
   full_dtc_schema_diagnostics: 0
   updated_dtb_sha256: 3be99ff1c7e4962384cd292adfd408cace5439625c381026619f60946a99751d
+ethernet_switch_topology_research:
+  date: '2026-10-10'
+  report: reports/ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md
+  public_bootlog_board_id: 963168MXH_17A
+  public_bootlog_external_switch: BCM53125
+  exact_family_mirror_revision: e2f23ddbb20bf75689372b6e6a5a0dc613f6e313
+  boardparms_groups: [MMAP_0x58, HS_SPI_SSB0_0x1e]
+  boardparms_active_branch: C3_SUPPORTED_BY_STOCK_BITMAPS
+  soc_ports: {port3: PHY_ID_4, port4: TMII_DIRECT_ID_0x14, port6: RGMII_DIRECT_EXTSW}
+  hsspi_selected_path: {bus: 1, chip_select: 0, mode: 3, frequency_hz: 781000}
+  hsspi_ss5_overlay: PINMUX_REQUESTED_PURPOSE_UNKNOWN_NOT_SWITCH_SELECTION
+  external_ports: [1, 2, 3, 4]
+  external_cpu_port: 8
+  port6_to_external_port8: SUPPORTED_HIGH_CONFIDENCE_NOT_RUNTIME_VERIFIED
+  boot_vlan1: {ports_1_to_4: UNTAGGED_PVID_1, port8: TAGGED}
+  dsa_tag_compatibility: TX_FIELDS_MATCH_RX_NORMALIZATION_AND_DSA_CASCADE_UNRESOLVED
+  rgmii_timing_reset: UNRESOLVED
+  wan_lan_and_vlan_mapping: PARTIAL_LAN1_ETH0_LAN2_ETH1_LAN4_ETH3_VERIFIED_LAN3_WAN_UNKNOWN
+  product_documentation_ethwan_connector: VERIFIED
+  physical_jack_to_chip_port_mapping: UNRESOLVED
+  topology_enabled: false
+  offline_candidate_dtb_sha256: d3e7522c76ace2a0fb567c3f0fc6178b45648b171db655d4f9faa7f74f10ec91
+  new_tests: [disabled_bcm53125_candidate_contract, reject_activation_duplicate_mdio_and_guessed_links]
+  python_unit_tests: 22
+  full_dtc_schema_diagnostics: 0
+  runtime_validation: NOT_TESTED
+enetsw_rx_napi_milestone:
+  report: reports/ETHERNET-RX-NAPI-VALIDATION.md
+  openwrt_patch_count: 10
+  reviewed_openwrt_tree: 634453e43a523ce799428fd21ef5e24a78288144
+  strict_compiler_modpost_exits: [0, 0]
+  artifact_sha256: ac3576cf5969135fc7bc2b998fac7ec64dd1ca29c5052b7a5f3353a4de591918
+  artifact_bytes: 113932
+  module_vermagic: 6.18.54 SMP mod_unload BMIPS 32BIT
+  module_imports: 85
+  missing_imports: 0
+  complete_module_bytes_reproducible: true
+  actual_callbacks_native_sanitizer_mips: PASS_CPU_ONLY
+  pre_fix_test_exit: 134
+  final_firmware_build_started: false
+  runtime: NOT_TESTED
+non_dsl_boot_peripheral_validation:
+  report: reports/BOOT-NAND-PERIPHERAL-VALIDATION.md
+  python_tests: 29
+  full_dtc_schema_diagnostics: 0
+  legacy_initramfs_strict_loader_exit: 1
+  legacy_initramfs_unchanged: true
+  gpio_radio_unverified_activation_guard: ENABLED
+  nand_legacy_code15: SUPPORTED_HAMMING_NOT_RUNTIME_VERIFIED
+  integrated_kernel_compiler_modpost_exit: 0
+  integrated_kernel_sha256: ddfcb7681c002a505eb5ebcd553c61c5c666b9b4d8b36a02f6a4c64be745b8fc
+  integrated_kernel_module_count: 77
+  integrated_kernel_missing_imports: 0
+  peripheral_compiled_object_count: 8
+  original_build_artifacts_preserved: true
+  final_firmware_build_started: false
+non_dsl_additional_source_tests:
+  boot_synthetic_real_compiler_qemu_exit: 0
+  boot_binary_wrapper_strict_rejection_exit: 1
+  boot_fixture_contains_kernel_or_firmware: false
+  hamming_oob_legacy_source_layout_match: CONDITIONAL_2048_64_512_STRENGTH1
+  oob_actual_callbacks_native_sanitizer_mips: PASS_CPU_ONLY
+  oob_ecc_bytes: 12
+  oob_free_bytes: 50
+  nand_enabled: false
+  physical_flash_encoding: NOT_TESTED
+  onboard_wifi_binding: BLOCKED_HOST_AND_CALIBRATION
+  ap_user_space_package_compile_exit: 0
+  ap_user_space_package_sha256: 221e5dfe32b0a5607596d4ccb9b18bf67effcfa0f7847cbcb1b9a1b4a62d598c
+  ap_user_space_program_sha256: bdb61892f04746adb9f75140a36fee54ebd07c6bbe9c993aa9af9fe97f6ced5d
+  hostapd_qemu_version_exit: 1_EXPECTED_BY_PROGRAM
+  supplicant_qemu_version_exit: 0
+  wifi_association_runtime: NOT_TESTED
+
+enetsw_rx_source_port_correction:
+  first_mask_artifact: SUPERSEDED_REJECTED_BY_NEW_SOURCE_PORT_TEST
+  first_mask_sha256: 091acf5f6c90fc6f2bebe202343fc295817a4a95b93795e1562efafa396da7d0
+  new_regression_pre_fix_exit: 134
+  source_port_vectors: 16
+  strict_reproduced_sha256: ac3576cf5969135fc7bc2b998fac7ec64dd1ca29c5052b7a5f3353a4de591918
+  missing_imports: 0
+  tested_native_sanitizer_mips: PASS_CPU_ONLY
+  firmware_module_loading: NEVER_PERFORMED
+
+non_dsl_final_offline_validation_2026_10_11:
+  source_branch: feat/sbg3300-nondsl-ethernet-wifi
+  source_commit_before_report_update: 670f80e9e0a3a9de718088c1160ab9cca491feb6
+  openwrt_base: 5edcc1c43cb97048b506168fbbe00538956796d6
+  kernel: 6.18.54
+  corrected_rx_source_port_mask: true
+  obsolete_generic_mask_artifact: SUPERSEDED_AND_PRESERVED
+  strict_external_enetsw:
+    exits: [0, 0]
+    warnings: 0
+    bytes: 113932
+    sha256: ac3576cf5969135fc7bc2b998fac7ec64dd1ca29c5052b7a5f3353a4de591918
+    imports: 85
+    missing_imports: 0
+    vermagic: 6.18.54 SMP mod_unload BMIPS 32BIT
+  expanded_kernel:
+    compiler_modpost_exit: 0
+    vmlinux_sha256: ddfcb7681c002a505eb5ebcd553c61c5c666b9b4d8b36a02f6a4c64be745b8fc
+    modules_audited: 77
+    missing_imports: 0
+    warning_matches: 76
+  native_openwrt_kernel:
+    compiler_exit: 0
+    vmlinux_sha256: 85496d07dafa31f27c2b52e3ab9e7db7206c0a9b9c56c37fbfe06ce9fcdc17e7
+    modules_audited: 49
+    missing_imports: 0
+    enetsw_builtin: true
+    b53_spi_builtin: true
+    initramfs_source_empty: true
+    warning_matches: 49
+  selected_package_compile_exit: 0
+  selected_apk_count: 96
+  package_log_warning_error_matches: 0
+  artifact_manifests_regenerated: true
+  python_unit_tests_last_pre_report: 30
+  final_firmware_image_build: NOT_STARTED
+  device_configuration_changed: false
+  device_cable_activity_this_milestone: NONE
+  readiness: BLOCKED_EXTERNAL_HARDWARE_EVIDENCE
+  report: reports/PRE-FINAL-ENGINEERING.md

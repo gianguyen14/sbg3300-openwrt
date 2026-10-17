@@ -1,5 +1,21 @@
 ## Canonical OpenWrt and XTM status
 
+## Current non-DSL milestone
+
+Current priority is Ethernet WAN/LAN and switch feasibility, followed by Wi-Fi,
+NAND/boot preparation, USB and peripherals. **DSL is deferred and is not part
+of this milestone.** Existing XTM/PTM code, tests, reports and build artifacts
+are preserved; its hardware remains inactive. No SAR/FAP, DSL PHY, adsldd,
+bcmxtmcfg or XTM platform integration work is being advanced here.
+
+The latest reviewed driver-source commit is
+`670f80e9e0a3a9de718088c1160ab9cca491feb6`; this commit includes the corrected
+RX source-port mask. The current follow-up commit updates reports and artifact
+inventories. The separate working branch for this milestone is
+`feat/sbg3300-nondsl-ethernet-wifi`. New read-only stock observations and the
+current non-DSL completion boundary are recorded in
+`reports/NON-DSL-PRIORITY-2026-10-10.md`.
+
 Pinned OpenWrt commit: `5edcc1c43cb97048b506168fbbe00538956796d6`; Linux 6.18.54; target `bmips/bcm63268`. Target compilation exited 0 in the durable build root. The build and `vmlinux` hashes are recorded in `reports/LOCAL-HANDOFF-STATE.yaml`. Build outputs are not committed.
 
 The inherited XTM external probe is diagnostic, uses probe-only compatibility code, and fails modpost with 19 imports (15 packet-DMA, 3 legacy IRQ, 1 platform MAC allocator); see `reports/XTM-UNRESOLVED-CANONICAL-6.18.54.tsv`. That legacy module remains unlinked. The new, original descriptor/ring and Linux DMA component in `drivers/xtm/` builds as `sbg3300_xtm_dma.ko` against the preserved pinned kernel with no probe shims and no missing kernel imports. It is a ring support component without platform/netdev/DSL integration or hardware validation; see `reports/XTM-DMA-RUNTIME-BUILD.md` and `reports/XTM-BCM63168-CONTRACTS.tsv`. The separate stock `adsldd.ko` (82) and `bcmxtmcfg.ko` (31) inventories are unchanged.
@@ -30,8 +46,9 @@ not runtime evidence.
 | Fixed partitions / UBI / sysupgrade | NOT-APPROVED | Boot-critical map and writer semantics incomplete | No | Yes, after offline proof |
 | Factory image / stock wrapper | NOT-CREATED | No exact compatible container or validated handoff | No | Yes, review and later device validation |
 | Ethernet MAC driver | PARTIAL | Upstream bmips support exists; stock board evidence shows `bcm_enet`, `eth3`, `eth4` | Stock only | Yes |
-| BCM53125 driver | UPSTREAM-AVAILABLE | Upstream `b53_spi` has `brcm,bcm53125`; similar board use is only a reference | No | No for source research; yes for silicon/topology/runtime |
-| Switch silicon/topology | UNPROVEN | HS-SPI path and boardparms groups are known; exact switch ID, CPU port, timings, and jack mapping are not | No | Yes |
+| BCM53125 driver | UPSTREAM-AVAILABLE | Public SBG3300 bootlog for board ID `963168MXH_17A` reports external switch ID 53125; pinned `b53_spi` has the compatible. Compile coverage exists; no SBG runtime bind | No | Yes for runtime |
+| Switch silicon | PASS | Public bootlog reports BCM53125 and the same board ID as live stock SSH; boot also reports two MDK switch units and maps their port bitmaps to the two exact-family boardparms groups | Stock only | No for identity; yes for Linux runtime |
+| Switch topology / WAN-LAN | PARTIAL / DISABLED | Same-board-ID bootlog verifies BCM53125 and VLAN-1 port group; exact-family source selects HSSPI bus 1/CS0, mode 3/781 kHz and SoC port 6 RGMII; boot VLAN plus Linux BCM53125 profile strongly supports external port 8 as cascade/IMP. Owner-assisted stock A/B/A verifies LAN 1↔`eth0`, LAN 2↔`eth1`, and LAN 4↔`eth3`; stock logical indices 4 and 1 conditionally support external ports 4 and 1 for LAN 1 and LAN 4. LAN 2 index, LAN 3/WAN mappings, exact PHY wiring, RGMII timing, tag compatibility and Linux 6.18 runtime remain unresolved | Stock only | Yes |
 | USB | PARTIAL | Stock PCI functions `14e4:6300`; EHCI/OHCI observed | Stock only | Yes for OpenWrt USB runtime |
 | Wi-Fi identity | PASS | PCI `14e4:435f`, subsystem `14e4:0513`, class `0x028000`; stock proprietary `wl` family | Stock only | No for identity |
 | Wi-Fi upstream binding | INVESTIGATING | b43 has a BCM6362/`0x435f` band-classification case, not proof of PCI discovery/binding; calibration location unresolved | No | Yes for radio validation |
@@ -61,14 +78,14 @@ not runtime evidence.
 
 ## Next offline work
 
-1. Continue the XTM port as small compile-probe patches; do not wholesale
-   transplant old Linux headers or vendor-modified networking internals.
-2. Reconstruct exact `963168MXH_17A` Ethernet topology from source and safely
-   available board evidence; leave unsupported nodes disabled.
-3. Find and compare the exact Zyxel/Broadcom image-writer lineage with the
+1. Resolve the remaining `963168MXH_17A` switch CPU-port, HSSPI CS, RGMII,
+   VLAN, and physical WAN/LAN mappings; leave unsupported nodes disabled.
+2. Find and compare the exact Zyxel/Broadcom image-writer lineage with the
    live physical MTD evidence before defining partitions or images.
-4. Continue public source searches for `adsldd`/`bcmxtmcfg` and Wi-Fi bus glue.
-5. Add offline tests and refine build/reproduction scripts.
+3. Continue Wi-Fi host/calibration, USB, and peripheral integration work with
+   board-specific evidence only.
+4. Add offline tests and refine build/reproduction scripts. Preserve XTM/PTM
+   sources and artifacts while DSL remains deferred.
 
 Tasks requiring the actual device remain explicitly `NEEDS-DEVICE` in
 [HANDOFF-HERMES.md](HANDOFF-HERMES.md). Do not upgrade any status from build
@@ -107,6 +124,19 @@ bug. Two fresh strict external builds reproduce SHA256
 `f67b6da34dcc279ee832fbc4210463b8cc89ba2b184186309d324e70e47f80dd`;
 OpenWrt component APK rebuilt. Legacy probe still 19 unresolved imports.
 
+Ethernet topology research now cross-checks the exact boardparms C3 branch,
+same-board-ID stock bootlog, stock logical-port observations, and Linux 6.18.54
+B53/DSA sources. The SBG-specific switch fixture remains disabled; its CS0
+contract passes DTC and full schemas. Twenty-two native tests pass. See
+[reports/ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md](reports/ETHERNET-SWITCH-TOPOLOGY-RESEARCH.md).
+External port 8 is strongly supported as the SoC port-6 cascade endpoint.
+Owner-assisted stock A/B/A verifies LAN 1↔`eth0`, LAN 2↔`eth1`, and LAN 4↔
+`eth3`. Stock logical indices 4 and 1 conditionally support LAN 1→external
+port 4 and LAN 4→external port 1; neither decode proves PCB PHY wiring or
+running-binary equivalence. LAN 2's switch index, LAN 3/WAN mapping, exact PHY
+wiring, RGMII timing, type-2 tag compatibility and Linux 6.18 runtime remain
+unresolved. No new Ethernet kernel module was compiled in this milestone.
+
 Wi-Fi source cross-check identifies a synthetic on-chip PCI presentation in
 the exact-family source. BCMA SoC host compiles in isolated coverage; two fresh
 BCMA builds reproduce full bytes, but its calibration path remains unresolved
@@ -115,3 +145,58 @@ modules). Initial wrapper failure 127 and lost initial compiler log are explicit
 in the report; stable repeat exit 0 is recorded separately. Python tests: 19.
 Standalone DTS now matches the conservative patched board; stale-source guard
 rejects the old version. Full DTC/schema checks pass with unchanged fixture DTB.
+
+Ethernet RX/NAPI corrections now reject malformed/error descriptors, honor
+TX-only zero-budget polling and NAPI completion, and preserve TX status before
+reuse. Actual extracted callbacks pass native/ASan/UBSan/MIPS tests. Two strict
+module builds reproduce SHA256
+`091acf5f6c90fc6f2bebe202343fc295817a4a95b93795e1562efafa396da7d0`, with 85
+imports and none missing. Ten OpenWrt patches apply to a fresh pinned tree.
+See [reports/ETHERNET-RX-NAPI-VALIDATION.md](reports/ETHERNET-RX-NAPI-VALIDATION.md).
+No board activation or OpenWrt runtime result is claimed.
+
+Boot/container validation now rejects board-ID prefix matches, unknown trailer
+formats, ELF physical overflow/alignment/loader overlaps and BSS-only entry
+points. DT validation rejects unverified enabled radio/GPIO consumers. All 29
+Python tests and full DTS schemas pass. Strict old-loader failure is preserved.
+The new integrated Linux kernel/modules build exits 0; 77 modules have real ABI
+and symbol audits. See
+[reports/BOOT-NAND-PERIPHERAL-VALIDATION.md](reports/BOOT-NAND-PERIPHERAL-VALIDATION.md).
+
+AP user space now has a genuine wpad-basic-openssl APK build (exit 0) and target
+MIPS PIE executable, with version-only QEMU execution. This does not resolve
+onboard discovery/calibration or prove association. Synthetic ELF compiler/QEMU
+fixtures reproduce the outer-wrapper metadata loss; real Hamming OOB callbacks
+match the independent legacy geometry table natively/with sanitizers/in MIPS.
+No boot or NAND device operation occurred. Further source trace distinguishes
+SPI physical-port PHY pages from boardparms PHY address slots and records the
+netdev-name branch conflict. No new jack or PHY mapping is asserted.
+
+**Correction to the first RX hardening result:** its generic mask included
+TX-underflow bit 9, which is RX source-port metadata on BCM63168. That initial
+artifact is superseded. The final RX-specific mask passes all 16 source-port
+vectors plus the existing callback tests; two strict modules reproduce
+`ac3576cf5969135fc7bc2b998fac7ec64dd1ca29c5052b7a5f3353a4de591918`.
+Old failing source/test/artifacts are retained; no module was loaded. The
+updated topology report provides the exact-family evidence for the overlap.
+
+
+## Corrected Ethernet RX build and package inventory (2026-10-11)
+
+The RX source-port regression caught the first mask's incorrect inclusion of TX
+underflow bit 9. Patch 0010 now uses an RX-specific mask; all 16 source-port
+values pass the extracted callback tests. The first module is preserved as
+superseded, not treated as a runtime candidate. Corrected strict module builds
+reproduce `ac3576cf5969135fc7bc2b998fac7ec64dd1ca29c5052b7a5f3353a4de591918`
+with 85 imports and no missing imports. The corrected expanded kernel build
+exits 0 (77 modules, no missing imports); the native OpenWrt kernel build exits
+0 (49 loadable modules, no missing imports), and selected package compilation
+exits 0 (96 APKs). Exact output hashes and ABI details are in the artifact TSVs
+and `reports/PRE-FINAL-ENGINEERING.md`. These remain `BUILD-RESULT` only.
+
+The native profile has Ethernet and B53 SPI built into the kernel; no standalone
+modules were produced for those drivers. Kernel logs retain modpost warnings
+(76 in the expanded build log and 49 in the native profile log), with no errors.
+The final package log has zero warning/error matches. Full firmware image build
+was not started. Ethernet runtime, board DSA/RGMII, Wi-Fi calibration, flash
+layout, CFE acceptance and recovery are still unverified.

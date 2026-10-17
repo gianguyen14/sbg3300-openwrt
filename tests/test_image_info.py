@@ -24,17 +24,19 @@ def valid_fixture():
         data[off:off + size] = encoded.ljust(size, b"\0")
 
     put(0x00, 4, "6")
-    put(0x04, 4, "MSTC")
+    put(0x04, 10, "MSTC_3300")
     put(0x0E, 4, "4506")
     put(0x26, 6, "63268")
     put(0x2C, 18, "963168MXH_17A")
     put(0x3E, 10, len(payload))
+    data[0x04:0x18] = b"MSTC_3300\0".ljust(20, b"\0")
     put(0x48, 10, 0)
     put(0x54, 12, 0)
     put(0x5E, 12, 3217293312)
     put(0x6A, 12, len(payload))
     put(0x74, 12, 0)
-    put(0x80, 12, 0)
+    put(0x80, 10, 0)
+    put(0x8E, 32, "V1.01(AADY.9)")
     data[0xCE] = 1
     data[image_info.TAG_SIZE:image_info.TAG_SIZE + len(payload)] = payload
     trailer[:0x1C] = bytes(range(0x1C))
@@ -52,25 +54,53 @@ class ImageInfoTests(unittest.TestCase):
         result = image_info.parse_image(valid_fixture())
         self.assertTrue(result["structural_ok"])
         self.assertTrue(result["header_crc_ok"])
-        self.assertTrue(result["payload_crc1_ok"])
-        self.assertTrue(result["payload_crc2_ok"])
+        self.assertTrue(result["image_crc_ok"])
+        self.assertTrue(result["rootfs_crc_ok"])
         self.assertTrue(result["trailer"]["crc_ok"])
 
     def test_payload_corruption(self):
         data = valid_fixture()
         data[image_info.TAG_SIZE] ^= 1
         result = image_info.parse_image(data)
-        self.assertFalse(result["payload_crc1_ok"])
+        self.assertFalse(result["image_crc_ok"])
+        self.assertFalse(result["rootfs_crc_ok"])
 
     def test_header_corruption(self):
         data = valid_fixture()
         data[0x2C] ^= 1
-        result = image_info.parse_image(data)
-        self.assertFalse(result["header_crc_ok"])
-        self.assertFalse(result["structural_ok"])
+        struct.pack_into(">I", data, 0xEC, image_info.raw_crc32(data[:0xEC]))
+        with self.assertRaisesRegex(image_info.ImageError, "different chip or board"):
+            image_info.parse_image(data)
+
 
     def test_truncated_payload_rejected(self):
         data = valid_fixture()[:image_info.TAG_SIZE + 3]
+        with self.assertRaises(image_info.ImageError):
+            image_info.parse_image(data)
+
+    def test_board_prefix_is_not_exact_board_identity(self):
+        data = valid_fixture()
+        data[0x2C:0x2C + 18] = b"963168MXH_17AX".ljust(18, b"\0")
+        struct.pack_into(">I", data, 0xEC, image_info.raw_crc32(data[:0xEC]))
+        with self.assertRaisesRegex(image_info.ImageError, "different chip or board"):
+            image_info.parse_image(data)
+
+    def test_declared_payload_larger_than_file_is_rejected(self):
+        data = valid_fixture()
+        data[0x3E:0x48] = b"9999999999"
+        with self.assertRaisesRegex(image_info.ImageError, "exceeds file size"):
+            image_info.parse_image(data)
+
+    def test_mstc_3300_identity_is_parsed_exactly(self):
+        result = image_info.parse_image(valid_fixture())
+        self.assertEqual(result["tag"]["tag_identity"], "MSTC_3300")
+        self.assertEqual(result["tag"]["chip_id"], "63268")
+        self.assertEqual(result["tag"]["board_id"], "963168MXH_17A")
+
+    def test_unknown_trailer_flag_is_rejected(self):
+        data = valid_fixture()
+        data[0xCE] = 2
+        struct.pack_into(">I", data, 0xEC, image_info.raw_crc32(data[:0xEC]))
         with self.assertRaises(image_info.ImageError):
             image_info.parse_image(data)
 
