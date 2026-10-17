@@ -157,7 +157,7 @@ def main():
         print("ERROR: " + str(exc), file=sys.stderr)
         return 2
 
-    print("Interpretation: STOCK-NAND-RAW / PAGE-OOB ENCODED (candidate from bytes-per-page pattern)")
+    print("Interpretation: stock MSTC container; NAND/OOB encoding not inferred")
     print("File size: %d bytes" % result["file_size"])
     for name in ("tag_identity", "model_id", "chip_id", "board_id", "firmware_version"):
         print("%s: %s" % (name, result["tag"][name]))
