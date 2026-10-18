@@ -56,7 +56,37 @@ maps byte-for-byte to that partition: the stock file has tag block and 21,601 B
 trailer, and writer can inject NVRAM and account for bad blocks/slots. Do not
 pad/relabel OpenWrt outputs to force this length.
 
-## Missing boot requirements
+## New blocker found: OpenWrt's BCM63xx imagetag parser refuses NAND
+
+The SBG3300 DTS currently assigns `compatible = "brcm,bcm963xx-imagetag"` to
+its `firmware` fixed partition (`target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts:124-128`). But the matching generic parser
+`target/linux/generic/files/drivers/mtd/mtdsplit/mtdsplit_bcm63xx.c:146-164`
+starts with:
+
+```c
+if (mtd_type_is_nand(master))
+    return -EINVAL;
+```
+
+So it never parses a Broadcom imagetag on this NAND device, regardless of
+whether the compatible string is set. The OpenWrt kernel config also has
+`CONFIG_MTD_SPLIT_FIRMWARE` unset, and this parser creates only kernel/rootfs
+partitions from standard CFE addresses; it does not implement the ZyXEL
+MSTC NAND `rootfs_update`/tag-block path. Thus the present DTS/profile does
+not establish an OpenWrt rootfs split or mount path for this board. Turning on
+the generic split config alone will not help: the parser explicitly rejects
+NAND.
+
+A next development gate is a dedicated read-only design/audit for rootfs
+selection on NAND: either a custom parser for the actual SBG3300 NAND layout,
+or a DTS/rootfs arrangement matching what the CFE/vendor kernel really exposes.
+Do not patch a partition label by guess; establish tag-block offset, JFFS2 vs
+SquashFS filesystem, `root=`/root-device selection and exact partition bounds
+from the actual stock writer and kernel first. The current stock update path
+places the tag at `rootfsAddr - TAG_BLOCK_LEN` and flashes the combined image
+through `kerSysBcmImageSet`; that is not equivalent to the generic parser's
+256-byte header splitting. No partition-layout patch or candidate image has
+been created.
 
 - Complete JFFS2 payload in the exact stock writer layout, with verified boot
   files and correct kernel/root arrangement.
@@ -65,9 +95,14 @@ pad/relabel OpenWrt outputs to force this length.
   any CFE modification.
 - Compatibility of OpenWrt kernel/rootfs with this SBG3300 CFE/flash path,
   including partition writes, tag sequence, slot selection and kernel entry.
-- Safe offline candidate validation that does not submit the candidate to a
-  writer. Static tag/CRC checks cannot establish bootability or write safety.
-
+The stock kernel's rootfs contract is still unresolved: stock exposes a partition named
+`rootfs`; the current OpenWrt DTS declares a `firmware` partition, which neither
+splits nor configures a root device. The standard parser configured by that
+`compatible` rejects NAND. A dedicated rootfs strategy (fix the NAND partition
+model/parser or prove CFE boots the kernel with an embedded initramfs) is a
+separate blocker before any image packaging. The CFE loader support is not a
+licence to modify CFE; any proposed route must remain read-only and fully
+verified before consideration.
 ## Disposition
 
 Stock `.bin`: static-code-compatible by analysis; observed web acceptance
