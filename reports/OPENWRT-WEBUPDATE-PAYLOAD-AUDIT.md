@@ -159,7 +159,7 @@ This reconciles the arithmetic **within the family source model**: downloaded st
 
 
 
-The inspected stock source does not yet reconcile to the live partition map. For the downloaded stock tag, `rootfsAddress` at tag offset `0x5e` is decimal `3217293312` = `0xbfc40000`; with the family header's `IMAGE_BASE=0xbfc00000`, `FLASH_BASE=0xb8000000` and `BOOT_OFFSET=FLASH_BASE-IMAGE_BASE`, the `bcm63xx-nand.c:215` expression `rootfsAddress + BOOT_OFFSET - FLASH_BASE` evaluates to `0x00040000`. The live kernel reports `rootfs` at `0x04020000`. Difference is exactly `0x04000000` (64 MiB). So this tag specimen plus this family-source formula is not enough to claim the source predicts the live active slot; possible active-slot/tag adjustment, compile-time address mapping, bad-block handling, or source/build mismatch remains unresolved. This directly rules out relying on the earlier tentative assumption that the 2018 running MTD start follows from the tag. Do not patch DTS based on either value until the active tag/partition formula from the exact running build is recovered.
+The slot-1 tag address by itself maps to `0x00040000`; it does not identify the live partition. The family updater's inactive-slot path above explains how a live slot-2 tag can be relocated to produce the observed `0x04020000`. The exact production 2018 kernel/userspace build, active tag and bad-block-adjusted offset are still unverified; retain the slot explanation as a source-backed hypothesis, not a hardware conclusion.
 
 ## Next experiment (offline only)
 

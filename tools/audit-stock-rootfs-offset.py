@@ -33,7 +33,9 @@ def audit_stock(path: Path) -> dict:
     root_addr = dec_field(data, 0x5e, 12, "rootfsAddress")
     root_len = dec_field(data, 0x6a, 10, "rootfsLen")
     total_len = dec_field(data, 0x3e, 10, "totalImageLen")
-    vendor_offset = (root_addr + BOOT_OFFSET - FLASH_BASE) & ADDRESS_MASK
+    slot1_offset = (root_addr + BOOT_OFFSET - FLASH_BASE) & ADDRESS_MASK
+    slot2_rootfs_address = (IMAGE_BASE + (0x08000000 // 2) + TAG_BLOCK) & ADDRESS_MASK
+    slot2_offset = (slot2_rootfs_address + BOOT_OFFSET - FLASH_BASE) & ADDRESS_MASK
     return {
         "file": str(path),
         "size": len(data),
@@ -45,9 +47,12 @@ def audit_stock(path: Path) -> dict:
         "file_payload_end": f"0x{0x20000 + total_len:x}",
         "vendor_flash_base": f"0x{FLASH_BASE:08x}",
         "vendor_boot_offset": f"0x{BOOT_OFFSET & 0xffffffff:08x}",
-        "vendor_parser_formula_offset": f"0x{vendor_offset:x}",
+        "slot1_vendor_formula_offset": f"0x{slot1_offset:x}",
+        "slot2_tag_rootfs_address_from_family_inactive_slot_rule": f"0x{slot2_rootfs_address:08x}",
+        "slot2_vendor_formula_offset": f"0x{slot2_offset:x}",
         "live_rootfs_offset_from_sanitized_dmesg": f"0x{LIVE_ROOTFS_OFFSET:x}",
-        "offset_delta_vendor_minus_live": f"0x{vendor_offset - LIVE_ROOTFS_OFFSET:x}",
+        "slot1_offset_delta_from_live": f"0x{slot1_offset - LIVE_ROOTFS_OFFSET:x}",
+        "slot2_offset_delta_from_live": f"0x{slot2_offset - LIVE_ROOTFS_OFFSET:x}",
         "source_equivalence": "NOT_PROVEN: family BSP mirror is not verified as the exact 2018 running kernel source/build",
         "interpretation": "stock image tag address translates to slot 1; family updater's inactive-slot formula maps slot 2 to live MTD start, consistent with but not proof of active slot 2",
     }

@@ -10,7 +10,9 @@ The stock image tag is a slot-1 template, not proof of the live active slot. In 
 
 1. Resolve the stock parser mapping first: exact NAND partition parser and the
    relationship between tag-block offset, BOOT_OFFSET, and live /proc/mtd.
-   Do not rename the OpenWrt fixed partition until this is established.
+   Family source plus arithmetic suggest the inactive-slot formula can match the
+   live rootfs start, but exact 2018 active-tag/build equivalence remains
+   unverified; do not rename the OpenWrt fixed partition or wrap an image yet.
 2. Trace OpenWrt's fixed-partition creation and ROOT_DEV selection in source;
    if evidence suffices, propose a minimal DTS-only patch (no image generation)
    and offline DTB/partition test.
@@ -25,17 +27,16 @@ The stock image tag is a slot-1 template, not proof of the live active slot. In 
    constraints.
 
 
-The initramfs ELF is self-contained at the Linux initramfs layer, but whether this exact CFE can load that ELF and the required memory/entry contract remain unverified; it is not a confirmed safe boot path.
+The initramfs ELF embeds a CPIO root; static parsing confirms `/init`, `/sbin/init`, BusyBox, preinit, and procd. This can avoid flash-root selection after the kernel starts, but CFE acceptance/load address, entry, DTB handoff and memory layout remain unverified. Do not call it a RAM boot path until exact-board CFE behavior is established.
 
-- Stock tag/parser math is still unresolved: `rootfsAddress=0xbfc40000` maps to
-  MTD offset `0x00040000` under the family source formula, unlike live rootfs
-  offset `0x04020000`. The exact 2018 active-tag/partition parser is required;
-  no guessed DTS rename or offset.
-- The built initramfs is a self-contained newc archive with expected init files
-  (static test `tools/audit-initramfs.py`, 2 focused tests pass). This is not CFE
-  load evidence or a hardware boot.
-- The full test suite is NOT passing: unfinished `test_nand_slot_math.py` imports
-  missing `tools/sbg3300-slot-map.py`. Do not report 32+ tests as green.
+- Stock tag/parser relationship: slot 1 template maps to `0x40000`; family BSP
+  inactive-slot write formula maps slot 2 to live MTD `0x4020000`. This is
+  arithmetic/source corroboration only; exact 2018 build and live booted tag
+  are not confirmed. No guessed DTS change.
+- `tools/audit-stock-rootfs-offset.py` reproduces both translations from exact
+  stock tag and family constants. Its test asserts the arithmetic, not router
+  state.
+- Full test suite: 37/37 pass; `git diff --check` clean at last verification.
 - No wrapper/candidate was created. Maintain `NOT-FLASHABLE`.
 
 
