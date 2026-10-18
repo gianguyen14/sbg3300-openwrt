@@ -6,39 +6,26 @@ containers and do not form a complete boot payload. No MSTC wrapper has been
 created; this is deliberate, because a valid tag could pass the router's
 validator and authorize destructive writes.
 
-Rootfs selection is still a blocker: stock uses a partition named `rootfs`; the current OpenWrt DTS declares `firmware`, while the configured generic imagetag parser rejects NAND and does not establish a root device. Do not wrap the OpenWrt outputs until a safe rootfs strategy is proven (custom NAND split/mount path or verified CFE loading of the initramfs). Do not modify CFE.
+Rootfs selection is not yet fixed; the interim recommendation to rename the DTS partition to `rootfs` is withdrawn pending the stock partition parser/offset proof. The standard imagetag splitter still rejects NAND, and the CFE RAM boot path is only plausible from the ELF format, not proven. See `OPENWRT-WEBUPDATE-PAYLOAD-AUDIT.md`. Next work: identify the exact stock 2018 NAND MTD partition/root mount parser, resolve `TAG_BLOCK_LEN` and `BOOT_OFFSET` relative to `/proc/mtd`, then decide a non-writing DTS/rootfs strategy. No wrapper, DTS change, or image candidate has been created; keep `NOT-FLASHABLE`.
 
-Build a complete *offline-only* candidate root filesystem and prove it fits the
-stock partition/layout before touching the image container. Start with the
-existing OpenWrt squashfs root, not the sysupgrade tar as a whole. Determine
-whether the SBG3300 CFE/vendor kernel can directly mount that filesystem:
+1. Resolve the stock parser mapping first: exact NAND partition parser and the
+   relationship between tag-block offset, BOOT_OFFSET, and live /proc/mtd.
+   Do not rename the OpenWrt fixed partition until this is established.
+2. Trace OpenWrt's fixed-partition creation and ROOT_DEV selection in source;
+   if evidence suffices, propose a minimal DTS-only patch (no image generation)
+   and offline DTB/partition test.
+3. Confirm the filesystem type expected by the stock kernel and whether a
+   custom NAND rootfs split/mount path is appropriate. Separately verify the
+   OpenWrt root contents/init system against that mount path.
+4. Determine from reliable exact-board CFE docs/source whether the initramfs
+   ELF can be loaded into RAM; do not suggest UART or unverified TFTP/HTTP
+   recovery.
+5. Only after these facts pass, calculate the flash budget and plan payload
+   packaging. Never create a valid MSTC wrapper or upload/flash under current
+   constraints.
 
-1. Read the exact stock kernel command line/mount path and MTD partition map
-   from prior sanitized evidence, vendor source, and stock init files. Current
-   evidence: stock `/etc/fstab` only mounts `/data` as JFFS2; kernel chooses
-   root filesystem from image/tag/kernel arguments. Do not infer that SquashFS
-   in OpenWrt is mountable merely because the kernel has SquashFS enabled.
-2. Check OpenWrt target kernel config: JFFS2 and SquashFS are enabled, but
-   `CONFIG_MTD_SPLIT_FIRMWARE` is disabled. Verify exact MTD/rootfs detection
-   and `/dev/root`/root= behavior against its DTS and target patches.
-3. Compare OpenWrt rootfs contents/init system with stock boot requirements.
-   Stock init is BusyBox `/sbin/init` and `/etc/init.d/rcS`; OpenWrt uses
-   procd/preinit. Check the kernel's actual initramfs ELF root and sysupgrade
-   `root` member offline. Keep dependencies/config out; do not transplant the
-   stock `/sbin/init`, libraries, web daemon, proprietary modules, or user data.
-4. Determine whether the stock updater's JFFS2 writer preserves erased-block
-   boundaries and how it loads the kernel: read-only vendor code + stock
-   extraction; verify `cferam.000`, `vmlinux.lz` naming, load/entry fields,
-   compression stream and sequence/slot handling. Do not modify or substitute
-   CFE content.
-5. Calculate an exact image budget from the confirmed stock writer and MTD
-   boundaries. Current coincidence: stock tag payload length and rootfs MTD
-   size are both 0x16a0000, while the stock container payload begins at file
-   offset 0x20000. This is not a mapping proof; do not pad to that size.
-6. Only after gates 1-5 pass, create an inert local rootfs/layout test with no
-   valid MSTC tag or valid CRC, then test the layout with parsers/unit tests.
-   Never make a Web-validator-valid image until the payload is proven bootable;
-   never upload/flash under current safety constraints.
+
+The initramfs ELF is self-contained at the Linux initramfs layer, but whether this exact CFE can load that ELF and the required memory/entry contract remain unverified; it is not a confirmed safe boot path.
 
 ## Current verified outputs
 

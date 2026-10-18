@@ -88,6 +88,11 @@ through `kerSysBcmImageSet`; that is not equivalent to the generic parser's
 256-byte header splitting. No partition-layout patch or candidate image has
 been created.
 
+- The old claim that simply renaming the DTS partition to `rootfs` would fix
+  selection is withdrawn. OpenWrt's auto-root hook does key off the name, but
+  the stock MTD offset/rootfs mapping and expected filesystem remain unknown;
+  that rename could select the wrong range or wrong data as `/`.
+
 - Complete JFFS2 payload in the exact stock writer layout, with verified boot
   files and correct kernel/root arrangement.
 - CFE-facing boot-file arrangement and correct CFE RAM component; finding
@@ -103,7 +108,62 @@ model/parser or prove CFE boots the kernel with an embedded initramfs) is a
 separate blocker before any image packaging. The CFE loader support is not a
 licence to modify CFE; any proposed route must remain read-only and fully
 verified before consideration.
-## Disposition
+## Rootfs selection: source-backed next gate (no DTS patch yet)
+
+OpenWrt 6.18's generic MTD splitter path is not the answer for this board:
+
+- SBG3300 DTS sets `compatible = "brcm,bcm963xx-imagetag"` on its NAND
+  `firmware` partition, `target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts:124-128`.
+- OpenWrt's MTD split support invokes the `firmware` parser only when that
+  partition has no `compatible`, `target/linux/generic/pending-6.18/400-mtd-mtdsplit-support.patch:208-212`.
+- Regardless, `target/linux/generic/files/drivers/mtd/mtdsplit/mtdsplit_bcm63xx.c:146-154`
+  explicitly returns `-EINVAL` for NAND. That parser is for BCM63xx NOR, not
+  SBG3300 NAND.
+- Linux kernel root selection consumes `root=` (`kernel/linux/init/do_mounts.c:147-153,385-395`); OpenWrt's special auto-root sets `ROOT_DEV` only for an
+  MTD partition named `rootfs` or marked `linux,rootfs`
+  (`target/linux/generic/hack-6.18/420-mtd-support-OpenWrt-s-MTD_ROOTFS_ROOT_DEV.patch:19-24`). The present DTS calls the partition `firmware` and has no
+  `linux,rootfs`; current config has `CONFIG_MTD_ROOTFS_ROOT_DEV=y` but this
+  name test will not select it.
+
+A DTS-only rename to `rootfs` might let OpenWrt's generic root-device hook
+select that MTD partition, but is **not yet a safe fix**: it doesn't split
+kernel/rootfs, prove the partition contents match the expected filesystem, or
+establish the correct physical region. Do not edit DTS until the stock
+kernel's MTD mapping and root mount contract are explained.
+
+## Stock update path offset evidence (family source only)
+
+The vendor BCM 4.12 source distinguishes the tag block from the logical
+filesystem address:
+
+- `board.c:2457` computes `rootfsOffset = rootfsAddr - IMAGE_BASE -
+  TAG_BLOCK_LEN`; `TAG_BLOCK_LEN` is 128 KiB on NAND (`bcmTag.h:47-51`).
+- `board.c:2567-2579` raises rootfs/kernel addresses to
+  `flash_rootfs_start_offset` if needed; then `2581-2582` applies `BOOT_OFFSET`.
+- `board.c:2707-2709` calls `kerSysBcmImageSet(rootfsAddr-TAG_BLOCK_LEN,
+  tagFs, newImgSize)`, writing the tagged logical image from one NAND tag block
+  before the declared rootfs address.
+- `bcm63xx_flash.c:277-279` initializes `flash_rootfs_start_offset` to
+  first sector size, with a floor at `FLASH_LENGTH_BOOT_ROM`; its exact value
+  for SBG3300's production config must be established before equating that
+  address with the live `mtd0 rootfs` partition start. The matching stock
+  **kernel MTD partition parser** is absent from the extracted stock-kernel evidence here.
+
+So the apparent equality between stock `rootfsLen=0x16a0000` and live rootfs MTD size `0x16a0000` is not enough: stock `flashFsKernelImage()` starts writing at `rootfsAddr - TAG_BLOCK_LEN` and `kerSysBcmImageSet()` receives `tagFs` including the tag (board.c:2707-2709). This still does not map to MTD-relative offset 0 without knowing the flash partition start, `BOOT_OFFSET`, and exact stock 2018 partition parser. Do not assume the DTS `firmware` partition should be renamed to `rootfs` or shifted one block before the production MTD parser is identified.
+
+### Next narrow experiment (offline only)
+
+1. Recover/identify the exact stock 2018 kernel partition parser / mount code
+   from the extracted files and available source references; establish whether
+   MTD partition offsets include/exclude the tag block.
+2. Trace OpenWrt's fixed-partition creation and `ROOT_DEV` selection with its
+   current DTS/config; if sufficient, propose a minimal DTS-only patch (no
+   image generation) and a unit test proving only the intended MTD rootfs is
+   selected. Build the DTB and inspect the resulting partition table offline.
+3. Separately confirm whether the intended filesystem is SquashFS or JFFS2 and
+   whether OpenWrt's rootfs can fit in the verified logical rootfs budget.
+4. Only after those facts pass should rootfs packaging be planned; never make a
+   valid MSTC wrapper, flash/upload, or claim bootability.
 
 Stock `.bin`: static-code-compatible by analysis; observed web acceptance
 `NOT-TESTED`.
