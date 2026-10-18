@@ -6,7 +6,7 @@ containers and do not form a complete boot payload. No MSTC wrapper has been
 created; this is deliberate, because a valid tag could pass the router's
 validator and authorize destructive writes.
 
-Rootfs selection is not yet fixed; the interim recommendation to rename the DTS partition to `rootfs` is withdrawn pending the stock partition parser/offset proof. The standard imagetag splitter still rejects NAND, and the CFE RAM boot path is only plausible from the ELF format, not proven. See `OPENWRT-WEBUPDATE-PAYLOAD-AUDIT.md`. Next work: identify the exact stock 2018 NAND MTD partition/root mount parser, resolve `TAG_BLOCK_LEN` and `BOOT_OFFSET` relative to `/proc/mtd`, then decide a non-writing DTS/rootfs strategy. No wrapper, DTS change, or image candidate has been created; keep `NOT-FLASHABLE`.
+Rootfs selection is not fixed. Stock-tag-derived profile suggests MTD rootfs begins at `rootfsAddress` (`0xbfc40000`) while tag container starts one 128 KiB block earlier, but the actual production build/offset mapping and parser identity still need confirmation. The generic BCM imagetag splitter rejects NAND; the CFE RAM route is plausible only, unverified. No DTS change or image candidate. Next: verify exact stock NAND partition parser and runtime offset mapping from the 2018 build, then design/test an offline DTS change. Keep `NOT-FLASHABLE`.
 
 1. Resolve the stock parser mapping first: exact NAND partition parser and the
    relationship between tag-block offset, BOOT_OFFSET, and live /proc/mtd.

@@ -151,7 +151,9 @@ filesystem address:
 
 So the apparent equality between stock `rootfsLen=0x16a0000` and live rootfs MTD size `0x16a0000` is not enough: stock `flashFsKernelImage()` starts writing at `rootfsAddr - TAG_BLOCK_LEN` and `kerSysBcmImageSet()` receives `tagFs` including the tag (board.c:2707-2709). This still does not map to MTD-relative offset 0 without knowing the flash partition start, `BOOT_OFFSET`, and exact stock 2018 partition parser. Do not assume the DTS `firmware` partition should be renamed to `rootfs` or shifted one block before the production MTD parser is identified.
 
-### Next narrow experiment (offline only)
+The profile's stock-tag-derived NAND layout (verified tag `rootfsAddress=0xbfc40000`, `TAG_BLOCK_LEN=0x20000`, so payload/tag container start is address `0xbfc20000`) differs from the NAND partition driver's runtime rootfs start. In `kernel/linux/drivers/mtd/brcmnand/bcm63xx-nand.c:212-219`, MTD `rootfs` partition offset is set to `rootfsAddress + BOOT_OFFSET - FLASH_BASE`, and size to `rootfsLen + bad_block_count*0x20000`. That means the tag block itself lies one eraseblock before the MTD `rootfs` partition. However, the inspected driver's built-in `bcm63XX_nand_parts[0]` entry is initialized to offset/size zero at lines 62-74, and production `fInfo.flash_rootfs_start_offset`, NVRAM bad-block correction, and whether this precise 4.12-family source is the SBG3300 2018 binary's exact MTD parser remain build-dependent. Do not directly equate these source values to the live `/proc/mtd` until that binding is confirmed.
+
+## Next experiment (offline only)
 
 1. Recover/identify the exact stock 2018 kernel partition parser / mount code
    from the extracted files and available source references; establish whether
