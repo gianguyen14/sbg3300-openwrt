@@ -25,7 +25,9 @@ The Broadcom-style tag occupies the first `0x20000` bytes; payload begins at fil
 - Chip ID: `63268`
 - Board ID: `963168MXH_17A`
 - Firmware version: `V1.01(AADY.9)`
-- Declared tagged payload length: `23,724,032` (`0x16c0000`) bytes
+- Declared payload length (`rootfsLen`, ASCII at `0x6a`): `23,724,032` (`0x16a0000`) bytes
+- Payload file range: `[0x20000, 0x16c0000)` (tag-block offset plus declared payload length)
+
 - CFE address/length fields: zero
 - Kernel address/length fields: zero
 - Trailer flag: `1`

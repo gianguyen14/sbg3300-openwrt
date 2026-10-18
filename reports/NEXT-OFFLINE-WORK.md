@@ -6,7 +6,7 @@ containers and do not form a complete boot payload. No MSTC wrapper has been
 created; this is deliberate, because a valid tag could pass the router's
 validator and authorize destructive writes.
 
-Rootfs selection is not fixed. Stock-tag-derived profile suggests MTD rootfs begins at `rootfsAddress` (`0xbfc40000`) while tag container starts one 128 KiB block earlier, but the actual production build/offset mapping and parser identity still need confirmation. The generic BCM imagetag splitter rejects NAND; the CFE RAM route is plausible only, unverified. No DTS change or image candidate. Next: verify exact stock NAND partition parser and runtime offset mapping from the 2018 build, then design/test an offline DTS change. Keep `NOT-FLASHABLE`.
+The stock image tag is a slot-1 template, not proof of the live active slot. In the inspected Broadcom family updater, when current image fits slot 1 and replacement fits half-flash, the inactive-slot path sets the next rootfs offset to `(totalSize/2) + TAG_BLOCK_LEN`; with total flash `0x08000000`, that is `0x04020000`. This matches the sanitized live rootfs MTD start, so active-slot-2 is a strong explanation of the prior `0x40000` vs `0x4020000` mismatch, though exact 2018 binary equivalence and bad-block translation are not proven. Keep any DTS mapping conditional on this slot path and the exact MTD layout; no source change yet.
 
 1. Resolve the stock parser mapping first: exact NAND partition parser and the
    relationship between tag-block offset, BOOT_OFFSET, and live /proc/mtd.
@@ -27,7 +27,17 @@ Rootfs selection is not fixed. Stock-tag-derived profile suggests MTD rootfs beg
 
 The initramfs ELF is self-contained at the Linux initramfs layer, but whether this exact CFE can load that ELF and the required memory/entry contract remain unverified; it is not a confirmed safe boot path.
 
-## Current verified outputs
+- Stock tag/parser math is still unresolved: `rootfsAddress=0xbfc40000` maps to
+  MTD offset `0x00040000` under the family source formula, unlike live rootfs
+  offset `0x04020000`. The exact 2018 active-tag/partition parser is required;
+  no guessed DTS rename or offset.
+- The built initramfs is a self-contained newc archive with expected init files
+  (static test `tools/audit-initramfs.py`, 2 focused tests pass). This is not CFE
+  load evidence or a hardware boot.
+- The full test suite is NOT passing: unfinished `test_nand_slot_math.py` imports
+  missing `tools/sbg3300-slot-map.py`. Do not report 32+ tests as green.
+- No wrapper/candidate was created. Maintain `NOT-FLASHABLE`.
+
 
 - initramfs ELF: 6,076,800 B, MIPS BE; RAM/CFE boot unverified.
 - sysupgrade TAR: 6,390,038 B; members CONTROL, kernel (3,538,944 B), root
