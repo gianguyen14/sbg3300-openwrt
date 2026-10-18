@@ -23,6 +23,8 @@ The inherited XTM external probe is diagnostic, uses probe-only compatibility co
 **Overall: `PARTIAL-PORT` · `OFFLINE-ONLY` · `NOT-FLASHABLE`.** No OpenWrt
 image has been booted on the SBG3300. No flash/factory/sysupgrade image exists.
 
+Stock Web Update analysis is offline-only. See `reports/UPGRADE-RECIPE.md`, `reports/upgrade-chain-REPORT.md`, and `reports/OPENWRT-WEBUPDATE-PAYLOAD-AUDIT.md`. Current initramfs is ELF, sysupgrade is a kernel+SquashFS tar, and the intermediate CFE-kernel JFFS2 contains only `vmlinux.lz` plus marker dirents; no complete SBG3300 CFE/JFFS2 payload has been established. No MSTC wrapper/image candidate was generated. Do not wrap, pad, upload, or flash existing artifacts. Web acceptance, kernel/CFE bootability, and flash safety remain separate and NOT-FLASHABLE.
+
 Evidence vocabulary is defined in [docs/EVIDENCE-POLICY.md](docs/EVIDENCE-POLICY.md).
 `PASS` applies only to the stated layer. In particular, a successful build is
 not runtime evidence.

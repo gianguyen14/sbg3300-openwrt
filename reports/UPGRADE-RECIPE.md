@@ -68,10 +68,12 @@ Byte offsets relative to file start (FILE_TAG, ASCII fields):
   CFE/RAM boot is unverified. Nothing here proves a generated image boots or
   that flashing is safe.
 
-## Conclusion
+## Verification gates before considering a wrapped OpenWrt payload
 
-The web-updater acceptance criteria are now fully known and stock-verified, so
-a compliant MSTC-tagged container CAN in principle be produced (recipe above).
-This is NOT permission to flash: no candidate image has been built, no boot
-evidence exists, and the user's constraints forbid upload/flash. Status:
-`NOT-FLASHABLE`.
+Current OpenWrt output is not ready to wrap. See `OPENWRT-WEBUPDATE-PAYLOAD-AUDIT.md` for independently checked structures, sizes, hashes, build rules, and the missing CFE/JFFS2 layout. The sysupgrade is a tar (kernel + SquashFS root), the initramfs is an ELF, and the intermediate CFE kernel JFFS2 has only `vmlinux.lz` plus OpenWrt marker dirents, no `cferam.000`. Therefore do not tag/wrap it as a candidate: a valid MSTC wrapper would pass the web gate and permit an unsafe write, not serve as a harmless parser test.
+
+1. Generate a complete JFFS2 payload using the stock update-path layout, including verified boot files and the correct kernel/root arrangement; do not rely on matching lengths alone.
+2. Establish source evidence for all CFE/kernel expectations, image sequence/slot handling, NVRAM injection and live MTD boundaries for this precise SBG3300 build.
+3. Validate only offline and maintain a deliberately invalid/non-flashable status until an authorized hardware boot path and hardware evidence exist.
+
+No wrapper, image candidate, upload, flash, or sysupgrade has been created/performed. `NOT-FLASHABLE` remains active.
