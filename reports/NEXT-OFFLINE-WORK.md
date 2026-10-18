@@ -27,7 +27,7 @@ The stock image tag is a slot-1 template, not proof of the live active slot. In 
    constraints.
 
 
-The initramfs ELF embeds a CPIO root; static parsing confirms `/init`, `/sbin/init`, BusyBox, preinit, and procd. This can avoid flash-root selection after the kernel starts, but CFE acceptance/load address, entry, DTB handoff and memory layout remain unverified. Do not call it a RAM boot path until exact-board CFE behavior is established.
+The initramfs ELF artifact has entry `0x81000000`, one LOAD segment at that address, one read-only segment, and a newc CPIO archive in the linked kernel blob. The CPIO build input includes complete root; static scan validates 761 records including init/procd. But `loader-lzma elf` is a BMIPS loader pipeline, and there is no evidence CFE on this exact board accepts arbitrary ELF program headers. Treat as static-only, not RAM-boot-capable.
 
 - Stock tag/parser relationship: slot 1 template maps to `0x40000`; family BSP
   inactive-slot write formula maps slot 2 to live MTD `0x4020000`. This is
