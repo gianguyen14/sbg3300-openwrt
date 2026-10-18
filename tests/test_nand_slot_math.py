@@ -20,8 +20,11 @@ class StockSlotMathTests(unittest.TestCase):
         tag = slot_map.read_stock_tag(Path("/home/hermes/sbg3300-build/reference-stock-aady9.bin"))
         slot1 = slot_map.vendor_rootfs_offset(tag.rootfs_address)
         slot2 = slot_map.vendor_slot2_write_offset(0x08000000)
+        slot2_tag_addr = slot_map.vendor_slot2_rootfs_address(0x08000000)
         self.assertEqual(slot1, 0x00040000)
         self.assertEqual(slot2, 0x04020000)
+        self.assertEqual(slot2_tag_addr, 0xC3C20000)
+        self.assertEqual(slot_map.vendor_rootfs_offset(slot2_tag_addr), 0x04020000)
         self.assertEqual(slot_map.live_rootfs_extent(slot2, tag.rootfs_length),
                          (0x04020000, 0x056c0000))
 

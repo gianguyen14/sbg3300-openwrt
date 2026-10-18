@@ -52,9 +52,15 @@ def vendor_rootfs_offset(rootfs_address: int) -> int:
 
 
 def vendor_slot2_write_offset(total_flash_size: int) -> int:
+    """board.c inactive-slot offset formula, before absolute image address."""
     if total_flash_size <= 0 or total_flash_size % 2:
         raise ValueError("flash size must be positive and even")
     return total_flash_size // 2 + TAG_BLOCK_LEN
+
+
+def vendor_slot2_rootfs_address(total_flash_size: int) -> int:
+    """board.c writes rootfsAddress as IMAGE_BASE + slot2 offset."""
+    return (IMAGE_BASE + vendor_slot2_write_offset(total_flash_size)) & ADDRESS_MASK
 
 
 def live_rootfs_extent(offset: int, size: int) -> tuple[int, int]:
