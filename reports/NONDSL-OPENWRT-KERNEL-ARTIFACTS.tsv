@@ -1,0 +1,51 @@
+artifact	bytes	sha256	vermagic	depends	import_count	missing_imports	runtime
+vmlinux	58483124	85496d07dafa31f27c2b52e3ab9e7db7206c0a9b9c56c37fbfe06ce9fcdc17e7			0	0	NOT-TESTED
+leds-bcm6328.ko	46264	86796feaec8434ea9a0a20f8efd3019b4f5271c831e1f58acf1a6ae725f54d47	6.18.54 SMP mod_unload BMIPS 32BIT		15	0	NOT-TESTED
+leds-gpio.ko	42536	5e906324cfa249e0c9e34520fd6fb185837878d87294e34ad8f7fdd4190eb582	6.18.54 SMP mod_unload BMIPS 32BIT		28	0	NOT-TESTED
+ppp_async.ko	79932	432e8d5290ede232ab47e2af71146a465a1f87bdb96441b7f014896598391a84	6.18.54 SMP mod_unload BMIPS 32BIT	crc-ccitt,ppp_generic	42	0	NOT-TESTED
+ppp_generic.ko	249008	55c332bf833dc424535f71c50ff8bc2cb321440da908cde8d1c4849f967b7b5e	6.18.54 SMP mod_unload BMIPS 32BIT	slhc	114	0	NOT-TESTED
+pppoe.ko	131476	c8f99330b0f79a9da9a698ac221acb45abed8f2d9aa5c1607c64985b250ddee0	6.18.54 SMP mod_unload BMIPS 32BIT	pppox,ppp_generic	69	0	NOT-TESTED
+pppox.ko	35672	85298eacf77c0aa5e88682b8b71a5a0b4fb18dc44c1bc9b39fdd651db47db0b9	6.18.54 SMP mod_unload BMIPS 32BIT	ppp_generic	12	0	NOT-TESTED
+slhc.ko	58732	53ae37d25d5acc5db25ef49fcffd7f561fc80b1ebe76db4de0a2cf7a953fe46b	6.18.54 SMP mod_unload BMIPS 32BIT		10	0	NOT-TESTED
+usb-common.ko	51432	222e56964938194e9aef54c48e6a3766d4d2bfc4b69c9ca3dc1c5dcb6ae0c632	6.18.54 SMP mod_unload BMIPS 32BIT		14	0	NOT-TESTED
+usbcore.ko	1248288	14e98b6302fed2a2763e09867c9fcac3dd74456abcb814cb10572178cc46dd66	6.18.54 SMP mod_unload BMIPS 32BIT	usb-common,nls_base	267	0	NOT-TESTED
+ehci-fsl.ko	54672	4097ec4cc9f241b3c12c4c9900e9459d7195c5cfc8eac907712c6661077915d0	6.18.54 SMP mod_unload BMIPS 32BIT	usbcore,ehci-hcd	19	0	NOT-TESTED
+ehci-hcd.ko	326976	c77f9df2cee637d5bfc93927db5a3565f4fe68c5596a803ed653edab43a0db44	6.18.54 SMP mod_unload BMIPS 32BIT	usbcore	64	0	NOT-TESTED
+ehci-platform.ko	52944	691c3e38aa727aeda5a8d9ff249447d782f93f68f9774cc2817f26a9a70c65eb	6.18.54 SMP mod_unload BMIPS 32BIT	usbcore,ehci-hcd,usb-common	41	0	NOT-TESTED
+fsl-mph-dr-of.ko	47232	1ecce487305f355ea439f69f770af23973a7658b4298bd95dcc480afbb9565df	6.18.54 SMP mod_unload BMIPS 32BIT		23	0	NOT-TESTED
+ohci-hcd.ko	242968	25889b45290a710b0ef6afe8fb4621d8eaf3ce31750829abb8600725743cf633	6.18.54 SMP mod_unload BMIPS 32BIT	usbcore,usb-common	57	0	NOT-TESTED
+ohci-platform.ko	42880	f29872e32111c5c6e2b0646f41bc09fc666363a4780649bd85fe07a8317655f8	6.18.54 SMP mod_unload BMIPS 32BIT	usbcore,ohci-hcd,usb-common	30	0	NOT-TESTED
+nls_base.ko	42032	df5127888e99bb0a8183ecae866dfb6bd27883ad07d8a8adccfce2d3213973c3	6.18.54 SMP mod_unload BMIPS 32BIT		5	0	NOT-TESTED
+crc-ccitt.ko	25744	5ad85b25da90aaeac70f4acddd2d38ed193819d130ab996f6ae3f5a1b6fd1f7e	6.18.54 SMP mod_unload BMIPS 32BIT		0	0	NOT-TESTED
+atm.ko	449700	e235e7a358653539d5d6f7558b74612baa3712f1a04b16fa58eb4f9d448d29a0	6.18.54 SMP mod_unload BMIPS 32BIT		96	0	NOT-TESTED
+br2684.ko	94428	a867a51b88049ce16bcc72c9250ad7ba3bcccb37d653f2123577b825f118f8bf	6.18.54 SMP mod_unload BMIPS 32BIT	atm	51	0	NOT-TESTED
+nf_defrag_ipv4.ko	39336	1a82271e858d3e95bd8d3176be203955cc5ee9540a7be884e00a10ddbf9df4fc	6.18.54 SMP mod_unload BMIPS 32BIT		9	0	NOT-TESTED
+nf_reject_ipv4.ko	65904	4606e5ca7be920a9db678c45c9b2b506552e36692015617ba768db1b03349363	6.18.54 SMP mod_unload BMIPS 32BIT		19	0	NOT-TESTED
+nft_fib_ipv4.ko	59952	43d0dfde04b746798f2b9ada672c359554cbb063b9098b467170dd16cffdac0c	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables,nft_fib	15	0	NOT-TESTED
+nft_reject_ipv4.ko	47108	dfb5da0acc9d6a94bbe032bb790792b49a80665c77ce77214a912ed4945e0b41	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables,nf_reject_ipv4,nft_reject	8	0	NOT-TESTED
+nf_defrag_ipv6.ko	110508	1696608c04bb0e357d21ad5a50dcd48736e9a76a73bfc27da9303986c39e95d9	6.18.54 SMP mod_unload BMIPS 32BIT		50	0	NOT-TESTED
+nf_reject_ipv6.ko	65620	6e0bbc6417c69bb2ec51e22957024f1b99eac60d9cc1ca42e99f9bc24a628875	6.18.54 SMP mod_unload BMIPS 32BIT		22	0	NOT-TESTED
+nft_fib_ipv6.ko	49296	60c0d837a33f71e8ad5855e506370ad7c3aaf6cecf660d70ed34fb6f0cb93dae	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables,nft_fib	18	0	NOT-TESTED
+nft_reject_ipv6.ko	46680	c14856b7e49c073754efeeb486ea507f3f8feb635e2f2077b0802dd5ab90516a	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables,nf_reject_ipv6,nft_reject	8	0	NOT-TESTED
+nf_conntrack.ko	735964	56c6fb0797d86e16f666974aa8c4cda3c8c089a798000e6f97eed8ecc0c723cd	6.18.54 SMP mod_unload BMIPS 32BIT	nf_defrag_ipv4,nf_defrag_ipv6	129	0	NOT-TESTED
+nf_flow_table.ko	344084	c7fcd27e2409b2c1cd30cdc5df127bc2decc43e76676b4fa07e771dd816806ea	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables,nf_conntrack	85	0	NOT-TESTED
+nf_flow_table_inet.ko	37196	cc629b3110a257fd11cd85cf11e2b0d849e954041955ef6f7208f793e8fdcf34	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables,nf_flow_table	10	0	NOT-TESTED
+nf_log_syslog.ko	76656	0758fe058308af922a0273f9a302b8bb95cad4289a6bdc38739ef5ecf715e1d0	6.18.54 SMP mod_unload BMIPS 32BIT		20	0	NOT-TESTED
+nf_nat.ko	249348	a2cd5afb40cb555b1f6448f68a1b64d1bace51d8fc26f3dc0286d55f54eb69af	6.18.54 SMP mod_unload BMIPS 32BIT	nf_conntrack	79	0	NOT-TESTED
+nf_tables.ko	2065416	479ff5fdb727a4db7c6b4861c0517352138af9a4cd50a4b43151497559767ed1	6.18.54 SMP mod_unload BMIPS 32BIT	nfnetlink	162	0	NOT-TESTED
+nfnetlink.ko	79412	9be0471b9ed809a0f50bfb5fd9e5d98dfea173cdfcbeb41e73e473a551773d0a	6.18.54 SMP mod_unload BMIPS 32BIT		33	0	NOT-TESTED
+nft_chain_nat.ko	38808	348f0e6b1f8cc0c32bdb39080f527efcbe98a135cffb8793e31389ad0be415a4	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables,nf_nat	10	0	NOT-TESTED
+nft_ct.ko	110452	216b62978fbf5f77f08b9b4191389d03f9753eca91becc14d11a965bc8ab639e	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables,nf_conntrack	48	0	NOT-TESTED
+nft_fib.ko	54572	d800ec4e0f3742dfdaf4471fa42e07d443f10a4de5714e763e8988a00042cf9f	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables	9	0	NOT-TESTED
+nft_fib_inet.ko	46204	7e0556a65ec93fce6c106e86aaa61ce7724b64bfdcbf28c7f4bc5aa9b72b6316	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables,nft_fib_ipv6,nft_fib_ipv4,nft_fib	10	0	NOT-TESTED
+nft_flow_offload.ko	47020	b2e0edbf1ff0cb1f2aeaa0e29a34337632dd8decb93574422ac453fb91714ea3	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables,nf_conntrack,nf_flow_table	20	0	NOT-TESTED
+nft_hash.ko	56880	91dbede7bb7f6198cc685c4d0b12bb2eb981384806af9ad34c55e8c44c9c1c47	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables	9	0	NOT-TESTED
+nft_limit.ko	70700	7eb8b481e71acb15fbd8fa7c1c4f57cad5492d2137285a4a58d4456fbb82f941	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables	14	0	NOT-TESTED
+nft_log.ko	58392	5f12c800838ebe4bac42040ceefb9c6c6c4f50228f68e05268abc68c44cb51c9	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables	11	0	NOT-TESTED
+nft_masq.ko	41148	c2610de9b1757e9bb07958f312d46e1f4e550c23ff4181cbac034706a57eee52	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables,nf_nat,nf_conntrack	16	0	NOT-TESTED
+nft_nat.ko	47396	2ab1709519a30969336ea3e355413c2ac77a1ac90e46e0d3149157634aa5932d	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables,nf_conntrack,nf_nat	12	0	NOT-TESTED
+nft_numgen.ko	57388	46b6ba6fc6cedbc8448750835a0f9bc4c2645b4b0be4538582e0ce3aaa9bf32c	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables	9	0	NOT-TESTED
+nft_quota.ko	63468	f9525051d026772d3258a85439bb3ad29b4372825b24ec5b444755784c4a0ac8	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables	15	0	NOT-TESTED
+nft_redir.ko	41556	3b2cd6f25253d28626c647a65f63ddfddafa82ba6647ec9af9893966bb551e29	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables,nf_conntrack,nf_nat	14	0	NOT-TESTED
+nft_reject.ko	50036	ea444304bc7cc0c7e4bbb6ed5829f6bd5b3623073fc70d4161f96d8a2ba4f978	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables	3	0	NOT-TESTED
+nft_reject_inet.ko	48700	1dad23aa10f21afcac943bf675a9ea32ef67525fe3e70238bf9efeb4f1a1b28a	6.18.54 SMP mod_unload BMIPS 32BIT	nf_tables,nf_reject_ipv6,nf_reject_ipv4,nft_reject	12	0	NOT-TESTED

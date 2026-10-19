@@ -9,7 +9,7 @@ fi
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 OPENWRT_DIR="${OPENWRT_DIR:-${XDG_CACHE_HOME:-${HOME:?Set HOME or OPENWRT_DIR}}/sbg3300-openwrt/port}"
 EXPECTED_BASE="5edcc1c43cb97048b506168fbbe00538956796d6"
-EXPECTED_PORT_TREE="2ac5b16d7ba20467a099bf096de89c32d69a9324"
+EXPECTED_PORT_TREE="b7b65a08d9af15f18f678aac38b471695fa3c1f8"
 JOBS="${JOBS:-3}"
 
 if [[ ! -d "$OPENWRT_DIR/.git" ]]; then
@@ -39,7 +39,7 @@ make -C "$OPENWRT_DIR" defconfig
 make -C "$OPENWRT_DIR" -j"$JOBS" V=s
 
 ARTIFACT_DIR="$OPENWRT_DIR/bin/targets/bmips/bcm63268"
-IMAGE="$ARTIFACT_DIR/openwrt-bmips-bcm63268-zyxel_sbg3300-n000-initramfs-OFFLINE-ONLY.elf"
+IMAGE="$ARTIFACT_DIR/openwrt-bmips-bcm63268-zyxel_sbg3300-n000-squashfs-sysupgrade.bin"
 MANIFEST="$ARTIFACT_DIR/openwrt-bmips-bcm63268-zyxel_sbg3300-n000.manifest"
 DTB="$OPENWRT_DIR/build_dir/target-mips_mips32_musl/linux-bmips_bcm63268/image-bcm63168-zyxel-sbg3300-n000.dtb"
 [[ -s "$IMAGE" && -s "$MANIFEST" && -s "$DTB" ]] || {

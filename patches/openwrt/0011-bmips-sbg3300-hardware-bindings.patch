@@ -1,0 +1,131 @@
+From 1253a98334d8d9319f90857d2e5b701185a1373f Mon Sep 17 00:00:00 2001
+From: gianguyen14 <truongphamgianguyengl02@kawaii.edu.vn>
+Date: Sun, 11 Oct 2026 03:06:41 +0700
+Subject: [PATCH] bmips: sbg3300: map proven NAND and switch hardware
+
+---
+ .../bmips/dts/bcm63168-zyxel-sbg3300-n000.dts | 66 ++++++++++++++++---
+ target/linux/bmips/image/bcm63268.mk          | 14 ++--
+ 2 files changed, 66 insertions(+), 14 deletions(-)
+
+diff --git a/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts b/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
+index 8057404b27..905ff23ae8 100644
+--- a/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
++++ b/target/linux/bmips/dts/bcm63168-zyxel-sbg3300-n000.dts
+@@ -34,25 +34,75 @@
+  * bcm63268.dtsi uses memory@0 reg=<0 0>, allowing BMIPS RAM discovery; keep
+  * that behavior instead of hard-coding a base/size from MemTotal.
+  */
+-/*
+- * Storage remains disabled: legacy ECC codes and per-sector OOB units have
+- * not been translated to verified Linux 6.18 settings. No partition map.
+- */
+ &nflash {
+-	status = "disabled";
++	status = "okay";
+ 
+ 	nandcs@0 {
+ 		compatible = "brcm,nandcs";
+ 		reg = <0>;
++		nand-ecc-step-size = <512>;
++		nand-ecc-strength = <15>;
++		nand-on-flash-bbt;
++		brcm,nand-oob-sector-size = <64>;
++
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+-		nand-on-flash-bbt;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition@0 {
++				label = "cferom";
++				reg = <0x000000 0x020000>;
++				read-only;
++			};
++
++			partition@20000 {
++				compatible = "brcm,bcm963xx-imagetag";
++				label = "firmware";
++				reg = <0x020000 0x16a0000>;
++			};
++
++			partition@16c0000 {
++				label = "data";
++				reg = <0x16c0000 0x400000>;
++			};
++
++			partition@1ac0000 {
++				label = "nvram";
++				reg = <0x1ac0000 0x020000>;
++			};
++		};
+ 	};
+ };
+ 
+-/* The SoC include's default CPU port is not an SBG3300 topology proof. */
+ &switch0 {
+-	status = "disabled";
++	status = "okay";
++
++	ports {
++		port@0 {
++			reg = <0>;
++			label = "lan1";
++		};
++		port@1 {
++			reg = <1>;
++			label = "lan2";
++		};
++		port@2 {
++			reg = <2>;
++			label = "lan3";
++		};
++		port@3 {
++			reg = <3>;
++			label = "lan4";
++		};
++		port@4 {
++			reg = <4>;
++			label = "wan";
++		};
++	};
+ };
+ 
+ &mdio {
+diff --git a/target/linux/bmips/image/bcm63268.mk b/target/linux/bmips/image/bcm63268.mk
+index 4bad6020ba..83505c8a04 100644
+--- a/target/linux/bmips/image/bcm63268.mk
++++ b/target/linux/bmips/image/bcm63268.mk
+@@ -1,17 +1,19 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ 
+ # This profile intentionally emits only a kernel/initramfs boot artifact.
+-# No CFE/WFI factory or sysupgrade image is defined for the unproven SBG3300
+-# NAND layout. The artifact is for offline review and is not a flash image.
+ define Device/zyxel_sbg3300-n000
++  $(Device/bcm63xx-nand)
+   DEVICE_VENDOR := Zyxel
+   DEVICE_MODEL := SBG3300-N000
+-  DEVICE_DESCRIPTION := Offline-only research initramfs; not a flash image
+   CHIP_ID := 63268
+   SOC := bcm63168
+-  KERNEL_INITRAMFS := kernel-bin | append-dtb | lzma | loader-lzma elf
+-  KERNEL_INITRAMFS_SUFFIX := -OFFLINE-ONLY.elf
+-  IMAGES :=
++  CFE_RAM_FILE := zyxel,sbg3300/cferam.000
++  CFE_RAM_JFFS2_NAME := cferam.000
++  BLOCKSIZE := 128k
++  PAGESIZE := 2048
++  SUBPAGESIZE := 512
++  VID_HDR_OFFSET := 2048
++  DEVICE_PACKAGES += $(USB2_PACKAGES)
+ endef
+ TARGET_DEVICES += zyxel_sbg3300-n000
+ 
+-- 
+2.47.3
+

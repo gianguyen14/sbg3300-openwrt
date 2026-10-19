@@ -9,6 +9,7 @@ Use one or more of these labels with every material hardware/software claim:
 | `STOCK-BOOT-LOG` | Boot/kernel log or stock boot output from this device. |
 | `EXACT-BOARD-SOURCE` | Source contains the exact `963168MXH_17A` board entry. Build lineage equivalence may still be uncertain. |
 | `FAMILY-SOURCE` | Source for a related BCM63168/Broadcom family, not proven to be the running Zyxel build. |
+| `PRODUCT-DOCUMENTATION` | Manufacturer product documentation describes intended product ports/features; it does not map those ports to SoC, switch, or PHY indices. |
 | `UPSTREAM` | Behavior/code in a named, pinned Linux/OpenWrt revision. It establishes upstream implementation only. |
 | `BUILD-RESULT` | A command completed for a named source/config/target. It establishes compilation/artifact generation only. |
 | `INFERENCE` | A conclusion derived from evidence. State assumptions and confidence. |

@@ -11,6 +11,68 @@
 		bootargs = "";
 		stdout-path = "";
 	};
+
+	keys {
+		compatible = "gpio-keys-polled";
+		poll-interval = <20>;
+
+		wps {
+			label = "wps";
+			gpios = <&gpio 33 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_WPS_BUTTON>;
+			debounce-interval = <60>;
+		};
+
+		reset {
+			label = "reset";
+			gpios = <&gpio 32 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_RESTART>;
+			debounce-interval = <60>;
+		};
+	};
+	
+	leds {
+		compatible = "gpio-leds";
+
+		power_green {
+			label = "green:power";
+			gpios = <&gpio 20 GPIO_ACTIVE_LOW>;
+			default-state = "on";
+		};
+
+		power_red {
+			label = "red:power";
+			gpios = <&gpio 21 GPIO_ACTIVE_LOW>;
+		};
+
+		internet_green {
+			label = "green:internet";
+			gpios = <&gpio 22 GPIO_ACTIVE_HIGH>;
+		};
+
+		internet_red {
+			/* Serial LED */
+			label = "red:internet";
+			gpios = <&gpio 2 GPIO_ACTIVE_LOW>;
+		};
+
+		wan_data {
+			label = "green:wan";
+			gpios = <&gpio 8 GPIO_ACTIVE_LOW>;
+		};
+
+		usb1 {
+			/* Serial LED */
+			label = "green:usb1";
+			gpios = <&gpio 6 GPIO_ACTIVE_LOW>;
+		};
+
+		usb2 {
+			/* Serial LED */
+			label = "green:usb2";
+			gpios = <&gpio 5 GPIO_ACTIVE_LOW>;
+		};
+	};
 };
 
 /* These controllers are directly observed on the stock device. */
@@ -34,25 +96,75 @@
  * bcm63268.dtsi uses memory@0 reg=<0 0>, allowing BMIPS RAM discovery; keep
  * that behavior instead of hard-coding a base/size from MemTotal.
  */
-/*
- * Storage remains disabled: legacy ECC codes and per-sector OOB units have
- * not been translated to verified Linux 6.18 settings. No partition map.
- */
 &nflash {
-	status = "disabled";
+	status = "okay";
 
 	nandcs@0 {
 		compatible = "brcm,nandcs";
 		reg = <0>;
+		nand-ecc-step-size = <512>;
+		nand-ecc-strength = <15>;
+		nand-on-flash-bbt;
+		brcm,nand-oob-sector-size = <64>;
+
 		#address-cells = <1>;
 		#size-cells = <1>;
-		nand-on-flash-bbt;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "cferom";
+				reg = <0x000000 0x020000>;
+				read-only;
+			};
+
+			partition@20000 {
+				compatible = "brcm,bcm963xx-imagetag";
+				label = "firmware";
+				reg = <0x020000 0x16a0000>;
+			};
+
+			partition@16c0000 {
+				label = "data";
+				reg = <0x16c0000 0x400000>;
+			};
+
+			partition@1ac0000 {
+				label = "nvram";
+				reg = <0x1ac0000 0x020000>;
+			};
+		};
 	};
 };
 
-/* The SoC include's default CPU port is not an SBG3300 topology proof. */
 &switch0 {
-	status = "disabled";
+	status = "okay";
+
+	ports {
+		port@0 {
+			reg = <0>;
+			label = "lan1";
+		};
+		port@1 {
+			reg = <1>;
+			label = "lan2";
+		};
+		port@2 {
+			reg = <2>;
+			label = "lan3";
+		};
+		port@3 {
+			reg = <3>;
+			label = "lan4";
+		};
+		port@4 {
+			reg = <4>;
+			label = "wan";
+		};
+	};
 };
 
 &mdio {

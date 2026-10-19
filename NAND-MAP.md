@@ -62,13 +62,7 @@ simple contiguous logical-image-to-physical-offset assumption is not justified.
 The matching-family header defines a 128 KiB boot-ROM reservation and places
 the NVRAM structure at offset `0x580` within the first eraseblock. This is
 consistent with the live `nvram` MTD entry aliasing the first block rather than
-being an independent physical partition. Its computed second rootfs slot
-starts at the 64 MiB midpoint; adding one 128 KiB tag/kernel block yields
-`0x04020000`, exactly the start of the live `rootfs` MTD registration. This is
-strong cross-evidence for the slot-2 interpretation. The live MTD only exposes
-the active image extent (`0x04020000..0x056c0000`); it does not report the full
-reserved slot size. The 2015 source mirror is not proven identical to the 2018
-running build, so this still does not close image-writer or bad-block safety.
+being an independent physical partition. `flash_common.c:485-519` initializes rootfs slot 1 at one eraseblock (128 KiB), slot 2 at the half-device point, and calculates slot sizes after reserving boot/data/BBT regions. The live rootfs start `0x04020000` equals midpoint `0x04000000 + 0x20000`, consistent with slot 2. However, the independent tag-derived address expression above yields `0x00040000` with family constants—64 MiB away from live MTD. Active tag mutation/slot address semantics or exact-build differences are unresolved; this source does NOT close the mapping.
 
 Relevant source locations, recorded for local reproduction:
 
@@ -95,3 +89,22 @@ extent, active-slot selection, CFE placement and bad-block translation.
 No writable image, sysupgrade layout, or stock-web wrapper is permitted until
 all boot-critical ranges and bad-block/ECC behaviors are proven from exact
 source/binary behavior. No raw NAND operations are part of this project.
+
+## Further ECC source reconciliation
+
+The pinned family header explicitly defines legacy ECC code 15 as Hamming
+(three ECC bytes per 512-byte step). Its Hamming/64-byte-OOB branch prints the
+misleading string `brcmnand_oob_bch4_4k` while selecting `brcmnand_oob_64`.
+Linux 6.18 translates code 15 with 16 spare bytes per sector into strength 1.
+This narrows the numeric interpretation to `SUPPORTED`; the incorrect log
+label is not evidence of BCH4/4K. Actual OOB positions, writer/BBT equivalence
+and Linux runtime remain unproven. No DTS ECC override or partition was added.
+Exact references and validator results are in
+`reports/BOOT-NAND-PERIPHERAL-VALIDATION.md`.
+
+An independent legacy-header comparison now matches Linux 6.18's actual
+Hamming OOB callbacks for the 2048/64/512/strength-1 candidate tuple: 12 ECC
+bytes at identical positions and 50 free bytes, with two BBI bytes reserved.
+Native/sanitizer/MIPS callback tests pass. This is conditional source-layout
+equivalence, not proof of actual flash encoding, BBT compatibility or writer
+behavior. The NAND controller remains disabled.
